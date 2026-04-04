@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import AppRoutes from './routes/AppRoutes'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
@@ -9,6 +10,7 @@ function App() {
 
   return (
     <>
+    <AppRoutes />
       <section id="center">
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
