@@ -8,20 +8,28 @@ import Journal from "../pages/Journal";
 import Feedback from "../pages/Feedback";
 import Register from "../pages/Register";
 import Admin from "../pages/Admin";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
+
+        {/* PUBLIC */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/moodtrack" element={<MoodTrack />} />
-        <Route path="/pomodoro" element={<Pomodoro />} />
-        <Route path="/todolist" element={<ToDoList />} />
-        <Route path="/journal" element={<Journal />} />
-        <Route path="/feedback" element={<Feedback />} />
-        <Route path="/Admin" element={<Admin />} />
+
+        {/*  PRIVATE */}
+        <Route element={<ProtectedRoute />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/moodtrack" element={<MoodTrack />} />
+            <Route path="/pomodoro" element={<Pomodoro />} />
+            <Route path="/todolist" element={<ToDoList />} />
+            <Route path="/journal" element={<Journal />} />
+            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/Admin" element={<Admin />} />
+        </Route>
+
       </Routes>
     </BrowserRouter>
   );
