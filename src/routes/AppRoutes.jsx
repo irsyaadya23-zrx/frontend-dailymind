@@ -23,7 +23,7 @@ export default function AppRoutes() {
         <Route path="/test" element={<h1>TEST ROUTE</h1>} />
 
         {/*  PRIVATE */}
-        <Route element={<ProtectedRoute />}>
+        {/* <Route element={<ProtectedRoute />}> */}
             <Route path="/home" element={<Home />} />
             <Route path="/moodtrack" element={<MoodTrack />} />
             <Route path="/pomodoro" element={<Pomodoro />} />
@@ -31,7 +31,7 @@ export default function AppRoutes() {
             <Route path="/journal" element={<Journal />} />
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/Admin" element={<Admin />} />
-        </Route>
+        {/* </Route> */}
 
       </Routes>
     </BrowserRouter>
