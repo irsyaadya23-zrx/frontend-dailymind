@@ -8,16 +8,19 @@ import Journal from "../pages/Journal";
 import Feedback from "../pages/Feedback";
 import Register from "../pages/Register";
 import Admin from "../pages/Admin";
-import ProtectedRoute from "../components/ProtectedRoute";
+import ProtectedRoute from "../routes/ProtectedRoute";
 
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* DEFAULT */}
+        <Route path="/" element={<Login />} />
 
         {/* PUBLIC */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/test" element={<h1>TEST ROUTE</h1>} />
 
         {/*  PRIVATE */}
         <Route element={<ProtectedRoute />}>
