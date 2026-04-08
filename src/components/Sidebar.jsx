@@ -1,12 +1,13 @@
 import React from 'react';
+import { Link } from "react-router-dom"
 
 const Sidebar = () => {
   const menus = [
-    { name: 'Dashboard',},
-    { name: 'Pomodoro'},
-    { name: 'To-Do List'},
-    { name: 'Mood Tracker' },
-    { name: 'Jurnal' },
+    { name: 'Home', path: "/home"},
+    { name: 'Pomodoro', path: "/pomodoro"},
+    { name: 'To-Do List', path: "/todolist"},
+    { name: 'Mood Tracker', path: "/moodtrack"},
+    { name: 'Jurnal', path: "/journal" },
   ];
 
   return (
@@ -17,7 +18,9 @@ const Sidebar = () => {
         {menus.map((item) => (
           <li key={item.name} style={menuItemStyle}>
             <span style={{ marginRight: '10px' }}>{item.icon}</span>
-            {item.name}
+            <Link to={item.path} style={menuItemStyle}>
+              {item.name}
+            </Link>
           </li>
         ))}
       </ul>

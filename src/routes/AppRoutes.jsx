@@ -9,6 +9,8 @@ import Feedback from "../pages/Feedback";
 import Register from "../pages/Register";
 import Admin from "../pages/Admin";
 import ProtectedRoute from "../routes/ProtectedRoute";
+import MainLayout from "../layouts/MainLayout";
+import AuthLayout from "../layouts/AuthLayout";
 
 export default function AppRoutes() {
   return (
@@ -18,12 +20,15 @@ export default function AppRoutes() {
         <Route path="/" element={<Login />} />
 
         {/* PUBLIC */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/test" element={<h1>TEST ROUTE</h1>} />
+        <Route element={<AuthLayout />} >
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/test" element={<h1>TEST ROUTE</h1>} />
+        </Route>
 
         {/*  PRIVATE */}
         {/* <Route element={<ProtectedRoute />}> */}
+        <Route element={<MainLayout />} >
             <Route path="/home" element={<Home />} />
             <Route path="/moodtrack" element={<MoodTrack />} />
             <Route path="/pomodoro" element={<Pomodoro />} />
@@ -31,6 +36,7 @@ export default function AppRoutes() {
             <Route path="/journal" element={<Journal />} />
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/Admin" element={<Admin />} />
+        </Route>
         {/* </Route> */}
 
       </Routes>
