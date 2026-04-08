@@ -5,26 +5,26 @@ import './App.css';
 
 function App() {
   return (
-    <div style={{ display: 'flex' }}>
+    // <div style={{ display: 'flex' }}>
 
-      <Sidebar />
+    //   <Sidebar />
 
-      <div style={{ 
-        marginLeft: '240px', 
-        width: '100%', 
-        minHeight: '100vh', 
-        display: 'flex', 
-        flexDirection: 'column',
-        background: '#fcfcfc' 
-      }}>
+    //   <div style={{ 
+    //     marginLeft: '240px', 
+    //     width: '100%', 
+    //     minHeight: '100vh', 
+    //     display: 'flex', 
+    //     flexDirection: 'column',
+    //     background: '#fcfcfc' 
+    //   }}>
         
-        <main style={{ flex: 1, padding: '30px' }}>
+    //     <main style={{ flex: 1, padding: '30px' }}>
           <AppRoutes />
-        </main>
+    //     </main>
 
-        <Footer />
-      </div>
-    </div>
+    //     <Footer />
+    //   </div>
+    // </div>
   );
 }
 
