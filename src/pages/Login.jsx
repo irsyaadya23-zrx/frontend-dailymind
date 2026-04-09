@@ -24,15 +24,15 @@ export default function Login() {
 }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F1FAEE] px-6">
-        <div className="flex h-[550px] w-[500px] rounded-3xl flex-col justify-center px-6 py-12 lg:px-8 bg-[#27374D]">
+    <div className="min-h-screen w-screen flex items-center justify-center bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC] px-6">
+        <div className="flex h-[550px] w-[500px] rounded-3xl flex-col justify-center px-6 py-12 lg:px-8 bg-[#1F2A44]/10 shadow-xl">
         
           {/* Logo & Title */}
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <img
               src={logo}
               alt="Logo"
-              className="mx-auto h-24 w-auto"
+              className="mx-auto h-16 w-auto sm:h-24"
             />
           </div>
 
@@ -42,7 +42,7 @@ export default function Login() {
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-100 text-left">
+                <label className="block text-sm font-medium text-[#27374D] text-left">
                   Email
                 </label>
                 <div className="mt-2">
@@ -51,7 +51,7 @@ export default function Login() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full rounded-md bg-white/5 px-3 py-2 text-white outline outline-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:outline-white/100"
+                    className="block w-full rounded-xl bg-white/5 px-3 py-2 text-[#27374D] outline outline-1 outline-[#27374D] placeholder:text-[#27374D] focus:outline-2 focus:outline-[#27374D]"
                   />
                 </div>
               </div>
@@ -59,10 +59,10 @@ export default function Login() {
               {/* Password */}
               <div>
                 <div className="flex items-center justify-between">
-                  <label className="block text-sm font-medium text-gray-100">
+                  <label className="block text-sm font-medium text-[#27374D]">
                     Password
                   </label>
-                  <span className="text-sm text-indigo-400 cursor-pointer hover:text-indigo-300">
+                  <span className="text-sm text-[#27374D] cursor-pointer hover:text-[#171F35] underline">
                     Forgot password?
                   </span>
                 </div>
@@ -73,7 +73,7 @@ export default function Login() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full rounded-md bg-white/5 px-3 py-2 pr-3 text-white outline outline-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:outline-white/100"
+                    className="block w-full rounded-xl bg-white/5 px-3 py-2 pr-3 text-[#27374D] outline outline-1 outline-[#27374D] placeholder:text-[#27374D] focus:outline-2 focus:outline-[#27374D]"
                   />
                 </div>
               </div>
@@ -82,32 +82,32 @@ export default function Login() {
               <div className="mb-2">
                 <button
                   type="submit"
-                  className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400 transition"
+                  className="flex w-full justify-center rounded-xl bg-[#27374D] px-3 py-2 text-sm font-semibold text-white hover:bg-[#171F35] transition"
                 >
-                  Sign in
+                    Masuk
                 </button>
               </div>
 
               {/* Option Text */}
-              <p className="mt-3 text-center text-sm text-gray-400">Or</p>
+              <p className="mt-3 text-center text-sm text-[#27374D]">Atau Masuk Dengan</p>
 
             {/* Button Google Login */}
             <div className="mb-2">
                 <button
                   type="submit"
-                  className="flex w-full item-center justify-center gap-3 mt-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-black hover:bg-white-400 transition"
+                  className="flex w-full item-center justify-center gap-3 mt-3 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-[#27374D] hover:bg-[#F7F7F7] transition"
                 >
                     <FcGoogle size={20} />
-                    Login with Google Account
+                    Login dengan Akun Google
                 </button>
               </div>
             </form>
 
             {/* Footer */}
-            <p className="mt-10 text-center text-sm text-gray-400">
-              Not a member?{" "}
-              <span className="font-semibold text-indigo-400 hover:text-indigo-300 cursor-pointer">
-                Register
+            <p className="mt-5 text-center text-sm text-[#27374D]">
+              Belum punya akun?{" "}
+              <span className="font-bold text-[#27374D] hover:text-[#171F35] underline cursor-pointer">
+                Daftar Sekarang
               </span>
             </p>
           </div>
