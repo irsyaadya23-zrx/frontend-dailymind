@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import logoApp from "../assets/dailymind_logo.png";
 
 const Sidebar = () => {
   const menus = [
@@ -8,28 +9,25 @@ const Sidebar = () => {
     { name: 'To-Do List', path: "/todolist"},
     { name: 'Mood Tracker', path: "/moodtrack"},
     { name: 'Jurnal', path: "/journal" },
+    { name: 'Exit', path: "/"}
   ];
 
   return (
     <aside style={sidebarStyle}>
-      <div style={logoStyle}>DailyMind</div>
-      
-      <ul style={{ listStyle: 'none', padding: 0 }}>
+      <div style={logoContainerStyle}>
+        <img src={logoApp} alt="DailyMind Logo" style={logoImageStyle} />
+      </div>
+      <ul style={{ listStyle: 'none', padding: 0, marginTop: '70px' }}>
         {menus.map((item) => (
-          <li key={item.name} style={menuItemStyle}>
-            <span style={{ marginRight: '10px' }}>{item.icon}</span>
+          <li key={item.name} style={{ marginBottom: '8px' }}>
             <Link to={item.path} style={menuItemStyle}>
+              <span style={{ marginRight: '10px' }}>{item.icon}</span>
               {item.name}
             </Link>
           </li>
         ))}
       </ul>
 
-      {/* Profile ditaruh di bawah Sidebar biasanya cakep */}
-      <div style={profileStyle}>
-        <div style={avatarStyle}>SR</div>
-        <span style={{ fontSize: '0.9rem' }}>Syiefa Rahma</span>
-      </div>
     </aside>
   );
 };
@@ -37,56 +35,47 @@ const Sidebar = () => {
 const sidebarStyle = {
   width: '240px',
   height: '100vh',
-  background: '#ffffff',
-  borderRight: '1px solid #eee',
-  position: 'fixed',
-  top: 0,
-  left: 0,
+  background: 'rgba(255, 255, 255, 0.15)', // Transparansi liquid
+  backdropFilter: 'blur(10px) saturate(180%)', // Efek blur kaca
+  WebkitBackdropFilter: 'blur(10px) saturate(180%)',
+  borderRight: '1px solid rgba(255, 255, 255, 0.8)',
+  borderRadius: '0 30px 30px 0',
+  boxShadow: '8px 0 32px rgba(31, 38, 135, 0.2), inset 0 4px 20px rgba(255, 255, 255, 0.3)',
   padding: '20px',
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
+  position: 'sticky',
+  top: 0,
+  left: 0,
+  zIndex: 50
 };
 
-const logoStyle = {
-  fontSize: '1.5rem',
-  fontWeight: 'bold',
-  color: '#4A90E2',
+const logoContainerStyle = {
   marginBottom: '40px',
-  textAlign: 'center'
+  display: 'flex',
+  justifyContent: 'center', // Agar logo di tengah secara horizontal
+  alignItems: 'center',
+  paddingTop: '10px',
+  width: '100%',
+};
+
+const logoImageStyle = {
+  height: '60px',
+  width: 'auto',
+  maxWidth: '100%',
+  display: 'block',
 };
 
 const menuItemStyle = {
   padding: '12px 15px',
-  marginBottom: '8px',
   borderRadius: '8px',
-  cursor: 'pointer',
-  color: '#555',
+  color: '#1F2A44',
+  textDecoration: 'none',
   fontWeight: '500',
+  display: 'flex',
+  alignItems: 'center',
   transition: '0.2s',
-  display: 'flex',
-  alignItems: 'center'
-};
-
-const profileStyle = {
-  marginTop: 'auto', // Dorong ke paling bawah sidebar
-  paddingTop: '20px',
-  borderTop: '1px solid #eee',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '10px'
-};
-
-const avatarStyle = {
-  width: '30px',
-  height: '30px',
-  borderRadius: '50%',
-  background: '#4A90E2',
-  color: 'white',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  fontSize: '0.7rem',
-  fontWeight: 'bold'
+  marginTop: '20px'
 };
 
 export default Sidebar;
