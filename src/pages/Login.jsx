@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import logo from "../assets/dailymind_logo.png"
 import { login } from "../AuthService"
 import { FcGoogle } from "react-icons/fc"
+import { Link } from "react-router-dom"
 
 export default function Login() {
   const [email, setEmail] = useState("")
@@ -106,9 +107,9 @@ export default function Login() {
             {/* Footer */}
             <p className="mt-5 text-center text-sm text-[#27374D]">
               Belum punya akun?{" "}
-              <span className="font-bold text-[#27374D] hover:text-[#171F35] underline cursor-pointer">
-                Daftar Sekarang
-              </span>
+              <Link
+                to="/register"
+                className="text-sm text-[#27374D] font-bold underline cursor-pointer">Daftar Sekarang</Link>
             </p>
           </div>
         </div>
