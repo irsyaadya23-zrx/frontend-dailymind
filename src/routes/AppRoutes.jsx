@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
 import MoodTrack from "../pages/MoodTrack";
@@ -14,7 +14,6 @@ import AuthLayout from "../layouts/AuthLayout";
 
 export default function AppRoutes() {
   return (
-    <BrowserRouter>
       <Routes>
         {/* DEFAULT */}
         <Route path="/" element={<Login />} />
@@ -40,6 +39,5 @@ export default function AppRoutes() {
         {/* </Route> */}
 
       </Routes>
-    </BrowserRouter>
   );
 }
