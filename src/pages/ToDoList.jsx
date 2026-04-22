@@ -20,12 +20,15 @@ export default function ToDoList() {
             <h2 className="text-xl font-semibold text-[#00FF00]">0</h2>
           </div>
         </div>
-        <div className="w-full h-31 flex justify-space-between items-center bg-white rounded-xl p-8 gap-2">
-          <input
-            type="text"
-            placeholder="Tambah tugasmu disini"
-            className="h-[100%] w-[100%] outline-2 outline-[#000000]/30 rounded-xl text-[#000000]/30 p-3 focus:outline-[#09EB00CC]"></input>
-            <button className="w-34 h-[100%] bg-[#ABE3A9] text-white rounded-xl">Tambah</button>
+        <div class="min-h-[80px] w-full flex flex-col gap-4 justify-space-between bg-white rounded-2xl p-6">
+          <div className="flex justify-space-between items-center gap-3">
+            <input
+              type="text"
+              placeholder="Tambah tugasmu di"
+              className="peer w-full rounded-xl text-md text-[#000000] p-2 outline-2 outline-[#000000]/30 focus:outline-[#09EB00CC]">
+            </input>
+            <button className="w-34 h-[100%] bg-[#ABE3A9] text-white rounded-xl shadow-md transition-colors duration-300 peer-focus:bg-[#09EB00CC]">Tambah</button>
+          </div>  
         </div>
       </div>
     </div>
