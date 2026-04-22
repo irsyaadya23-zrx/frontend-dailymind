@@ -10,7 +10,7 @@ export default function MoodTrack() {
     data: [0, 0, 0, 0, 0, 0, 0] // Placeholder awal
   }]);
 
-  const [daysLabels, setDaysLabels] = useState(['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']);
+  const [daysLabels, setDaysLabels] = useState(['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']);
 
   // 1. Fungsi Fetch Data menggunakan useCallback agar stabil
   const fetchUserMood = useCallback(async () => {
@@ -136,7 +136,7 @@ export default function MoodTrack() {
 
       {/* Input Mood Section */}
       <div className="bg-white rounded-[2rem] p-10 shadow-sm border border-slate-100 text-center">
-        <h3 className="text-xl font-bold text-slate-700 mb-10">How Your Mood Today?</h3>
+        <h3 className="text-2xl font-bold text-slate-700 mb-10">How Your Mood Today?</h3>
         
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {moodButtons.map((mood) => (
@@ -157,7 +157,7 @@ export default function MoodTrack() {
 
       {/* Riwayat Mood Table/List Placeholder */}
       <div className="mt-10 bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100">
-        <h3 className="font-bold text-slate-700 mb-4 px-2">Riwayat Mood</h3>
+        <h3 className="font-bold text-2xl text-slate-700 mb-4 px-2">Riwayat Mood</h3>
         <div className="border-t border-slate-50 pt-4 px-2">
           <p className="text-slate-400 text-sm italic">
             Menampilkan data 7 hari terakhir berdasarkan aktivitas akun Anda.
