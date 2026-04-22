@@ -68,7 +68,7 @@ export default function Pomodoro() {
               setIsRunning(false);
             }}
             className={`px-4 py-2 rounded-full font-semibold w-[200px] h-[42px] ${
-              mode === "work" ? "bg-red-400 text-white" : "bg-gray-200"
+              mode === "work" ? "bg-red-400 hover:bg-[#C91414] text-white" : "bg-gray-200 hover:bg-[#A8A8A8]"
             }`}
           >
             Kerja (25 Menit)
@@ -81,7 +81,7 @@ export default function Pomodoro() {
               setIsRunning(false);
             }}
             className={`px-4 py-2 rounded-full w-[200px] h-[42px] ${
-              mode === "break" ? "bg-[#8AE847] text-white" : "bg-gray-200"
+              mode === "break" ? "bg-[#8AE847] text-white" : "bg-gray-200 hover:bg-[#A8A8A8]"
             }`}
           >
             Istirahat (5 Menit)
@@ -126,7 +126,7 @@ export default function Pomodoro() {
           <button
             onClick={() => setIsRunning(true)}
             className={`px-6 py-2 text-white font-bold rounded-xl w-[152px] h-[52px] shadow ${
-              mode === "work" ? "bg-[#FF533D]" : "bg-[#8AE847]"
+              mode === "work" ? "bg-[#FF533D] hover:bg-[#C91414]" : "bg-[#8AE847] hover:bg-[#26BA16]"
             }`}
           >
             Mulai
@@ -137,7 +137,7 @@ export default function Pomodoro() {
               setIsRunning(false);
               setTimeLeft(mode === "work" ? WORK_TIME : BREAK_TIME);
             }}
-            className="px-6 py-2 bg-gray-200 rounded-xl w-[152px] h-[52px] shadow"
+            className="px-6 py-2 bg-gray-200 hover:bg-[#A8A8A8] rounded-xl w-[152px] h-[52px] shadow"
           >
             Reset
           </button>
