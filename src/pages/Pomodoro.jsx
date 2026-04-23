@@ -1,13 +1,35 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import alarmSound from "../assets/alarm.mp3"
 
 export default function Pomodoro() {
-  const WORK_TIME = 25 * 60;
-  const BREAK_TIME = 5 * 60;
+  const WORK_TIME = 0.10 * 60;
+  const BREAK_TIME = 0.10 * 60;
 
   const [mode, setMode] = useState("work");
   const [timeLeft, setTimeLeft] = useState(WORK_TIME);
   const [isRunning, setIsRunning] = useState(false);
-  const [sessions, setSessions] = useState(0);
+
+  const hasCounted = useRef(false);
+
+  const alarmRef = useRef(null);
+
+  useEffect(() => {
+    alarmRef.current = new Audio(alarmSound);
+  }, []);
+
+  const [sessions, setSessions] = useState(() => {
+  const today = new Date().toLocaleDateString();
+  const lastDate = localStorage.getItem("lastDate");
+
+  if (lastDate !== today) {
+    localStorage.setItem("lastDate", today);
+    localStorage.setItem("sessionsCount", "0");
+    return 0;
+  }
+
+  const savedSessions = localStorage.getItem("sessionsCount");
+  return savedSessions ? parseInt(savedSessions) : 0;
+  });
 
   // Logika Waktu
   useEffect(() => {
@@ -17,14 +39,40 @@ export default function Pomodoro() {
     setTimeLeft((prev) => {
       if (prev === 1) {
 
+        alarmRef.current?.play();
+
+        setIsRunning(false);
+
         if (mode === "work") {
-          setSessions((s) => s + 1);
-          setMode("break");
-          return BREAK_TIME;
+
+          if (!hasCounted.current) {
+            setSessions((s) => s + 1);
+            hasCounted.current = true;
+          }
+
+          setTimeout(() => {
+            setMode("break");
+            setTimeLeft(BREAK_TIME);
+
+            setIsRunning(true);
+          }, 5000);
+
+          return 0;
+
         } else {
-          setMode("work");
-          return WORK_TIME;
+          setTimeout(() => {
+            setMode("work");
+            setTimeLeft(WORK_TIME);
+
+            setIsRunning(false);
+          }, 5000);
+
+          return 0;
         }
+      }
+
+      if (prev > 1) {
+        hasCounted.current = false;
       }
 
       return prev - 1;
@@ -47,6 +95,11 @@ export default function Pomodoro() {
   const circumference = 2 * Math.PI * radius;
   const progress = timeLeft / TOTAL;
   const offset = circumference * (1 - progress);
+
+  // Simpan ke localStorage tiap sessions nambah
+  useEffect(() => {
+    localStorage.setItem("sessionsCount", sessions);
+  }, [sessions])
 
   return (
     <div className="flex flex-col min-h-full gap-8 w-full">
@@ -124,12 +177,12 @@ export default function Pomodoro() {
         {/* Buttons */}
         <div className="flex justify-center gap-4">
           <button
-            onClick={() => setIsRunning(true)}
+            onClick={() => setIsRunning(!isRunning)}
             className={`px-6 py-2 text-white font-bold rounded-xl w-[152px] h-[52px] shadow ${
               mode === "work" ? "bg-[#FF533D] hover:bg-[#C91414]" : "bg-[#8AE847] hover:bg-[#26BA16]"
             }`}
           >
-            Mulai
+            {isRunning ? "Pause" : "Mulai"}
           </button>
 
           <button

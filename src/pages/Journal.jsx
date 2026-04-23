@@ -33,13 +33,13 @@ export default function Journal() {
   const headerColors = ["bg-[#CDF4FF] border-[#0592FF]", "bg-[#FFEEDB] border-[#FF7B4F]", "bg-[#FFFBCC] border-[#FFE100]", "bg-[#EAFCDC] border-[#5ACC4B]"];
 
   return (
-    <div className="flex justify-center items-center">
-      <div className="flex flex-col h-screen gap-12 w-full">
+    <div className="flex justify-center">
+      <div className="flex flex-col min-h-screen gap-12 w-full">
         <div className="h-16 w-screen text-left p-2 m-0">
           <h1 className="font-bold text-4xl">Jurnal</h1>
           <p className="font-medium text-xl">Tulis dan lihat semua catatan jurnal mu.</p>
         </div>
-        <div class="min-h-[100px] w-full flex flex-col gap-4 justify-space-between bg-white rounded-2xl p-6">
+        <div className="min-h-[100px] w-full flex flex-col gap-4 justify-space-between bg-white rounded-2xl p-6">
           <label className="font-bold text-2xl">Tulis Jurnal Baru</label>
           <div className="flex justify-space-between items-center gap-3">
             <input
