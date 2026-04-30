@@ -11,12 +11,13 @@ import Admin from "../pages/Admin";
 import ProtectedRoute from "../routes/ProtectedRoute";
 import MainLayout from "../layouts/MainLayout";
 import AuthLayout from "../layouts/AuthLayout";
+import LandingPage from "../pages/LandingPage";
 
 export default function AppRoutes() {
   return (
       <Routes>
         {/* DEFAULT */}
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<LandingPage />} />
 
         {/* PUBLIC */}
         <Route element={<AuthLayout />} >
