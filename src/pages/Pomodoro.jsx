@@ -102,7 +102,7 @@ export default function Pomodoro() {
   }, [sessions])
 
   return (
-    <div className="flex flex-col min-h-full gap-8 w-full">
+    <div className="flex flex-col min-h-full gap-8 p-8 w-full">
       <div className="h-16 w-screen text-left p-2 m-0">
         <h1 className="font-bold text-4xl">Pomodoro Timer</h1>
         <p className="font-medium text-xl">Tingkatkan produktivitas dengan pomodoro</p>
