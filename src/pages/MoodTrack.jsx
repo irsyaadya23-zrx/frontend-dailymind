@@ -122,7 +122,7 @@ export default function MoodTrack() {
   ];
 
   return (
-    <div className=" md:p-10 w-full">
+    <div className=" md:p-10 w-full p-8">
       {/* Header */}
       <div className="mb-8">
         <h2 className="text-3xl font-extrabold text-slate-800">Mood Tracker</h2>

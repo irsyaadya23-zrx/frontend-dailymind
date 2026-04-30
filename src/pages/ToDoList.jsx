@@ -51,7 +51,7 @@ export default function ToDoList() {
   const progressPercent = totalTugas === 0 ? 0 : Math.round((completedCount / totalTugas) * 100);
 
   return (
-    <div className="flex justify-center items-center p-4">
+    <div className="flex justify-center items-center p-8">
       <div className="flex flex-col min-h-screen gap-8 w-full">
         
         <motion.header initial={{ opacity: 0 }} animate={{ opacity: 1 }}>

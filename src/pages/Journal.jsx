@@ -33,7 +33,7 @@ export default function Journal() {
   const headerColors = ["bg-[#CDF4FF] border-[#0592FF]", "bg-[#FFEEDB] border-[#FF7B4F]", "bg-[#FFFBCC] border-[#FFE100]", "bg-[#EAFCDC] border-[#5ACC4B]"];
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center p-8">
       <div className="flex flex-col min-h-screen gap-12 w-full">
         <div className="h-16 w-screen text-left p-2 m-0">
           <h1 className="font-bold text-4xl">Jurnal</h1>
