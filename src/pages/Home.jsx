@@ -73,7 +73,7 @@ useEffect(() => {
             {[...Array(15)].map((_, i) => (
               <div key={i} className="bg-white/90 p-8 rounded-[35px] shadow-sm border border-white/20 transition-all duration-300 hover:shadow-lg">
                 <p className="text-[#1F2A44]/80 leading-relaxed text-[15px] font-medium">
-                   {i + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit quisque faucibus ex sapien vitae. Pellentesque sem placerat in id cursus mi pretium tellus duis. Convallis tempus leo eu aenean. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit quisque faucibus ex sapien vitae. Pellentesque sem placerat in id cursus mi pretium tellus duis. Convallis tempus leo eu aenean. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 </p>
               </div>
             ))}
