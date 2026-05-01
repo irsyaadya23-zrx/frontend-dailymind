@@ -27,15 +27,15 @@ const Feedback = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
-          <p className="text-slate-500 text-sm mb-1">Total Feedback</p>
+          <p className="text-slate-800 font-bold text-sm mb-1">Total Feedback</p>
           <p className="text-3xl font-bold text-slate-800">0</p>
         </div>
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
-          <p className="text-slate-500 text-sm mb-1">Rating Rata - Rata</p>
+          <p className="text-slate-800 font-bold 00 text-sm mb-1">Rating Rata - Rata</p>
           <p className="text-3xl font-bold text-yellow-500">0.0 ⭐</p>
         </div>
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
-          <p className="text-slate-500 text-sm mb-1">Feedback Bulan Ini</p>
+          <p className="text-slate-800 font-bold text-sm mb-1">Feedback Bulan Ini</p>
           <p className="text-3xl font-bold text-slate-800">0</p>
         </div>
       </div>
@@ -54,7 +54,7 @@ const Feedback = () => {
                   className={`flex flex-col items-center justify-center p-6 rounded-xl border-2 transition-all duration-200 ${
                     selectedCategory === cat.id 
                     ? cat.activeClass 
-                    : 'bg-slate-100 border-transparent text-slate-600 hover:bg-slate-200'
+                    : 'bg-gray-300 border-transparent text-slate-600 hover:bg-slate-200'
                   }`}
                 >
                   <img src={cat.icon} alt={cat.label} className="w-8 h-12 mb-3 object-contain" />
