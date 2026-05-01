@@ -125,8 +125,8 @@ export default function MoodTrack() {
     <div className=" md:p-10 w-full p-8">
       {/* Header */}
       <div className="mb-8">
-        <h2 className="text-3xl font-extrabold text-slate-800">Mood Tracker</h2>
-        <p className="text-slate-500">Lacak dan pahami suasana hatimu setiap hari</p>
+        <h2 className="text-4xl font-extrabold text-slate-800">Mood Tracker</h2>
+        <p className="text-gray-700 font-semibold">Lacak dan pahami suasana hatimu setiap hari</p>
       </div>
 
       {/* Main Chart Card */}

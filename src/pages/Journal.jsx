@@ -37,7 +37,7 @@ export default function Journal() {
       <div className="flex flex-col min-h-screen gap-12 w-full">
         <div className="h-16 w-screen text-left p-2 m-0">
           <h1 className="font-bold text-4xl">Jurnal</h1>
-          <p className="font-medium text-xl">Tulis dan lihat semua catatan jurnal mu.</p>
+          <p className="text-gray-700 font-semibold">Tulis dan lihat semua catatan jurnal mu.</p>
         </div>
         <div className="min-h-[100px] w-full flex flex-col gap-4 justify-space-between bg-white rounded-2xl p-6">
           <label className="font-bold text-2xl">Tulis Jurnal Baru</label>

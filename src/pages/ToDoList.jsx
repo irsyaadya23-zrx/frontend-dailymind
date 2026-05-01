@@ -51,12 +51,12 @@ export default function ToDoList() {
   const progressPercent = totalTugas === 0 ? 0 : Math.round((completedCount / totalTugas) * 100);
 
   return (
-    <div className="flex justify-center items-center p-8">
+    <div className="flex justify-center items-center p-10">
       <div className="flex flex-col min-h-screen gap-8 w-full">
         
         <motion.header initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <h1 className="font-bold text-4xl">To-Do-List</h1>
-          <p className="text-gray-500">Kelola tugasmu berdasarkan deadline.</p>
+          <p className="text-gray-700 font-semibold">Kelola tugasmu berdasarkan deadline.</p>
         </motion.header>
 
         {/* STATS BOXES (Tetap sesuai desainmu) */}

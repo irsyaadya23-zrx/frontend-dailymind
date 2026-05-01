@@ -21,7 +21,7 @@ const Feedback = () => {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-slate-800">Feedback</h1>
-        <p className="text-slate- font-semibold">Sampaikan pendapat, saran, atau laporan mu</p>
+        <p className="text-gray-700 font-semibold">Sampaikan pendapat, saran, atau laporan mu</p>
       </div>
 
       {/* Stats Cards */}

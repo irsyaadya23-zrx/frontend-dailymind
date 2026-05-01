@@ -10,12 +10,12 @@ const Home = () => {
       }}
     >
       {/* AREA UTAMA (Langsung nempel ke Sidebar yang sudah kamu punya) */}
-      <div className="flex-1 flex flex-col pt-0 h-screen overflow-hidden ">
+      <div className="flex-1 flex flex-col pt-0 h-screen overflow-hidden">
         
         {/* --- HEADER FIXED (Judul, Input, & Mood Streak) --- */}
         <div className="flex gap-8 mb-2 flex-shrink-0 items-center border-b-2 border-white/90 pb-5 bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC]">
           {/* Kolom Judul & Input Mood */}
-          <div className="flex-[2.5] ml-8">
+          <div className="flex-[2.5] ml-10">
             <h1 className="text-[42px] font-black text-[#1F2A44] font-manrope tracking-tight mb-0 mt-0 leading-tight">
               How Is Your Mood Today?
             </h1>
@@ -47,7 +47,7 @@ const Home = () => {
         <div className="flex gap-8 flex-1 overflow-hidden pb-0">
           
           {/* KOLOM TENGAH (Scrollable Lorem Ipsum 15x) */}
-          <div className="flex-[2.5] overflow-y-auto pr-4 custom-scrollbar space-y-6 ml-8">
+          <div className="flex-[2.5] overflow-y-auto pr-4 custom-scrollbar space-y-6 ml-10">
             {[...Array(15)].map((_, i) => (
               <div key={i} className="bg-white/90 p-8 rounded-[35px] shadow-sm border border-white/20 transition-all duration-300 hover:shadow-lg">
                 <p className="text-[#1F2A44]/80 leading-relaxed text-[15px] font-medium">
