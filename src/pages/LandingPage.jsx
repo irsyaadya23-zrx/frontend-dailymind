@@ -37,7 +37,7 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen font-sans scroll-smooth relative">
       <section className="min-h-screen bg-gradient-to-b from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC]">
-      {/* 1. NAVBAR - Floating Navigation */} 
+      {/* NAVBAR */} 
       <nav className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
         <div className="bg-blue-400/40 backdrop-blur-3xl border border-white/40 px-8 py-3 rounded-full flex items-center justify-between w-full max-w-5xl shadow-sm">
           <div className="flex items-center gap-3">
@@ -64,7 +64,7 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* 2. HERO SECTION */}
+      {/* HERO SECTION */}
       <section id="home" className="pt-30 pb-20 px-6 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between min-h-screen">
         <div className="md:w-1/2 pt-30">
           <h1 className="text-6xl font-bold text-[#1F2A44] mb-6 ml-5">Daily Mind</h1>
@@ -84,7 +84,6 @@ const LandingPage = () => {
         {/* Placeholder for Image */}
         <div className="md:w-4/12 mt-20 md:mt-5 mr-10">
           <div className="w-full aspect-square bg-[#D9D9D9] rounded-3xl shadow-xl flex items-center justify-center text-gray-400">
-            {/* Taruh Gambar Hero Kamu di sini */}
             [IMAGE PLACEHOLDER]
           </div>
         </div>
@@ -92,7 +91,7 @@ const LandingPage = () => {
     </section>
   
 
-      {/* 3. FEATURES SECTION */}
+      {/* FEATURES SECTION */}
       <section id="fitur" className="py-24 px-6 max-w-7xl mx-auto text-center bg-gradient-to-b from-[#E0C3FC] to-[#C2E9FB]">
         <h2 className="text-4xl md:text-5xl font-bold text-[#1F2A44] mb-4">Semua yang kamu butuhkan</h2>
         <p className="text-[#4A5568] text-lg mb-16">Fitur lengkap untuk mendukung keseharian dan produktivitas kamu setiap hari</p>
@@ -124,7 +123,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* 4. CTA SECTION */}
+      {/* CTA SECTION */}
       <section id="tentang" className="py-32 px-6 flex justify-center bg-gradient-to-b from-[#C2E9FB] to-[#A1C4FD]">
         <div className="bg-white/40 backdrop-blur-lg border border-white/50 w-full max-w-5xl rounded-[60px] py-20 px-10 text-center shadow-xl">
           <h2 className="text-4xl md:text-6xl font-bold text-[#1F2A44] mb-6">Mulai Perjalananmu Hari Ini</h2>

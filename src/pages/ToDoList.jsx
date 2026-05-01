@@ -18,12 +18,14 @@ export default function ToDoList() {
   });
 
   const [inputValue, setInputValue] = useState("");
-  // Set tanggal default = hari ini
+  // Tanggal default = hari ini
   const [deadline, setDeadline] = useState(new Date().toISOString().split('T')[0]);
 
   useEffect(() => {
     localStorage.setItem('dailyMind_todos', JSON.stringify(todos));
     localStorage.setItem('dailyMind_count', completedCount.toString());
+
+    window.dispatchEvent(new Event("todosUpdated"));
   }, [todos, completedCount]);
 
   const handleAddTodo = () => {
@@ -34,7 +36,7 @@ export default function ToDoList() {
       deadline: deadline, // Simpan tanggal deadline
       isChecking: false
     };
-    // Urutkan otomatis: yang paling dekat deadlinenya di atas
+    // Priority
     setTodos([...todos, newTodo].sort((a, b) => new Date(a.deadline) - new Date(b.deadline)));
     setInputValue("");
   };
