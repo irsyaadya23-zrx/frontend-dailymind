@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 
 export default function Journal() {
-  // Taruh di dalam function Journal()
   const [entries, setEntries] = useState(() => {
     const saved = localStorage.getItem('dailyMind_jurnal');
     return saved ? JSON.parse(saved) : [];
   });
   const [inputText, setInputText] = useState("");
 
-  // Simpan ke local storage tiap ada perubahan
+  // Simpan ke local storage
   useEffect(() => {
     localStorage.setItem('dailyMind_jurnal', JSON.stringify(entries));
   }, [entries]);

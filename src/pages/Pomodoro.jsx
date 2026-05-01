@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import alarmSound from "../assets/alarm.mp3"
 
 export default function Pomodoro() {
-  const WORK_TIME = 0.10 * 60;
-  const BREAK_TIME = 0.10 * 60;
+  const WORK_TIME = 25 * 60;
+  const BREAK_TIME = 5 * 60;
 
   const [mode, setMode] = useState("work");
   const [timeLeft, setTimeLeft] = useState(WORK_TIME);

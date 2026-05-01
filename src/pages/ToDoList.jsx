@@ -88,7 +88,7 @@ export default function ToDoList() {
             placeholder="Ketik tugas baru..."
           />
           
-          {/* Calendar Deadline */}
+          {/* Kalender Deadline */}
           <input 
             type="date"
             value={deadline}
