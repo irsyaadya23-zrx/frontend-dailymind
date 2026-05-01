@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export default function Admin() {
   const API = "http://localhost:3000";
@@ -11,13 +11,13 @@ export default function Admin() {
   const [newWord, setNewWord] = useState("");
 
   // ================= FETCH =================
-  const fetchUsers = async () => {
-    const res = await fetch(
-      `${API}/users${search ? `?id=${search}` : ""}`
-    );
-    const data = await res.json();
-    setUsers(data);
-  };
+  const fetchUsers = useCallback(async () => {
+  const res = await fetch(
+    `${API}/users${search ? `?id=${search}` : ""}`
+  );
+  const data = await res.json();
+  setUsers(data);
+  }, [search]);
 
   const fetchFeedback = async () => {
     const res = await fetch(`${API}/feedback`);
@@ -32,12 +32,23 @@ export default function Admin() {
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, [search]);
+    const fetchData = async () => {
+      const res = await fetch(
+        `${API}/users${search ? `?id=${search}` : ""}`
+      );
+      const data = await res.json();
+      setUsers(data);
+    };
+
+  fetchData();
+}, [search]);
 
   useEffect(() => {
-    fetchFeedback();
-    fetchWords();
+  const init = async () => {
+    await fetchFeedback();
+    await fetchWords();
+  };
+  init();
   }, []);
 
   // ================= ACTION =================
