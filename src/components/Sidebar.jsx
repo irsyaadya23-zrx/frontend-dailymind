@@ -94,7 +94,7 @@ const Sidebar = () => {
 
 const sidebarStyle = {
   width: '180px',
-  height: '832px',
+  height: '100vh',
   background: 'linear-gradient(180deg, rgba(230, 240, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%)',
   backdropFilter: 'blur(15px)',
   WebkitBackdropFilter: 'blur(15px)',
@@ -116,12 +116,12 @@ const logoContainerStyle = {
   width: '100%',
 };
 
-const logoTextStyle = {
-  fontSize: '20px',
-  fontWeight: 'bold',
-  color: '#4A5568',
-  letterSpacing: '0.5px'
-};
+// const logoTextStyle = {
+//   fontSize: '20px',
+//   fontWeight: 'bold',
+//   color: '#4A5568',
+//   letterSpacing: '0.5px'
+// };
 
 const logoImageStyle = {
   height: '50px',

@@ -13,6 +13,7 @@ import LandingPage from "../pages/LandingPage";
 import ProtectedRoute from "../routes/ProtectedRoute";
 import MainLayout from "../layouts/MainLayout";
 import AuthLayout from "../layouts/AuthLayout";
+import AdminLayout from "../layouts/AdminLayout"
 
 export default function AppRoutes() {
      return (
@@ -36,6 +37,8 @@ export default function AppRoutes() {
             <Route path="/todolist" element={<ToDoList />} />
             <Route path="/journal" element={<Journal />} />
             <Route path="/feedback" element={<Feedback />} />
+        </Route>
+        <Route element={<AdminLayout />} >
             <Route path="/Admin" element={<Admin />} />
         </Route>
       </Routes>

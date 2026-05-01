@@ -76,7 +76,7 @@ export default function Admin() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC]">
+    <div className="min-h-screen bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC]">
 
       {/* HEADER */}
       <div className="h-[167px] p-8 flex items-center border-b-[1px] border-white bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC]">
@@ -87,28 +87,28 @@ export default function Admin() {
 
         {/* STAT */}
         <div className="w-full flex justify-between gap-16">
-          <div className="h-[200px] w-full bg-white p-4 rounded-2xl shadow flex flex-col items-center justify-center">
-            <p className="text-2xl">Total Pengguna</p>
-            <h2 className="text-3xl font-bold">{users.length}</h2>
+          <div className="h-[133px] w-full bg-white p-4 rounded-2xl shadow flex flex-col items-center justify-center">
+            <p className="text-xl">Total Pengguna</p>
+            <h2 className="text-2xl font-bold">{users.length}</h2>
           </div>
 
-          <div className="h-[200px] w-full bg-white p-4 rounded-2xl shadow flex flex-col items-center justify-center">
-            <p className="text-2xl">Feedback Belum Dibaca</p>
-            <h2 className="text-3xl font-bold">
+          <div className="h-[133px] w-full bg-white p-4 rounded-2xl shadow flex flex-col items-center justify-center">
+            <p className="text-xl">Feedback Belum Dibaca</p>
+            <h2 className="text-2xl font-bold">
               {feedback.filter(f => f.status === "Unread").length}
             </h2>
           </div>
 
-          <div className="h-[200px] w-full bg-white p-4 rounded-2xl shadow flex flex-col items-center justify-center">
-            <p className="text-2xl">Total Jurnal Anonim</p>
-            <h2 className="text-3xl font-bold">0</h2>
+          <div className="h-[133px] w-full bg-white p-4 rounded-2xl shadow flex flex-col items-center justify-center">
+            <p className="text-xl">Total Jurnal Anonim</p>
+            <h2 className="text-2xl font-bold">0</h2>
           </div>
         </div>
 
         {/* ================= USER MONITORING ================= */}
         <div className="bg-white rounded-2xl shadow overflow-hidden">
           <div className="bg-blue-200 text-center py-3 font-bold">
-            <h1 className="text-xl font-bold">User Monitoring</h1>
+            <h1 className="text-lg font-bold">User Monitoring</h1>
           </div>
 
           <div className="bg-gray-100 pt-0 pb-4 max-h-[300px] overflow-y-auto">
@@ -116,11 +116,11 @@ export default function Admin() {
               
               <thead className="bg-[#DBDBDB] sticky top-0 z-10">
                 <tr className="border-b border-gray-400">
-                  <th className="py-2 px-3 text-lg">ID</th>
-                  <th className="px-3 text-lg">Email</th>
-                  <th className="px-3 text-lg">Username</th>
-                  <th className="px-3 text-lg">Status</th>
-                  <th className="px-3 text-lg">Aksi</th>
+                  <th className="py-2 px-3 text-md">ID</th>
+                  <th className="px-3 text-md">Email</th>
+                  <th className="px-3 text-md">Username</th>
+                  <th className="px-3 text-md">Status</th>
+                  <th className="px-3 text-md">Aksi</th>
                 </tr>
               </thead>
 
@@ -158,7 +158,7 @@ export default function Admin() {
         {/* ================= FEEDBACK ================= */}
         <div className="bg-white rounded-2xl shadow overflow-hidden">
           <div className="bg-purple-200 text-center py-3">
-            <h1 className="text-xl font-bold">Laporan Feedback Pengguna</h1>
+            <h1 className="text-lg font-bold">Laporan Feedback Pengguna</h1>
           </div>
 
           <div className="bg-gray-100 pt-0 pb-4 max-h-[300px] overflow-y-auto">
@@ -166,10 +166,10 @@ export default function Admin() {
               
               <thead className="bg-[#DBDBDB] sticky top-0 z-10">
                 <tr className="border-b border-gray-400">
-                  <th className="py-2 px-3 text-lg">ID</th>
-                  <th className="px-3 text-lg">Kategori</th>
-                  <th className="px-3 text-lg">Pesan</th>
-                  <th className="px-3 text-lg">Status</th>
+                  <th className="py-2 px-3 text-md">ID</th>
+                  <th className="px-3 text-md">Kategori</th>
+                  <th className="px-3 text-md">Pesan</th>
+                  <th className="px-3 text-md">Status</th>
                 </tr>
               </thead>
 
@@ -195,7 +195,7 @@ export default function Admin() {
         {/* ================= SENSOR KATA ================= */}
         <div className="bg-white rounded-2xl shadow overflow-hidden">
           <div className="bg-blue-200 text-center py-3 font-bold">
-            <h1 className="text-xl font-bold">Sensor Kata</h1>
+            <h1 className="text-lg font-bold">Sensor Kata</h1>
           </div>
 
           <div className="bg-gray-100 p-4 flex gap-3">
@@ -226,7 +226,7 @@ export default function Admin() {
         {/* ================= SEARCH USER ================= */}
         <div className="bg-white rounded-2xl shadow overflow-hidden">
           <div className="bg-blue-200 text-center py-3 font-bold">
-            <h1 className="text-xl font-bold">Active/Banned</h1>
+            <h1 className="text-lg font-bold">Active/Banned</h1>
           </div>
 
           <div className="bg-gray-100 p-4 flex flex-col gap-4">
