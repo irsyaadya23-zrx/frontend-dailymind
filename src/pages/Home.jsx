@@ -23,7 +23,7 @@ const Home = () => {
               <input 
                 type="text" 
                 placeholder="Tulis Disini" 
-                className="w-full bg-white/60 backdrop-blur-md border border-white/40 py-2 px-8 rounded-full shadow-sm focus:outline-none text-[#1F2A44] font-medium mt-3"
+                className="w-full bg-white/60 backdrop-blur-md border border-white/40 py-2 px-8 rounded-full shadow-sm focus:outline-none text-[#bcbfc7] font-semibold mt-3"
               />
               <button className="mt-[6px] absolute right-5 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center border-2 border-[#1F2A44] rounded-full text-[#1F2A44] font-bold hover:bg-[#1F2A44] hover:text-white transition duration-300">
                 +
@@ -51,7 +51,7 @@ const Home = () => {
             {[...Array(15)].map((_, i) => (
               <div key={i} className="bg-white/90 p-8 rounded-[35px] shadow-sm border border-white/20 transition-all duration-300 hover:shadow-lg">
                 <p className="text-[#1F2A44]/80 leading-relaxed text-[15px] font-medium">
-                   {i + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit quisque faucibus ex sapien vitae. Pellentesque sem placerat in id cursus mi pretium tellus duis. Convallis tempus leo eu aenean. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit quisque faucibus ex sapien vitae. Pellentesque sem placerat in id cursus mi pretium tellus duis. Convallis tempus leo eu aenean. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 </p>
               </div>
             ))}
