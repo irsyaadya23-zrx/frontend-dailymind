@@ -6,8 +6,6 @@ import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter> {/* 2. Bungkus App pakai ini */}
       <App />
-    </BrowserRouter>
   </StrictMode>,
 )

@@ -8,13 +8,14 @@ import Journal from "../pages/Journal";
 import Feedback from "../pages/Feedback";
 import Register from "../pages/Register";
 import Admin from "../pages/Admin";
+import LandingPage from "../pages/LandingPage";
+
 import ProtectedRoute from "../routes/ProtectedRoute";
 import MainLayout from "../layouts/MainLayout";
 import AuthLayout from "../layouts/AuthLayout";
-import LandingPage from "../pages/LandingPage";
 
 export default function AppRoutes() {
-  return (
+     return (
       <Routes>
         {/* DEFAULT */}
         <Route path="/" element={<LandingPage />} />
@@ -37,8 +38,6 @@ export default function AppRoutes() {
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/Admin" element={<Admin />} />
         </Route>
-        {/* </Route> */}
-
       </Routes>
   );
 }
