@@ -6,18 +6,16 @@ const Home = () => {
     <div 
       className="min-h-screen font-inter flex flex-col h-screen overflow-hidden" 
       style={{
-        backgroundColor: '#E1F0FF',
-        backgroundImage: `radial-gradient(circle at 100% 50%, rgba(216, 180, 254, 0.4) 0%, rgba(225, 240, 255, 0) 50%)`,
-        backgroundAttachment: 'fixed'
+        background: 'bg-gradient-to-br  from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC]'
       }}
     >
       {/* AREA UTAMA (Langsung nempel ke Sidebar yang sudah kamu punya) */}
-      <div className="flex-1 flex flex-col pt-5 px-8 h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col pt-0 h-screen overflow-hidden ">
         
         {/* --- HEADER FIXED (Judul, Input, & Mood Streak) --- */}
-        <div className="flex gap-8 mb-8 flex-shrink-0 items-end">
+        <div className="flex gap-8 mb-2 flex-shrink-0 items-center border-b-2 border-white/90 pb-5 bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC]">
           {/* Kolom Judul & Input Mood */}
-          <div className="flex-[2.5]">
+          <div className="flex-[2.5] ml-8">
             <h1 className="text-[42px] font-black text-[#1F2A44] font-manrope tracking-tight mb-0 mt-0 leading-tight">
               How Is Your Mood Today?
             </h1>
@@ -34,7 +32,7 @@ const Home = () => {
           </div>
 
           {/* Card Mood Streak - Fixed di Header */}
-          <div className="w-64 shrink-0">
+          <div className="w-64 shrink-0 mr-8 mt-8">
             <div className="bg-[#1F2A44] p-7 rounded-[40px] text-white flex flex-col items-center shadow-xl transform transition hover:scale-105">
               <div className="flex items-center gap-3">
                 <span className="text-6xl font-black font-manrope">200</span>
@@ -46,10 +44,10 @@ const Home = () => {
         </div>
 
         {/* --- AREA BAWAH (Layout Split Scroll) --- */}
-        <div className="flex gap-8 flex-1 overflow-hidden pb-8">
+        <div className="flex gap-8 flex-1 overflow-hidden pb-0">
           
           {/* KOLOM TENGAH (Scrollable Lorem Ipsum 15x) */}
-          <div className="flex-[2.5] overflow-y-auto pr-4 custom-scrollbar space-y-6">
+          <div className="flex-[2.5] overflow-y-auto pr-4 custom-scrollbar space-y-6 ml-8">
             {[...Array(15)].map((_, i) => (
               <div key={i} className="bg-white/90 p-8 rounded-[35px] shadow-sm border border-white/20 transition-all duration-300 hover:shadow-lg">
                 <p className="text-[#1F2A44]/80 leading-relaxed text-[15px] font-medium">
@@ -60,7 +58,7 @@ const Home = () => {
           </div>
 
           {/* KOLOM KANAN (Fixed: Daily Mission & To-Do List) */}
-          <div className="w-64 flex-shrink-0 flex flex-col gap-6 h-full overflow-hidden">
+          <div className="w-64 flex-shrink-0 flex flex-col gap-6 h-full overflow-hidden mt-5 mr-8">
             {/* Daily Mission Card */}
             <div className="bg-white/40 backdrop-blur-md p-7 rounded-[20px] border border-white/40 shadow-sm">
               <h3 className="font-bold text-[#1F2A44] mt-[-20px] mb-3 text-center font-manrope text-lg">Daily Mission</h3>
