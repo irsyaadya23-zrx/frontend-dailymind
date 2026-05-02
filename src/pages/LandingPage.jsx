@@ -37,7 +37,7 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen font-sans scroll-smooth relative">
       <section className="min-h-screen bg-gradient-to-b from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC]">
-      {/* 1. NAVBAR - Floating Navigation */} 
+      {/* NAVBAR */} 
       <nav className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
         <div className="bg-blue-400/40 backdrop-blur-3xl border border-white/40 px-8 py-3 rounded-full flex items-center justify-between w-full max-w-5xl shadow-sm">
           <div className="flex items-center gap-3">
@@ -64,9 +64,15 @@ const LandingPage = () => {
         </div>
       </nav>
 
+<<<<<<< HEAD
+      {/* HERO SECTION */}
+      <section id="home" className="pt-30 pb-20 px-6 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between min-h-screen">
+        <div className="md:w-1/2 pt-30">
+=======
       {/* 2. HERO SECTION */}
       <section id="home" className="pt-50 pb-20 px-6 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between min-h-screen">
         <div className="md:w-full">
+>>>>>>> main
           <h1 className="text-6xl font-bold text-[#1F2A44] mb-6 ml-5">Daily Mind</h1>
           <p className="font-inter text-[#1F2A44] text-[20px] font-semibold leading-relaxed mb-10 max-w-lg opacity-80 ml-5">
             Tempat aman untuk menuangkan pikiran, melacak mood, dan dapat meningkatkan produktivitas. Semua dalam satu aplikasi yang tenang dan personal.
@@ -82,9 +88,14 @@ const LandingPage = () => {
         </div>
         
         {/* Placeholder for Image */}
+<<<<<<< HEAD
+        <div className="md:w-4/12 mt-20 md:mt-5 mr-10">
+          <div className="w-full aspect-square bg-[#D9D9D9] rounded-3xl shadow-xl flex items-center justify-center text-gray-400">
+=======
         <div className="md:w-5/12 mt-20 md:mt-5 mr-10">
           <div className="w-full aspect-square bg-[#D9D9D9] rounded-2xl shadow-xl flex items-center justify-center text-gray-400">
             {/* Taruh Gambar Hero Kamu di sini */}
+>>>>>>> main
             [IMAGE PLACEHOLDER]
           </div>
         </div>
@@ -92,9 +103,14 @@ const LandingPage = () => {
     </section>
   
 
+<<<<<<< HEAD
+      {/* FEATURES SECTION */}
+      <section id="fitur" className="py-24 px-6 max-w-7xl mx-auto text-center bg-gradient-to-b from-[#E0C3FC] to-[#C2E9FB]">
+=======
       {/* 3. FEATURES SECTION */}
       <section id="fitur" className="py-40 w-full bg-gradient-to-b from-[#E0C3FC] to-[#C2E9FB]">
         <div className="max-w-7xl mx-auto px-6 text-center">
+>>>>>>> main
         <h2 className="text-4xl md:text-5xl font-bold text-[#1F2A44] mb-4">Semua yang kamu butuhkan</h2>
         <p className="text-[#4A5568] text-lg font-semibold mb-16">Fitur lengkap untuk mendukung keseharian dan produktivitas kamu setiap hari</p>
         
@@ -126,8 +142,13 @@ const LandingPage = () => {
         </div>
       </section>
 
+<<<<<<< HEAD
+      {/* CTA SECTION */}
+      <section id="tentang" className="py-32 px-6 flex justify-center bg-gradient-to-b from-[#C2E9FB] to-[#A1C4FD]">
+=======
       {/* 4. CTA SECTION */}
       <section id="tentang" className="py-40 px-6 flex justify-center bg-gradient-to-b from-[#C2E9FB] to-[#A1C4FD]">
+>>>>>>> main
         <div className="bg-white/40 backdrop-blur-lg border border-white/50 w-full max-w-5xl rounded-[60px] py-20 px-10 text-center shadow-xl">
           <h2 className="text-4xl md:text-6xl font-bold text-[#1F2A44] mb-6">Mulai Perjalananmu Hari Ini</h2>
           <p className="text-[#1F2A44] text-lg md:text-xl mb-10 max-w-2xl mx-auto opacity-80">
