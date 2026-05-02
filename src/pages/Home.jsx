@@ -75,7 +75,7 @@ const Home = () => {
           <div className="w-64 shrink-0 mr-8 mt-8">
             <div className="bg-[#1F2A44] p-7 rounded-[40px] text-white flex flex-col items-center shadow-xl transform transition hover:scale-105">
               <div className="flex items-center gap-3">
-                <span className="text-6xl font-black font-manrope">200</span>
+                <span className="text-6xl font-black font-manrope">1</span>
                 <span className="text-4xl">🔥</span>
               </div>
               <p className="text-cyan-400 font-bold tracking-[0.2em] text-[10px] uppercase mt-1">Mood Streak</p>
