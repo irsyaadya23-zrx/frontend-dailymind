@@ -22,25 +22,18 @@ const Home = () => {
     setJournals(data);
   };
 
-  // EFFECT
   useEffect(() => {
+   const handleUpdate = () => {
+     loadTodos();
+     loadJournals();
+   };
 
-    const handleUpdate = () => {
-      loadTodos();
-      loadJournals(); // 🔥 ambil jurnal juga
-    };
+   window.addEventListener("dataUpdated", handleUpdate);
 
-    window.addEventListener("storage", handleUpdate);
-
-    return () => {
-      window.removeEventListener("storage", handleUpdate);
-    };
-  }, []);
-
-  // load awal
-  useEffect(() => {
-    loadJournals();
-  }, []);
+   return () => {
+     window.removeEventListener("dataUpdated", handleUpdate);
+   };
+  } , []);
 
   return (
     <div 
