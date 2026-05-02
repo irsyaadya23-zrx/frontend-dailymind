@@ -33,7 +33,7 @@ export default function ToDoList() {
     const newTodo = {
       id: Date.now(),
       text: inputValue,
-      deadline: deadline, // Simpan tanggal deadline
+      deadline: deadline,
       isChecking: false
     };
     // Priority

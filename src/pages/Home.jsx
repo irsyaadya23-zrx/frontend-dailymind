@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 const Home = () => {
 
-  // ================= TODOS =================
+  // TODOS
   const [todos, setTodos] = useState(() => {
     return JSON.parse(localStorage.getItem('dailyMind_todos')) || [];
   });
@@ -12,7 +12,7 @@ const Home = () => {
     setTodos(data);
   }
 
-  // ================= JOURNALS =================
+  // JOURNALS
   const [journals, setJournals] = useState(() => {
     return JSON.parse(localStorage.getItem('dailyMind_jurnal')) || [];
   });
@@ -22,7 +22,7 @@ const Home = () => {
     setJournals(data);
   };
 
-  // ================= EFFECT =================
+  // EFFECT
   useEffect(() => {
 
     const handleUpdate = () => {
@@ -56,7 +56,7 @@ const Home = () => {
         <div className="flex gap-8 mb-2 flex-shrink-0 items-center border-b-2 border-white/90 pb-5 bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC]">
           
           <div className="flex-[2.5] ml-10">
-            <h1 className="text-[42px] font-black text-[#1F2A44] font-manrope tracking-tight mb-0 mt-0 leading-tight">
+            <h1 className="text-[42px] text-[#1F2A44] font-['Coiny'] mb-0 mt-0 leading-tight">
               How Is Your Mood Today?
             </h1>
             <div className="flex items-center max-w-3xl mt-3">
@@ -86,7 +86,7 @@ const Home = () => {
         {/* MAIN CONTENT */}
         <div className="flex gap-8 flex-1 overflow-hidden pb-0">
           
-          {/* ================= KOLOM JURNAL ================= */}
+          {/* KOLOM JURNAL */}
           <div className="flex-[2.5] overflow-y-auto pr-4 custom-scrollbar space-y-6 ml-10 mt-5">
 
             {journals.length === 0 ? (
@@ -113,7 +113,7 @@ const Home = () => {
 
           </div>
 
-          {/* ================= SIDE ================= */}
+          {/* SIDE */}
           <div className="w-64 flex-shrink-0 flex flex-col gap-6 h-full overflow-hidden mt-5 mr-8">
 
             {/* Daily Mission */}

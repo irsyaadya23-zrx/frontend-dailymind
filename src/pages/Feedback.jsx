@@ -5,7 +5,6 @@ import KeluhanImg from '../assets/keluhan.png';
 import LainnyaImg from '../assets/lainnya.png';
 
 const Feedback = () => {
-  // State simpan kategori yang dipilih
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);

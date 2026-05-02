@@ -55,7 +55,7 @@ export default function Admin() {
   // Tampung pencarian user
   const [searchedUser, setSearchedUser] = useState(null);
 
-  // ================= ACTION: SEARCH USER =================
+  // ACTION: SEARCH USER
   const handleSearchUser = () => {
     if (search.trim() === "") {
       setSearchedUser(null);
@@ -120,7 +120,7 @@ export default function Admin() {
 
       <div className="mx-16 flex flex-col gap-6">
         
-        {/* ================= STAT CARDS ================= */}
+        {/* STAT CARDS */}
         <div className="flex gap-6">
           {[
             { label: "Total Pengguna", value: users.length },
@@ -134,7 +134,7 @@ export default function Admin() {
           ))}
         </div>
 
-        {/* ================= USER MONITORING ================= */}
+        {/* USER MONITORING */}
         <div className="bg-white rounded-3xl px-4 shadow-md border border-white overflow-hidden">
           <div className="bg-[#A1C4FD] text-black-700 text-center mt-3 py-3 font-bold rounded-tr-2xl rounded-tl-2xl">
             User Monitoring
@@ -168,7 +168,7 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* ================= FEEDBACK ================= */}
+        {/* FEEDBACK */}
         <div className="bg-white rounded-3xl px-4 shadow-md border border-white overflow-hidden">
           <div className="bg-[#E0C3FC] text-black-700 text-center mt-3 py-3 font-bold rounded-tr-2xl rounded-tl-2xl">
             Laporan Feedback Pengguna
@@ -197,7 +197,7 @@ export default function Admin() {
           </div>
         </div>
 
-        {/* ================= SENSOR KATA ================= */}
+        {/* SENSOR KATA */}
         <div className="bg-white rounded-3xl shadow-md p-6 border border-white">
           <div className="bg-[#B4D9FC] text-black-700 text-center py-2 rounded-lg font-bold mb-4">
             Sensor Kata
