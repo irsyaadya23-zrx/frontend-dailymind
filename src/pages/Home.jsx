@@ -2,27 +2,45 @@ import React, { useEffect, useState } from 'react';
 
 const Home = () => {
 
-const [todos, setTodos] = useState(() => {
-  return JSON.parse(localStorage.getItem('dailyMind_todos')) || [];
-});
+  // ================= TODOS =================
+  const [todos, setTodos] = useState(() => {
+    return JSON.parse(localStorage.getItem('dailyMind_todos')) || [];
+  });
 
-const loadTodos = () => {
-  const data = JSON.parse(localStorage.getItem('dailyMind_todos')) || [];
-  setTodos(data);
-}
+  const loadTodos = () => {
+    const data = JSON.parse(localStorage.getItem('dailyMind_todos')) || [];
+    setTodos(data);
+  }
 
-useEffect(() => {
+  // ================= JOURNALS =================
+  const [journals, setJournals] = useState(() => {
+    return JSON.parse(localStorage.getItem('dailyMind_jurnal')) || [];
+  });
 
-  const handleUpdate = () => {
-    loadTodos();
+  const loadJournals = () => {
+    const data = JSON.parse(localStorage.getItem('dailyMind_jurnal')) || [];
+    setJournals(data);
   };
 
-  window.addEventListener("todoUpdated", handleUpdate);
+  // ================= EFFECT =================
+  useEffect(() => {
 
-  return () => {
-    window.removeEventListener("todosUpdated", handleUpdate);
-  };
-}, []);
+    const handleUpdate = () => {
+      loadTodos();
+      loadJournals(); // 🔥 ambil jurnal juga
+    };
+
+    window.addEventListener("storage", handleUpdate);
+
+    return () => {
+      window.removeEventListener("storage", handleUpdate);
+    };
+  }, []);
+
+  // load awal
+  useEffect(() => {
+    loadJournals();
+  }, []);
 
   return (
     <div 
@@ -36,7 +54,7 @@ useEffect(() => {
         
         {/* HEADER */}
         <div className="flex gap-8 mb-2 flex-shrink-0 items-center border-b-2 border-white/90 pb-5 bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC]">
-          {/* Kolom Judul & Input Mood */}
+          
           <div className="flex-[2.5] ml-10">
             <h1 className="text-[42px] font-black text-[#1F2A44] font-manrope tracking-tight mb-0 mt-0 leading-tight">
               How Is Your Mood Today?
@@ -53,7 +71,7 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* Card Mood Streak */}
+          {/* Mood Streak */}
           <div className="w-64 shrink-0 mr-8 mt-8">
             <div className="bg-[#1F2A44] p-7 rounded-[40px] text-white flex flex-col items-center shadow-xl transform transition hover:scale-105">
               <div className="flex items-center gap-3">
@@ -68,20 +86,37 @@ useEffect(() => {
         {/* MAIN CONTENT */}
         <div className="flex gap-8 flex-1 overflow-hidden pb-0">
           
-          {/* KOLOM TENGAH (Scrollable Lorem Ipsum 15x) */}
-          <div className="flex-[2.5] overflow-y-auto pr-4 custom-scrollbar space-y-6 ml-10">
-            {[...Array(15)].map((_, i) => (
-              <div key={i} className="bg-white/90 p-8 rounded-[35px] shadow-sm border border-white/20 transition-all duration-300 hover:shadow-lg">
-                <p className="text-[#1F2A44]/80 leading-relaxed text-[15px] font-medium">
-                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Consectetur adipiscing elit quisque faucibus ex sapien vitae. Pellentesque sem placerat in id cursus mi pretium tellus duis. Convallis tempus leo eu aenean. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          {/* ================= KOLOM JURNAL ================= */}
+          <div className="flex-[2.5] overflow-y-auto pr-4 custom-scrollbar space-y-6 ml-10 mt-5">
+
+            {journals.length === 0 ? (
+              <div className="bg-white/90 p-8 rounded-[35px] shadow-sm border border-white/20">
+                <p className="text-gray-400 text-center">
+                  Belum ada jurnal
                 </p>
               </div>
-            ))}
+            ) : (
+              journals.map((item) => (
+                <div 
+                  key={item.id} 
+                  className="bg-white/90 p-8 rounded-[35px] shadow-sm border border-white/20 transition-all duration-300 hover:shadow-lg"
+                >
+                  <p className="text-[#1F2A44]/60 text-sm mb-2">
+                    {item.date}
+                  </p>
+                  <p className="text-[#1F2A44]/80 leading-relaxed text-[15px] font-medium">
+                    {item.content}
+                  </p>
+                </div>
+              ))
+            )}
+
           </div>
 
-          {/* SIDE CONTENT */}
+          {/* ================= SIDE ================= */}
           <div className="w-64 flex-shrink-0 flex flex-col gap-6 h-full overflow-hidden mt-5 mr-8">
-            {/* Daily Mission Card */}
+
+            {/* Daily Mission */}
             <div className="bg-white/40 backdrop-blur-md p-7 rounded-[20px] border border-white/40 shadow-sm">
               <h3 className="font-bold text-[#1F2A44] mt-[-20px] mb-3 text-center font-manrope text-lg">Daily Mission</h3>
               <div className="space-y-2">
@@ -91,16 +126,15 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* To-Do List Card */}
+            {/* To-Do */}
             <div className="h-[300px] bg-white p-7 rounded-[40px] shadow-sm flex flex-col border border-blue-50/50">
-  
               <h3 className="font-bold text-[#1F2A44] text-center mb-2 font-manrope text-lg mt-[-20px]">
                 To-Do List
               </h3>
 
               <ul className={`flex-1 overflow-y-auto custom-scrollbar text-[13px] font-inter font-medium leading-relaxed ${
                 todos.length === 0 ? "" : "list-disc pl-5 text-[#1F2A44]/80"
-                }`}>
+              }`}>
                 {todos.length === 0 ? (
                   <li className="text-center text-gray-400 text-sm list-none">
                     Belum ada todo
@@ -113,14 +147,13 @@ useEffect(() => {
                   ))
                 )}
               </ul>
-              
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
 
-      {/* Style Scrollbar Custom */}
+      {/* Scrollbar */}
       <style jsx>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 8px;
