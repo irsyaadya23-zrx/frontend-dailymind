@@ -8,6 +8,8 @@ const Feedback = () => {
   // State untuk menyimpan kategori yang dipilih
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
+  const [message, setMessage] = useState("");
 
   const categories = [
   { id: 'pujian', label: 'Pujian', icon: PujianImg, activeClass: 'bg-green-100 border-green-500 text-green-700' },
@@ -15,6 +17,33 @@ const Feedback = () => {
   { id: 'keluhan', label: 'Keluhan', icon: KeluhanImg, activeClass: 'bg-orange-100 border-orange-500 text-orange-700' },
   { id: 'lainnya', label: 'Lainnya', icon: LainnyaImg, activeClass: 'bg-blue-100 border-blue-500 text-blue-700' },
 ];
+
+const handleSubmit = () => {
+  if (!selectedCategory || rating === 0 || message.trim() === "") {
+    alert("Isi semua field dulu!");
+    return;
+  }
+
+  const newFeedback = {
+    id: "F" + Date.now(),
+    kategori: selectedCategory,
+    pesan: message,
+    rating: rating,
+    status: "Unread",
+  };
+
+  const existing = JSON.parse(localStorage.getItem("admin_feedback")) || [];
+  const updated = [newFeedback, ...existing];
+
+  localStorage.setItem("admin_feedback", JSON.stringify(updated));
+
+  // reset form
+  setSelectedCategory(null);
+  setRating(0);
+  setMessage("");
+
+  alert("Feedback berhasil dikirim!");
+};
 
   return (
     <div className="p-8">
@@ -66,19 +95,29 @@ const Feedback = () => {
 
           {/* Rating */}
           <div>
-            <p className="font-semibold text-slate-800 mb-2">Rating</p>
-            <div className="flex gap-1">
-              {[1, 2, 3, 4, 5].map((star) => (
+             <p className="font-semibold text-slate-800 mb-2">Rating</p>
+             
+             <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map((star) => {
+                const isActive = hover !== null ? star <= hover : star <= rating;
+                
+                return (
                 <button
-                  key={star}
-                  onClick={() => setRating(star)}
-                  className={`text-2xl ${star <= rating ? 'text-yellow-400' : 'text-slate-300'}`}
+                 key={star}
+                 type="button"
+                 onClick={() => setRating(star)}
+                 onMouseEnter={() => setHover(star)}
+                 onMouseLeave={() => setHover(null)}
+                 className={`text-3xl transition-transform duration-150 ${
+                  isActive ? 'text-yellow-400 scale-110' : 'text-gray-300'
+                }`}
                 >
-                  ⭐
-                </button>
-              ))}
+                  ★
+                  </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
           {/* Pesan */}
           <div>
@@ -86,10 +125,14 @@ const Feedback = () => {
             <div className="flex gap-4">
               <input
                 type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
                 placeholder="Tulis Feedback disini"
                 className="flex-1 p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
-              <button className="bg-green-400 hover:bg-green-500 text-white px-8 py-2 rounded-xl font-semibold transition-colors">
+              <button 
+              onClick={handleSubmit} 
+              className="bg-green-400 hover:bg-green-500 text-white px-8 py-2 rounded-xl font-semibold transition-colors">
                 Submit
               </button>
             </div>
