@@ -32,14 +32,14 @@ export default function Journal() {
   const headerColors = ["bg-[#CDF4FF] border-[#0592FF]", "bg-[#FFEEDB] border-[#FF7B4F]", "bg-[#FFFBCC] border-[#FFE100]", "bg-[#EAFCDC] border-[#5ACC4B]"];
 
   return (
-    <div className="flex justify-center p-8">
+    <div className="w-full px-4 py-2 sm:p-6 md:p-8 lg:p-10">
       <div className="flex flex-col min-h-screen gap-12 w-full">
         <div className="h-16 w-screen text-left p-2 m-0">
-          <h1 className="font-bold text-4xl">Jurnal</h1>
+          <h1 className="font-bold text-2xl md:text-4xl">Jurnal</h1>
           <p className="text-gray-700 font-semibold">Tulis dan lihat semua catatan jurnal mu.</p>
         </div>
         <div className="min-h-[100px] w-full flex flex-col gap-4 justify-space-between bg-white rounded-2xl p-6">
-          <label className="font-bold text-2xl">Tulis Jurnal Baru</label>
+          <label className="font-bold text-xl md:text-2xl">Tulis Jurnal Baru</label>
           <div className="flex justify-space-between items-center gap-3">
             <input
               type="text"
@@ -47,19 +47,19 @@ export default function Journal() {
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
               placeholder="Apa yang terjadi hari ini?"
-              className="peer w-full rounded-xl text-md text-[#000000] p-2 outline-2 outline-[#000000]/30 focus:outline-[#09EB00CC]">
+              className="peer w-full h-[40px] rounded-xl text-md text-[#000000] p-2 outline-2 outline-[#000000]/30 focus:outline-[#09EB00CC]">
             </input>
             
             {/* Button Submit */}
             <button
               onClick= {handleSubmit} 
-              className="w-34 h-[100%] bg-[#ABE3A9] text-white rounded-xl shadow-md transition-colors duration-300 peer-focus:bg-[#09EB00CC]">Submit</button>
+              className="w-34 h-[40px] bg-[#ABE3A9] text-white rounded-xl shadow-md transition-colors duration-300 peer-focus:bg-[#09EB00CC]">Submit</button>
           </div>  
         </div>
         
         {/* Riwayat Jurnal */}
         <div className="flex flex-col gap-6 pb-20">
-          <h2 className="text-3xl font-bold">Riwayat Jurnal</h2>
+          <h2 className="text-2xl font-bold md:text-3xl">Riwayat Jurnal</h2>
           <div className="flex flex-col gap-4">
             {entries.map((entry, index) => (
               <div 
@@ -67,7 +67,7 @@ export default function Journal() {
                 className="flex flex-col overflow-hidden rounded-3xl border shadow-sm transition-all hover:scale-[1.01]"
               >
                 {/* Bagian Atas (Tanggal) - Berwarna */}
-                <div className={`px-6 py-3 border-b font-bold text-lg ${headerColors[index % headerColors.length]}`}>
+                <div className={`px-6 py-3 border-b font-bold text-md md:text-lg ${headerColors[index % headerColors.length]}`}>
                   {entry.date}
                 </div>
 
