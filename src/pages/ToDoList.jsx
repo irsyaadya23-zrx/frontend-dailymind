@@ -53,27 +53,27 @@ export default function ToDoList() {
   const progressPercent = totalTugas === 0 ? 0 : Math.round((completedCount / totalTugas) * 100);
 
   return (
-    <div className="flex justify-center items-center p-10">
+    <div className="w-full px-4 py-2 sm:p-6 md:p-8 lg:p-10">
       <div className="flex flex-col min-h-screen gap-8 w-full">
         
         <motion.header initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <h1 className="font-bold text-4xl">To-Do-List</h1>
+          <h1 className="font-bold text-3xl md:text-4xl">To-Do-List</h1>
           <p className="text-gray-700 font-semibold">Kelola tugasmu berdasarkan deadline.</p>
         </motion.header>
 
         {/* STATS BOXES (Tetap sesuai desainmu) */}
-        <div className="flex justify-between gap-6 items-center h-40">
+        <div className="flex justify-between gap-6 items-center h-20 md:h-40">
           <div className="flex flex-col justify-center items-center bg-white rounded-xl w-full h-full shadow-[0_8px_20px_rgba(0,0,0,0.15)]">
-            <h2 className="text-xl font-bold">Total</h2>
-            <h2 className="text-xl font-semibold">{todos.length}</h2>
+            <h2 className="text-md md:text-xl font-bold">Total</h2>
+            <h2 className="text-md md:text-xl font-semibold">{todos.length}</h2>
           </div>
           <div className="flex flex-col justify-center items-center bg-white rounded-xl w-full h-full shadow-[0_8px_20px_rgba(0,0,0,0.15)]">
-            <h2 className="text-xl font-bold">Aktif</h2>
-            <h2 className="text-xl font-semibold text-[#0059FF]">{todos.length}</h2>
+            <h2 className="text-md md:text-xl font-bold">Aktif</h2>
+            <h2 className="text-md md:text-xl font-semibold text-[#0059FF]">{todos.length}</h2>
           </div>
           <div className="flex flex-col justify-center items-center bg-white rounded-xl w-full h-full shadow-[0_8px_20px_rgba(0,0,0,0.15)]">
-            <h2 className="text-xl font-bold">Selesai</h2>
-            <h2 className="text-xl font-semibold text-[#00FF00]">{completedCount}</h2>
+            <h2 className="text-md md:text-xl font-bold">Selesai</h2>
+            <h2 className="text-md md:text-xl font-semibold text-[#00FF00]">{completedCount}</h2>
           </div>
         </div>
 
@@ -86,7 +86,7 @@ export default function ToDoList() {
             onKeyDown={(e) => e.key === 'Enter' && handleAddTodo()}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            className="peer flex-grow p-3 rounded-xl outline-2 outline-[#000000]/30 focus:outline-[#09EB00CC]"
+            className="w-full peer flex-grow p-3 rounded-xl outline-2 outline-[#000000]/30 focus:outline-[#09EB00CC] md:w-auto"
             placeholder="Ketik tugas baru..."
           />
           
@@ -97,10 +97,10 @@ export default function ToDoList() {
             onChange={(e) => setDeadline(e.target.value)}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            className="peer p-3 rounded-xl bg-white outline-2 outline-[#000000]/30 cursor-pointer"
+            className="w-full peer p-3 rounded-xl bg-white outline-2 outline-[#000000]/30 cursor-pointer md:w-auto"
           />
 
-          <button onClick={handleAddTodo} className={`px-6 py-3 rounded-xl font-bold text-white transition-all ${
+          <button onClick={handleAddTodo} className={`w-full px-6 py-3 rounded-xl font-bold text-white transition-all md:w-auto ${
             isFocused ? "bg-[#09EB00CC]" : "bg-[#ABE3A9]"
           }`}>
             Tambah
@@ -132,7 +132,7 @@ export default function ToDoList() {
               </div>
 
               <div className="w-full bg-white rounded-2xl p-6 flex flex-col gap-2">
-                <label className="text-[20px] font-medium-500">Tugas Aktif</label>
+                <label className="text-[18px] font-medium-500 md:text-[20px]">Tugas Aktif</label>
                 <div className="space-y-4">
                   {todos.map(todo => (
                     <TaskBox key={todo.id} todo={todo} onCheck={() => handleCheck(todo.id)} />
@@ -175,7 +175,7 @@ function TaskBox({ todo, onCheck }) {
         onChange={onCheck} 
       />
       <div className="flex flex-col gap-2 flex-grow">
-        <span className={`font-semibold text-lg ${todo.isChecking ? 'line-through text-gray-400 italic' : 'text-gray-800'}`}>
+        <span className={`font-semibold text-md md:text-lg ${todo.isChecking ? 'line-through text-gray-400 italic' : 'text-gray-800'}`}>
           {todo.text}
         </span>
         <span className={`text-xs text-gray-500 text-center font-medium px-3 py-1 rounded-2xl w-[150px] border-2 border ${status.color.split(' ')[1]}`}>Deadline: {todo.deadline}</span>
