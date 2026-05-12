@@ -150,16 +150,22 @@ export default function MoodTrack() {
   ];
 
   return (
-    <div className="md:p-10 w-full p-8">
+    <div className="w-full px-4 py-2 sm:p-6 md:p-8 lg:p-10">
       {/* Header */}
       <div className="mb-8">
-        <h2 className="text-4xl font-extrabold text-slate-800">Mood Tracker</h2>
-        <p className="text-gray-700 font-semibold">Lacak dan pahami suasana hatimu setiap hari</p>
+        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800">Mood Tracker</h2>
+        <p className="text-sm md:text-base text-gray-700 font-semibold">Lacak dan pahami suasana hatimu setiap hari</p>
       </div>
 
       {/* Main Chart */}
-      <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 mb-10 overflow-hidden">
-        <Chart options={chartOptions} series={moodSeries} type="area" height={300} />
+      <div className="bg-white rounded-[2rem] p-3 sm:p-6 shadow-sm border border-slate-100 mb-10 overflow-hidden">
+        <Chart
+        options={chartOptions}
+        series={moodSeries}
+        type="area" 
+        height={300}
+        width="100%"  
+      />
       </div>
 
       {/* Input Mood */}

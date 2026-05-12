@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from "react-router-dom";
-import { Home, Smile, Calendar, Clock, BookOpen, MessageSquare, LogOut } from 'lucide-react';
+import { Home, Smile, Calendar, Clock, BookOpen, MessageSquare, LogOut, X } from 'lucide-react';
 import logoApp from "../assets/dailymind_logo.png";
 import homeIcon from '../assets/home.png';
 import moodIcon from '../assets/mood.png';
@@ -10,7 +10,7 @@ import jurnalIcon from '../assets/jurnal.png';
 import feedbackIcon from '../assets/feedback.png';
 import exitIcon from '../assets/exit.png';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
 
   const menus = [
@@ -24,7 +24,23 @@ const Sidebar = () => {
 ];
 
   return (
-    <aside style={sidebarStyle}>
+    <aside
+      className={`
+        fixed top-0 left-0 z-50
+        h-screen w-[180px]
+        transition-transform duration-300
+        lg:translate-x-0
+        ${isOpen ? "translate-x-0" : "-translate-x-full"}
+      `}
+      style={sidebarStyle}
+    >
+
+      <div className="flex justify-end lg:hidden mb-4">
+        <button onClick={onClose}>
+          <X size={28} />
+        </button>
+      </div>
+
       {/* Logo Section */}
       <div style={logoContainerStyle}>
         <div style={{
@@ -101,9 +117,9 @@ const sidebarStyle = {
   border: '1px solid rgba(255, 255, 255, 0.4)',
   padding: '30px 5px',
   display: 'flex',
-  flexDirection: 'column',
-  position: 'sticky',
-  top: 0,
+  flexDirection: 'column'
+  // position: 'sticky',
+  // top: 0,
 };
 
 const logoContainerStyle = {
