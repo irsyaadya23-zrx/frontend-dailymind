@@ -25,6 +25,8 @@ const Home = () => {
   };
 
   useEffect(() => {
+    loadMoodStreak();
+
     const handleUpdate = () => {
       loadTodos();
       loadJournals();
@@ -36,6 +38,17 @@ const Home = () => {
       window.removeEventListener("dataUpdated", handleUpdate);
     };
   }, []);
+
+  //STREAK MOOD
+  const [moodStreak, setMoodStreak] = useState(0);
+
+  const loadMoodStreak = () => {
+  const streak =
+    JSON.parse(localStorage.getItem("dailyMind_moodStreak")) || 0;
+
+  setMoodStreak(streak);
+};
+
 
   return (
     <div className="min-h-screen font-inter flex flex-col bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC] overflow-hidden">
@@ -75,7 +88,7 @@ const Home = () => {
 
               <div className="flex items-center gap-3">
                 <span className="text-2xl md:text-5xl font-black font-manrope">
-                  1
+                  {moodStreak}
                 </span>
 
                 <span className="text-2xl md:text-5xl">🔥</span>

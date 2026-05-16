@@ -78,8 +78,20 @@ export default function MoodTrack() {
       }
 
       // fullDatestr riwayat
-      const newEntry = { score, day: today, fullDate: fullDateStr };
+      const todayDate = new Date().toISOString().split("T")[0];
+      
+      const newEntry = {
+        score,
+        day: today,
+        fullDate: fullDateStr,
+        date: todayDate,
+      };
+
       storedMoods.push(newEntry);
+
+      const streak = calculateMoodStreak(storedMoods);
+
+      localStorage.setItem("dailyMind_moodStreak", streak);
 
       if (storedMoods.length > 7) {
         storedMoods.shift();
@@ -91,8 +103,36 @@ export default function MoodTrack() {
       fetchUserMood();
     } catch {
       alert("Gagal menyimpan mood ke penyimpanan lokal.");
-    }
+    } 
+    window.dispatchEvent(new Event("dataUpdated"));
   };
+
+  const calculateMoodStreak = (moods) => {
+  if (moods.length === 0) return 0;
+
+  // urut berdasarkan tanggal terbaru
+  const sorted = [...moods].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
+
+  let streak = 1;
+
+  for (let i = 0; i < sorted.length - 1; i++) {
+    const current = new Date(sorted[i].date);
+    const next = new Date(sorted[i + 1].date);
+
+    const diffTime = current - next;
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+
+    if (diffDays === 1) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+};
 
   const chartOptions = {
     chart: {
