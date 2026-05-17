@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PujianImg from '../assets/pujian.png';
 import SaranImg from '../assets/saranfitur.png';
 import KeluhanImg from '../assets/keluhan.png';
@@ -10,12 +10,58 @@ const Feedback = () => {
   const [hover, setHover] = useState(0);
   const [message, setMessage] = useState("");
 
+  const [totalFeedback, setTotalFeedback] = useState(0);
+  const [averageRating, setAverageRating] = useState(0);
+  const [monthlyFeedback, setMonthlyFeedback] = useState(0);
+
   const categories = [
   { id: 'pujian', label: 'Pujian', icon: PujianImg, activeClass: 'bg-green-100 border-green-500 text-green-700' },
   { id: 'saran', label: 'Saran Fitur', icon: SaranImg, activeClass: 'bg-yellow-100 border-yellow-500 text-yellow-700' },
   { id: 'keluhan', label: 'Keluhan', icon: KeluhanImg, activeClass: 'bg-orange-100 border-orange-500 text-orange-700' },
   { id: 'lainnya', label: 'Lainnya', icon: LainnyaImg, activeClass: 'bg-blue-100 border-blue-500 text-blue-700' },
 ];
+
+const calculateStats = () => {
+    const feedbacks =
+      JSON.parse(localStorage.getItem("admin_feedback")) || [];
+
+    // total feedback
+    setTotalFeedback(feedbacks.length);
+
+    // rata-rata rating
+    if (feedbacks.length > 0) {
+      const totalRating = feedbacks.reduce(
+        (sum, item) => sum + item.rating,
+        0
+      );
+
+            const avg = totalRating / feedbacks.length;
+      setAverageRating(avg.toFixed(1));
+    } else {
+      setAverageRating(0);
+    }
+
+    // feedback bulan ini
+    const now = new Date();
+
+   const currentMonthFeedback = feedbacks.filter((item) => {
+  if (!item.createdAt) return false;
+
+  const itemDate = new Date(item.createdAt);
+
+  return (
+    itemDate.getMonth() === now.getMonth() &&
+    itemDate.getFullYear() === now.getFullYear()
+  );
+});
+
+    setMonthlyFeedback(currentMonthFeedback.length);
+  };
+
+  // load pertama kali
+  useEffect(() => {
+    calculateStats();
+  }, []);
 
 const handleSubmit = () => {
   if (!selectedCategory || rating === 0 || message.trim() === "") {
@@ -29,12 +75,15 @@ const handleSubmit = () => {
     pesan: message,
     rating: rating,
     status: "Unread",
+    createdAt: new Date().toISOString(),
   };
 
   const existing = JSON.parse(localStorage.getItem("admin_feedback")) || [];
   const updated = [newFeedback, ...existing];
 
   localStorage.setItem("admin_feedback", JSON.stringify(updated));
+
+  calculateStats();
 
   // reset form
   setSelectedCategory(null);
@@ -56,15 +105,15 @@ const handleSubmit = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
           <p className="text-slate-800 font-bold text-sm mb-1">Total Feedback</p>
-          <p className="text-xl font-bold text-slate-800 md:text-3xl">0</p>
+          <p className="text-xl font-bold text-slate-800 md:text-3xl">{totalFeedback}</p>
         </div>
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
           <p className="text-slate-800 font-bold 00 text-sm mb-1">Rating Rata - Rata</p>
-          <p className="text-xl font-bold text-yellow-500 md:text-3xl">0.0 ⭐</p>
+          <p className="text-xl font-bold text-yellow-500 md:text-3xl">{averageRating} ⭐</p>
         </div>
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
           <p className="text-slate-800 font-bold text-sm mb-1">Feedback Bulan Ini</p>
-          <p className="text-xl font-bold text-slate-800 md:text-3xl">0</p>
+          <p className="text-xl font-bold text-slate-800 md:text-3xl">{monthlyFeedback}</p>
         </div>
       </div>
 
