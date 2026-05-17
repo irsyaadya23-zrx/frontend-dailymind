@@ -5,63 +5,113 @@ export default function Pomodoro() {
   const WORK_TIME = 25 * 60;
   const BREAK_TIME = 5 * 60;
 
+  // API BACKEND
   const API_URL = "http://localhost:5000/api/pomodoro";
 
+  // STATE
   const [mode, setMode] = useState("work");
   const [timeLeft, setTimeLeft] = useState(WORK_TIME);
   const [isRunning, setIsRunning] = useState(false);
   const [sessions, setSessions] = useState(0);
+  const [loading, setLoading] = useState(true);
 
+  // REF
   const hasCounted = useRef(false);
   const alarmRef = useRef(null);
 
+  // =========================================
   // LOAD AUDIO
+  // =========================================
   useEffect(() => {
     alarmRef.current = new Audio(alarmSound);
   }, []);
 
-  // GET SESSION DARI BACKEND
-  useEffect(() => {
-    fetch(`${API_URL}/sessions`)
-      .then((res) => res.json())
-      .then((data) => {
-        setSessions(data.sessions);
-      })
-      .catch((err) => console.error("Gagal mengambil data:", err));
-  }, []);
+  // =========================================
+  // GET TOKEN USER
+  // =========================================
+  const token = localStorage.getItem("token");
 
-  // SAVE SESSION KE BACKEND
+  // =========================================
+  // GET SESSION DARI DATABASE
+  // =========================================
+  useEffect(() => {
+    const getSessions = async () => {
+      try {
+        const response = await fetch(`${API_URL}/sessions`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Gagal mengambil data");
+        }
+
+        const data = await response.json();
+
+        setSessions(data.sessions || 0);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getSessions();
+  }, [token]);
+
+  // =========================================
+  // SAVE SESSION KE DATABASE
+  // =========================================
   const saveSession = async () => {
     try {
       const response = await fetch(`${API_URL}/sessions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
+
+        body: JSON.stringify({
+          mode: "work",
+          duration: 25,
+          completedAt: new Date(),
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error("Gagal menyimpan session");
+      }
 
       const data = await response.json();
 
-      setSessions(data.sessions);
+      setSessions(data.totalSessions);
     } catch (err) {
-      console.error("Gagal menyimpan session:", err);
+      console.error(err);
     }
   };
 
+  // =========================================
   // TIMER
+  // =========================================
   useEffect(() => {
     if (!isRunning) return;
 
     const timeout = setTimeout(() => {
       setTimeLeft((prev) => {
+        // TIMER SELESAI
         if (prev === 1) {
           alarmRef.current?.play();
 
           setIsRunning(false);
 
+          // MODE WORK
           if (mode === "work") {
             if (!hasCounted.current) {
               saveSession();
+
               hasCounted.current = true;
             }
 
@@ -72,7 +122,10 @@ export default function Pomodoro() {
             }, 5000);
 
             return 0;
-          } else {
+          }
+
+          // MODE BREAK
+          else {
             setTimeout(() => {
               setMode("work");
               setTimeLeft(WORK_TIME);
@@ -83,6 +136,7 @@ export default function Pomodoro() {
           }
         }
 
+        // RESET FLAG
         if (prev > 1) {
           hasCounted.current = false;
         }
@@ -92,9 +146,11 @@ export default function Pomodoro() {
     }, 1000);
 
     return () => clearTimeout(timeout);
-  }, [isRunning, mode, timeLeft]);
+  }, [isRunning, mode]);
 
+  // =========================================
   // FORMAT WAKTU
+  // =========================================
   const formatTime = (t) => {
     const m = Math.floor(t / 60);
     const s = t % 60;
@@ -102,21 +158,41 @@ export default function Pomodoro() {
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
 
+  // =========================================
   // RESPONSIVE RADIUS
+  // =========================================
   const radius = window.innerWidth < 640 ? 120 : 220;
 
+  // =========================================
   // CIRCLE PROGRESS
+  // =========================================
   const TOTAL = mode === "work" ? WORK_TIME : BREAK_TIME;
 
   const circumference = 2 * Math.PI * radius;
+
   const progress = timeLeft / TOTAL;
+
   const offset = circumference * (1 - progress);
+
+  // =========================================
+  // LOADING
+  // =========================================
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen flex justify-center items-center">
+        <p className="text-xl font-bold">
+          Loading...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen px-4 py-4 sm:p-6 lg:p-8">
 
       {/* HEADER */}
       <div className="mb-6">
+
         <h1 className="font-bold text-2xl sm:text-3xl lg:text-4xl">
           Pomodoro Timer
         </h1>
@@ -124,17 +200,19 @@ export default function Pomodoro() {
         <p className="text-gray-700 font-medium text-sm sm:text-base">
           Tingkatkan produktivitas dengan pomodoro
         </p>
+
       </div>
 
       {/* MAIN LAYOUT */}
       <div className="flex flex-col xl:flex-row gap-6">
 
-        {/* LEFT - TIMER */}
+        {/* LEFT */}
         <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 lg:p-8 flex-1">
 
           {/* MODE BUTTON */}
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-8">
 
+            {/* WORK */}
             <button
               onClick={() => {
                 setMode("work");
@@ -150,6 +228,7 @@ export default function Pomodoro() {
               Kerja (25 Menit)
             </button>
 
+            {/* BREAK */}
             <button
               onClick={() => {
                 setMode("break");
@@ -167,7 +246,7 @@ export default function Pomodoro() {
 
           </div>
 
-          {/* TIMER CIRCLE */}
+          {/* TIMER */}
           <div className="relative flex justify-center items-center mb-8">
 
             <svg
@@ -176,7 +255,7 @@ export default function Pomodoro() {
               className="rotate-[-90deg]"
             >
 
-              {/* BG */}
+              {/* BACKGROUND */}
               <circle
                 cx={radius + 20}
                 cy={radius + 20}
@@ -218,9 +297,10 @@ export default function Pomodoro() {
             </div>
           </div>
 
-          {/* ACTION BUTTON */}
+          {/* BUTTON */}
           <div className="flex flex-col sm:flex-row justify-center gap-4">
 
+            {/* START */}
             <button
               onClick={() => setIsRunning(!isRunning)}
               className={`px-6 py-3 text-white font-bold rounded-xl w-full sm:w-[160px] shadow transition ${
@@ -232,6 +312,7 @@ export default function Pomodoro() {
               {isRunning ? "Pause" : "Mulai"}
             </button>
 
+            {/* RESET */}
             <button
               onClick={() => {
                 setIsRunning(false);
@@ -270,7 +351,7 @@ export default function Pomodoro() {
 
           </div>
 
-          {/* CARA MENGGUNAKAN */}
+          {/* INFO */}
           <div className="bg-[#FFB4B440]/25 p-6 rounded-2xl shadow flex flex-col gap-6">
 
             <h2 className="font-extrabold text-xl text-center md:text-2xl">
@@ -280,20 +361,19 @@ export default function Pomodoro() {
             <ol className="list-decimal ml-5 text-sm sm:text-base text-justify space-y-4">
 
               <li>
-                Pilih mode "kerja" dan mulai timer.
+                Pilih mode kerja dan mulai timer.
               </li>
 
               <li>
-                Fokus pada satu tugas selama 25 menit.
+                Fokus selama 25 menit.
               </li>
 
               <li>
-                Istirahat 5 menit setelah alarm berbunyi.
+                Istirahat 5 menit.
               </li>
 
               <li>
-                Ulangi sebanyak 4 kali, lalu ambil
-                istirahat panjang selama 15-30 menit.
+                Ulangi 4 kali lalu ambil istirahat panjang.
               </li>
 
             </ol>
