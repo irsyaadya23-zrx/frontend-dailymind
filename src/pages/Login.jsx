@@ -18,11 +18,11 @@ export default function Login() {
   const result = await login(email, password)
 
   if (result.success) {
-    navigate("/home")
+    navigate("/home");
   } else {
-    alert(result.message)
+    alert(result.message);
   }
-}
+};
 
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC] px-6">
