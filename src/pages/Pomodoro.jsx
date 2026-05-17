@@ -5,30 +5,48 @@ export default function Pomodoro() {
   const WORK_TIME = 25 * 60;
   const BREAK_TIME = 5 * 60;
 
+  const API_URL = "http://localhost:5000/api/pomodoro";
+
   const [mode, setMode] = useState("work");
   const [timeLeft, setTimeLeft] = useState(WORK_TIME);
   const [isRunning, setIsRunning] = useState(false);
+  const [sessions, setSessions] = useState(0);
 
   const hasCounted = useRef(false);
   const alarmRef = useRef(null);
 
+  // LOAD AUDIO
   useEffect(() => {
     alarmRef.current = new Audio(alarmSound);
   }, []);
 
-  const [sessions, setSessions] = useState(() => {
-    const today = new Date().toLocaleDateString();
-    const lastDate = localStorage.getItem("lastDate");
+  // GET SESSION DARI BACKEND
+  useEffect(() => {
+    fetch(`${API_URL}/sessions`)
+      .then((res) => res.json())
+      .then((data) => {
+        setSessions(data.sessions);
+      })
+      .catch((err) => console.error("Gagal mengambil data:", err));
+  }, []);
 
-    if (lastDate !== today) {
-      localStorage.setItem("lastDate", today);
-      localStorage.setItem("sessionsCount", "0");
-      return 0;
+  // SAVE SESSION KE BACKEND
+  const saveSession = async () => {
+    try {
+      const response = await fetch(`${API_URL}/sessions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      setSessions(data.sessions);
+    } catch (err) {
+      console.error("Gagal menyimpan session:", err);
     }
-
-    const savedSessions = localStorage.getItem("sessionsCount");
-    return savedSessions ? parseInt(savedSessions) : 0;
-  });
+  };
 
   // TIMER
   useEffect(() => {
@@ -43,7 +61,7 @@ export default function Pomodoro() {
 
           if (mode === "work") {
             if (!hasCounted.current) {
-              setSessions((s) => s + 1);
+              saveSession();
               hasCounted.current = true;
             }
 
@@ -80,27 +98,23 @@ export default function Pomodoro() {
   const formatTime = (t) => {
     const m = Math.floor(t / 60);
     const s = t % 60;
+
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
 
+  // RESPONSIVE RADIUS
+  const radius = window.innerWidth < 640 ? 120 : 220;
+
   // CIRCLE PROGRESS
   const TOTAL = mode === "work" ? WORK_TIME : BREAK_TIME;
-
-  // Responsive radius
-  const radius = window.innerWidth < 640 ? 120 : 220;
 
   const circumference = 2 * Math.PI * radius;
   const progress = timeLeft / TOTAL;
   const offset = circumference * (1 - progress);
 
-  // SAVE SESSION
-  useEffect(() => {
-    localStorage.setItem("sessionsCount", sessions);
-  }, [sessions]);
-
   return (
     <div className="w-full min-h-screen px-4 py-4 sm:p-6 lg:p-8">
-      
+
       {/* HEADER */}
       <div className="mb-6">
         <h1 className="font-bold text-2xl sm:text-3xl lg:text-4xl">
@@ -120,6 +134,7 @@ export default function Pomodoro() {
 
           {/* MODE BUTTON */}
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-8">
+
             <button
               onClick={() => {
                 setMode("work");
@@ -149,6 +164,7 @@ export default function Pomodoro() {
             >
               Istirahat (5 Menit)
             </button>
+
           </div>
 
           {/* TIMER CIRCLE */}
@@ -159,6 +175,7 @@ export default function Pomodoro() {
               height={radius * 2 + 40}
               className="rotate-[-90deg]"
             >
+
               {/* BG */}
               <circle
                 cx={radius + 20}
@@ -182,10 +199,12 @@ export default function Pomodoro() {
                 strokeLinecap="round"
                 className="transition-all duration-1000"
               />
+
             </svg>
 
             {/* TIMER TEXT */}
             <div className="absolute text-center">
+
               <p className="font-bold text-4xl sm:text-6xl lg:text-7xl">
                 {formatTime(timeLeft)}
               </p>
@@ -195,11 +214,13 @@ export default function Pomodoro() {
                   ? "Waktu Kerja"
                   : "Waktu Istirahat"}
               </p>
+
             </div>
           </div>
 
           {/* ACTION BUTTON */}
           <div className="flex flex-col sm:flex-row justify-center gap-4">
+
             <button
               onClick={() => setIsRunning(!isRunning)}
               className={`px-6 py-3 text-white font-bold rounded-xl w-full sm:w-[160px] shadow transition ${
@@ -214,14 +235,18 @@ export default function Pomodoro() {
             <button
               onClick={() => {
                 setIsRunning(false);
+
                 setTimeLeft(
-                  mode === "work" ? WORK_TIME : BREAK_TIME
+                  mode === "work"
+                    ? WORK_TIME
+                    : BREAK_TIME
                 );
               }}
               className="px-6 py-3 bg-gray-200 hover:bg-[#A8A8A8] rounded-xl w-full sm:w-[160px] shadow transition"
             >
               Reset
             </button>
+
           </div>
         </div>
 
@@ -230,6 +255,7 @@ export default function Pomodoro() {
 
           {/* STATISTIK */}
           <div className="bg-white p-6 rounded-2xl shadow text-center flex flex-col items-center justify-center min-h-[90px] md:min-h-[180px]">
+
             <h2 className="font-extrabold text-xl mb-2 md:text-2xl">
               Statistik Hari Ini
             </h2>
@@ -241,16 +267,21 @@ export default function Pomodoro() {
             <p className="text-gray-500 text-sm md:text-md">
               Sesi Hari Ini
             </p>
+
           </div>
 
           {/* CARA MENGGUNAKAN */}
           <div className="bg-[#FFB4B440]/25 p-6 rounded-2xl shadow flex flex-col gap-6">
+
             <h2 className="font-extrabold text-xl text-center md:text-2xl">
               Cara Menggunakan
             </h2>
 
             <ol className="list-decimal ml-5 text-sm sm:text-base text-justify space-y-4">
-              <li>Pilih mode "kerja" dan mulai timer.</li>
+
+              <li>
+                Pilih mode "kerja" dan mulai timer.
+              </li>
 
               <li>
                 Fokus pada satu tugas selama 25 menit.
@@ -264,7 +295,9 @@ export default function Pomodoro() {
                 Ulangi sebanyak 4 kali, lalu ambil
                 istirahat panjang selama 15-30 menit.
               </li>
+
             </ol>
+
           </div>
         </div>
       </div>
