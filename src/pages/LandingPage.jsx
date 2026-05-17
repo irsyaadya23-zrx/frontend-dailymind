@@ -61,7 +61,7 @@ const LandingPage = () => {
 
   return (
 
-    <div className="min-h-screen font-sans scroll-smooth relative overflow-x-hidden">
+    <div className="min-h-screen scroll-smooth relative overflow-x-hidden">
 
       {/* ================= HERO BG ================= */}
       <section className="min-h-screen bg-gradient-to-b from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC]">
