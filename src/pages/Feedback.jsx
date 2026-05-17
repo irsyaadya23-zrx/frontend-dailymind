@@ -1,139 +1,411 @@
-import React, { useState } from 'react';
-import PujianImg from '../assets/pujian.png';
-import SaranImg from '../assets/saranfitur.png';
-import KeluhanImg from '../assets/keluhan.png';
-import LainnyaImg from '../assets/lainnya.png';
+import React, { useState, useEffect } from "react";
+import PujianImg from "../assets/pujian.png";
+import SaranImg from "../assets/saranfitur.png";
+import KeluhanImg from "../assets/keluhan.png";
+import LainnyaImg from "../assets/lainnya.png";
 
 const Feedback = () => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  // =========================================
+  // API
+  // =========================================
+  const API_URL = "http://localhost:5000/api/feedback";
+
+  // =========================================
+  // TOKEN
+  // =========================================
+  const token = localStorage.getItem("token");
+
+  // =========================================
+  // STATE
+  // =========================================
+  const [selectedCategory, setSelectedCategory] =
+    useState(null);
+
   const [rating, setRating] = useState(0);
+
   const [hover, setHover] = useState(0);
+
   const [message, setMessage] = useState("");
 
+  const [loading, setLoading] = useState(true);
+
+  const [loadingDots, setLoadingDots] =
+    useState("");
+
+  const [stats, setStats] = useState({
+    total: 0,
+    averageRating: 0,
+    monthly: 0,
+  });
+
+  // =========================================
+  // LOADING DOTS ANIMATION
+  // =========================================
+  useEffect(() => {
+
+    const interval = setInterval(() => {
+
+      setLoadingDots((prev) => {
+
+        if (prev.length >= 3) {
+          return "";
+        }
+
+        return prev + ".";
+      });
+
+    }, 400);
+
+    return () => clearInterval(interval);
+
+  }, []);
+
+  // =========================================
+  // GET FEEDBACK STATS
+  // =========================================
+  useEffect(() => {
+
+    const getFeedbackStats = async () => {
+
+      try {
+
+        const response = await fetch(
+          `${API_URL}/stats`,
+          {
+            method: "GET",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            "Gagal mengambil statistik"
+          );
+        }
+
+        const data = await response.json();
+
+        setStats(data);
+
+      } catch (err) {
+
+        console.error(err);
+
+      } finally {
+
+        setLoading(false);
+      }
+    };
+
+    getFeedbackStats();
+
+  }, [token]);
+
+  // =========================================
+  // CATEGORY
+  // =========================================
   const categories = [
-  { id: 'pujian', label: 'Pujian', icon: PujianImg, activeClass: 'bg-green-100 border-green-500 text-green-700' },
-  { id: 'saran', label: 'Saran Fitur', icon: SaranImg, activeClass: 'bg-yellow-100 border-yellow-500 text-yellow-700' },
-  { id: 'keluhan', label: 'Keluhan', icon: KeluhanImg, activeClass: 'bg-orange-100 border-orange-500 text-orange-700' },
-  { id: 'lainnya', label: 'Lainnya', icon: LainnyaImg, activeClass: 'bg-blue-100 border-blue-500 text-blue-700' },
-];
+    {
+      id: "pujian",
+      label: "Pujian",
+      icon: PujianImg,
+      activeClass:
+        "bg-green-100 border-green-500 text-green-700",
+    },
 
-const handleSubmit = () => {
-  if (!selectedCategory || rating === 0 || message.trim() === "") {
-    alert("Isi semua field dulu!");
-    return;
-  }
+    {
+      id: "saran",
+      label: "Saran Fitur",
+      icon: SaranImg,
+      activeClass:
+        "bg-yellow-100 border-yellow-500 text-yellow-700",
+    },
 
-  const newFeedback = {
-    id: "F" + Date.now(),
-    kategori: selectedCategory,
-    pesan: message,
-    rating: rating,
-    status: "Unread",
+    {
+      id: "keluhan",
+      label: "Keluhan",
+      icon: KeluhanImg,
+      activeClass:
+        "bg-orange-100 border-orange-500 text-orange-700",
+    },
+
+    {
+      id: "lainnya",
+      label: "Lainnya",
+      icon: LainnyaImg,
+      activeClass:
+        "bg-blue-100 border-blue-500 text-blue-700",
+    },
+  ];
+
+  // =========================================
+  // SUBMIT FEEDBACK
+  // =========================================
+  const handleSubmit = async () => {
+
+    if (
+      !selectedCategory ||
+      rating === 0 ||
+      message.trim() === ""
+    ) {
+      alert("Isi semua field dulu!");
+      return;
+    }
+
+    try {
+
+      const response = await fetch(
+        `${API_URL}`,
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            Authorization: `Bearer ${token}`,
+          },
+
+          body: JSON.stringify({
+            kategori: selectedCategory,
+            pesan: message,
+            rating: rating,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          "Gagal mengirim feedback"
+        );
+      }
+
+      // RESET FORM
+      setSelectedCategory(null);
+
+      setRating(0);
+
+      setMessage("");
+
+      alert("Feedback berhasil dikirim!");
+
+      // REFRESH STATS
+      const statsResponse = await fetch(
+        `${API_URL}/stats`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const statsData =
+        await statsResponse.json();
+
+      setStats(statsData);
+
+    } catch (err) {
+
+      console.error(err);
+
+      alert("Terjadi kesalahan");
+    }
   };
 
-  const existing = JSON.parse(localStorage.getItem("admin_feedback")) || [];
-  const updated = [newFeedback, ...existing];
+  // =========================================
+  // LOADING SCREEN
+  // =========================================
+  if (loading) {
+    return (
+      <div className="w-full min-h-screen flex justify-center items-center">
 
-  localStorage.setItem("admin_feedback", JSON.stringify(updated));
+        <p className="text-xl text-[#A3A3A3]">
+          Loading{loadingDots}
+        </p>
 
-  // reset form
-  setSelectedCategory(null);
-  setRating(0);
-  setMessage("");
-
-  alert("Feedback berhasil dikirim!");
-};
+      </div>
+    );
+  }
 
   return (
     <div className="w-full px-4 py-2 sm:p-6 md:p-8 lg:p-10">
-      {/* Header */}
+
+      {/* HEADER */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800 md:text-4xl">Feedback</h1>
-        <p className="text-gray-700 font-semibold">Sampaikan pendapat, saran, atau laporan mu</p>
+
+        <h1 className="text-3xl font-bold text-slate-800 md:text-4xl">
+          Feedback
+        </h1>
+
+        <p className="text-gray-700 font-semibold">
+          Sampaikan pendapat,
+          saran, atau laporan mu
+        </p>
+
       </div>
 
-      {/* Stats Cards */}
+      {/* STATS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+        {/* TOTAL */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
-          <p className="text-slate-800 font-bold text-sm mb-1">Total Feedback</p>
-          <p className="text-xl font-bold text-slate-800 md:text-3xl">0</p>
+
+          <p className="text-slate-800 font-bold text-sm mb-1">
+            Total Feedback
+          </p>
+
+          <p className="text-xl font-bold text-slate-800 md:text-3xl">
+            {stats.total}
+          </p>
+
         </div>
+
+        {/* AVG RATING */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
-          <p className="text-slate-800 font-bold 00 text-sm mb-1">Rating Rata - Rata</p>
-          <p className="text-xl font-bold text-yellow-500 md:text-3xl">0.0 ⭐</p>
+
+          <p className="text-slate-800 font-bold text-sm mb-1">
+            Rating Rata - Rata
+          </p>
+
+          <p className="text-xl font-bold text-yellow-500 md:text-3xl">
+            {stats.averageRating} ⭐
+          </p>
+
         </div>
+
+        {/* MONTHLY */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 text-center">
-          <p className="text-slate-800 font-bold text-sm mb-1">Feedback Bulan Ini</p>
-          <p className="text-xl font-bold text-slate-800 md:text-3xl">0</p>
+
+          <p className="text-slate-800 font-bold text-sm mb-1">
+            Feedback Bulan Ini
+          </p>
+
+          <p className="text-xl font-bold text-slate-800 md:text-3xl">
+            {stats.monthly}
+          </p>
+
         </div>
       </div>
 
-      {/* Feedback Form Card */}
+      {/* FORM */}
       <div className="bg-white p-8 rounded-3xl shadow-sm border border-blue-200">
+
         <div className="space-y-6">
-          {/* Kategori */}
+
+          {/* CATEGORY */}
           <div>
-            <p className="font-semibold text-slate-800 mb-4">Ketegori</p>
+
+            <p className="font-semibold text-slate-800 mb-4">
+              Kategori
+            </p>
+
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+
               {categories.map((cat) => (
+
                 <button
                   key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
+                  onClick={() =>
+                    setSelectedCategory(cat.id)
+                  }
                   className={`flex flex-col items-center justify-center p-6 rounded-xl border-2 transition-all duration-200 ${
-                    selectedCategory === cat.id 
-                    ? cat.activeClass 
-                    : 'bg-gray-300 border-transparent text-slate-600 hover:bg-slate-200'
+                    selectedCategory === cat.id
+                      ? cat.activeClass
+                      : "bg-gray-300 border-transparent text-slate-600 hover:bg-slate-200"
                   }`}
                 >
-                  <img src={cat.icon} alt={cat.label} className="w-8 h-12 mb-3 object-contain" />
-                  <span className="font-medium">{cat.label}</span>
+
+                  <img
+                    src={cat.icon}
+                    alt={cat.label}
+                    className="w-8 h-12 mb-3 object-contain"
+                  />
+
+                  <span className="font-medium">
+                    {cat.label}
+                  </span>
+
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Rating */}
+          {/* RATING */}
           <div>
-             <p className="font-semibold text-slate-800 mb-2">Rating</p>
-             
-             <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map((star) => {
-                const isActive = hover !== null ? star <= hover : star <= rating;
-                
-                return (
-                <button
-                 key={star}
-                 type="button"
-                 onClick={() => setRating(star)}
-                 onMouseEnter={() => setHover(star)}
-                 onMouseLeave={() => setHover(null)}
-                 className={`text-3xl transition-transform duration-150 ${
-                  isActive ? 'text-yellow-400 scale-110' : 'text-gray-300'
-                }`}
-                >
-                  ★
-                  </button>
-                  );
-                })}
-              </div>
-            </div>
 
-          {/* Pesan */}
+            <p className="font-semibold text-slate-800 mb-2">
+              Rating
+            </p>
+
+            <div className="flex gap-2">
+
+              {[1, 2, 3, 4, 5].map((star) => {
+
+                const isActive =
+                  hover !== null
+                    ? star <= hover
+                    : star <= rating;
+
+                return (
+
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() =>
+                      setRating(star)
+                    }
+                    onMouseEnter={() =>
+                      setHover(star)
+                    }
+                    onMouseLeave={() =>
+                      setHover(null)
+                    }
+                    className={`text-3xl transition-transform duration-150 ${
+                      isActive
+                        ? "text-yellow-400 scale-110"
+                        : "text-gray-300"
+                    }`}
+                  >
+                    ★
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* MESSAGE */}
           <div>
-            <p className="font-semibold text-slate-800 mb-2">Pesan</p>
+
+            <p className="font-semibold text-slate-800 mb-2">
+              Pesan
+            </p>
+
             <div className="w-full flex justify-center items-center gap-4">
+
               <input
                 type="text"
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) =>
+                  setMessage(e.target.value)
+                }
                 placeholder="Tulis Feedback disini"
                 className="flex-1 p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 h-[40px] md:h-auto"
               />
-              <button 
-              onClick={handleSubmit} 
-              className="bg-green-400 hover:bg-green-500 text-white px-8 py-2 rounded-xl font-semibold transition-colors h-[40px] md:h-auto">
+
+              <button
+                onClick={handleSubmit}
+                className="bg-green-400 hover:bg-green-500 text-white px-8 py-2 rounded-xl font-semibold transition-colors h-[40px] md:h-auto"
+              >
                 Submit
               </button>
+
             </div>
           </div>
         </div>
