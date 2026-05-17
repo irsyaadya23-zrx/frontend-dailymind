@@ -1,16 +1,23 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function Journal() {
+
+  const location = useLocation();
+
   const [entries, setEntries] = useState(() => {
     const saved = localStorage.getItem('dailyMind_jurnal');
     return saved ? JSON.parse(saved) : [];
   });
+
   const [inputText, setInputText] = useState("");
 
   // Simpan ke local storage
   useEffect(() => {
-    localStorage.setItem('dailyMind_jurnal', JSON.stringify(entries));
-  }, [entries]);
+    if (location.state?.draft) {
+      setInputText(location.state.draft);
+    }
+  }, [location.state]);
 
   const handleSubmit = () => {
     if (inputText.trim() === "") return;
@@ -18,16 +25,26 @@ export default function Journal() {
     const newEntry = {
       id: Date.now(),
       content: inputText,
-      // Tanggal Jurnal
-      date: new Date().toLocaleDateString('id-ID', { 
-        day: 'numeric', month: 'long', year: 'numeric' 
-      })
-    };
-
-    // Set jurnal baru paling atas
-    setEntries([newEntry, ...entries]);
-    setInputText("");
+      date: new Date().toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    }),
   };
+
+  const updatedEntries = [newEntry, ...entries];
+
+  setEntries(updatedEntries);
+
+  localStorage.setItem(
+    "dailyMind_jurnal",
+    JSON.stringify(updatedEntries)
+  );
+
+  window.dispatchEvent(new Event("dataUpdated"));
+
+  setInputText("");
+};
 
   const headerColors = ["bg-[#CDF4FF] border-[#0592FF]", "bg-[#FFEEDB] border-[#FF7B4F]", "bg-[#FFFBCC] border-[#FFE100]", "bg-[#EAFCDC] border-[#5ACC4B]"];
 

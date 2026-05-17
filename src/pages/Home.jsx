@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
 
@@ -49,8 +50,18 @@ const Home = () => {
   setMoodStreak(streak);
 };
 
+const navigate = useNavigate();
+const [journalInput, setJournalInput] = useState("");
 
-  return (
+const handleAddJournal = () => {
+  navigate("/Journal", {
+    state: {
+      draft: journalInput,
+    },
+  });
+};
+
+return (
     <div className="min-h-screen font-inter flex flex-col bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC] overflow-hidden">
 
       {/* AREA UTAMA */}
@@ -69,15 +80,25 @@ const Home = () => {
             {/* INPUT */}
             <div className="flex items-center mt-4 w-full">
 
-              <input
-                type="text"
-                placeholder="Tulis Disini"
-                className="flex-1 bg-white/60 backdrop-blur-md border border-white/40 py-3 px-5 sm:px-8 rounded-full shadow-sm focus:outline-none text-[#1F2A44] font-medium text-sm sm:text-base"
-              />
+            <input
+              type="text"
+              placeholder="Tulis Disini"
+              value={journalInput}
+              onChange={(e) => setJournalInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleAddJournal();
+                }
+              }}
+              className="flex-1 bg-white/60 backdrop-blur-md border border-white/40 py-3 px-5 sm:px-8 rounded-full shadow-sm focus:outline-none text-[#1F2A44] font-medium text-sm sm:text-base"
+            />
 
-              <button className="ml-3 min-w-[42px] h-[42px] flex items-center justify-center border-2 border-[#1F2A44] rounded-full text-[#1F2A44] font-bold hover:bg-[#1F2A44] hover:text-white transition duration-300">
+            <button
+              onClick={handleAddJournal}
+              className="ml-3 min-w-[42px] h-[42px] flex items-center justify-center border-2 border-[#1F2A44] rounded-full text-[#1F2A44] font-bold hover:bg-[#1F2A44] hover:text-white transition duration-300"
+            >
                 +
-              </button>
+            </button>
             </div>
           </div>
 
