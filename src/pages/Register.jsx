@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import logo from "../assets/dailymind_logo.png"
-import { login } from "../AuthService"
+import { register } from "../AuthService"
 import { FcGoogle } from "react-icons/fc"
 
 export default function Login() {
@@ -12,17 +12,28 @@ export default function Login() {
 
   const navigate = useNavigate()
   
-  const handleLogin = async (e) => {
-  e.preventDefault()
+  const handleRegister = async (e) => {
+  e.preventDefault();
 
-  const result = await login(email, password)
+  if (password !== confirmPassword) {
+    alert("Password tidak sama");
+    return;
+  }
+
+  const result = await register(
+    name,
+    email,
+    password
+  );
 
   if (result.success) {
-    navigate("/home")
+    navigate("/home");
   } else {
-    alert(result.message)
+    alert(result.message);
   }
-}
+};
+
+const [confirmPassword, setConfirmPassword] = useState("")
 
   return (
     <div className="min-h-screen w-screen flex items-center gap-2 justify-center bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC] px-6">
@@ -39,7 +50,7 @@ export default function Login() {
 
           {/* Form */}
           <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form onSubmit={handleLogin} className="space-y-6">
+            <form onSubmit={handleRegister} className="space-y-6">
 
               {/* Name */}
               <div>
@@ -85,8 +96,8 @@ export default function Login() {
                   <input
                     type={showPassword ? "text" : "password"}
                     required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     className="block w-full rounded-xl bg-white/5 px-3 py-2 pr-3 text-[#27374D] outline outline-1 outline-[#27374D] placeholder:text-[#27374D] focus:outline-2 focus:outline-[#27374D]"
                   />
                 </div>
@@ -118,7 +129,7 @@ export default function Login() {
                   type="submit"
                   className="flex w-full justify-center rounded-xl bg-[#27374D] px-3 py-2 text-sm font-semibold text-white hover:bg-[#171F35] transition"
                 >
-                  Masuk
+                  Daftar
                 </button>
               </div>
             </form>

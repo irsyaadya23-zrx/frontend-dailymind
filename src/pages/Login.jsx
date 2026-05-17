@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import logo from "../assets/dailymind_logo.png"
-import { login } from "../AuthService"
+import { login, loginWithGoogle } from "../AuthService"
 import { FcGoogle } from "react-icons/fc"
 import { Link } from "react-router-dom"
 
@@ -94,7 +94,7 @@ export default function Login() {
 
             {/* Button Google Login */}
             <div className="mb-2">
-                <button
+                <button onClick={loginWithGoogle}
                   type="submit"
                   className="flex w-full item-center justify-center gap-3 mt-3 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-[#27374D] hover:bg-[#F7F7F7] transition"
                 >
