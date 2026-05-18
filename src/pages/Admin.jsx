@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Plus, Search } from "lucide-react";
 
-const initialFeedback = [
-  { id: "F001", kategori: "Bug", pesan: "Aplikasi sering keluar sendiri", status: "Unread" },
-  { id: "F002", kategori: "Saran", pesan: "Tambahkan fitur dark mode", status: "Resolve" },
+const feedbackStatuses = [
+  "Unread",
+  "In Progress",
+  "In Review",
+  "Resolve",
 ];
 
 const initialWords = [
@@ -34,19 +36,42 @@ export default function Admin() {
     window.removeEventListener("storage", syncUsers);
 }, []);
 
+useEffect(() => {
+
+  const syncFeedback = () => {
+
+    const updatedFeedback =
+      JSON.parse(
+        localStorage.getItem("admin_feedback")
+      ) || [];
+
+    setFeedback(updatedFeedback);
+  };
+
+  window.addEventListener(
+    "storage",
+    syncFeedback
+  );
+
+  return () =>
+    window.removeEventListener(
+      "storage",
+      syncFeedback
+    );
+
+}, []);
+
 
   // ================= FEEDBACK =================
-  // eslint-disable-next-line no-unused-vars
   const [feedback, setFeedback] = useState(() => {
-    const stored = localStorage.getItem("admin_feedback");
 
-    if (!stored) {
-      localStorage.setItem("admin_feedback", JSON.stringify(initialFeedback));
-      return initialFeedback;
-    }
+  const stored =
+    localStorage.getItem("admin_feedback");
 
-    return JSON.parse(stored);
-  });
+  return stored
+    ? JSON.parse(stored)
+    : [];
+});
 
   // ================= WORDS =================
   const [words, setWords] = useState(() => {
@@ -109,6 +134,25 @@ export default function Admin() {
     });
   };
 
+    // ================= UPDATE FEEDBACK STATUS =================
+  const handleFeedbackStatus = (id, newStatus) => {
+    const updatedFeedback = feedback.map((item) => {
+      if (item.id === id) {
+      return {
+        ...item,
+        status: newStatus,
+      };
+    }
+    return item;
+  });
+  setFeedback(updatedFeedback);
+
+  localStorage.setItem(
+    "admin_feedback",
+    JSON.stringify(updatedFeedback)
+  );
+};
+
   // ================= ADD WORD =================
   const addWord = () => {
     if (!newWord.trim()) return;
@@ -132,13 +176,27 @@ export default function Admin() {
 
   // ================= BADGE =================
   const statusBadge = (status) => {
-    if (status === "Active") return "bg-green-500 text-white";
-    if (status === "Banned") return "bg-red-500 text-white";
-    if (status === "Unread") return "bg-orange-400 text-white";
-    if (status === "Resolve") return "bg-green-600 text-white";
 
-    return "bg-gray-400 text-white";
-  };
+  if (status === "Active")
+    return "bg-green-500 text-white";
+
+  if (status === "Banned")
+    return "bg-red-500 text-white";
+
+  if (status === "Unread")
+    return "bg-red-500 text-white";
+
+  if (status === "In Progress")
+    return "bg-yellow-400 text-black";
+
+  if (status === "In Review")
+    return "bg-green-500 text-white";
+
+  if (status === "Resolve")
+    return "bg-blue-500 text-white";
+
+  return "bg-gray-400 text-white";
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC] font-['Sarabun'] pb-10">
@@ -372,17 +430,28 @@ export default function Admin() {
                   <div className="flex items-center gap-2">
                     <span className="font-bold">Status:</span>
 
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${statusBadge(f.status)}`}>
-                      {f.status}
-                    </span>
+                  <select
+                    value={f.status}
+                    onChange={(e) =>
+                      handleFeedbackStatus( f.id, e.target.value)
+                    }
+                    className={`px-3, py-1, rounded-full, text-[10px], font-bold, outline-none, ${statusBadge(f.status)}
+                    `}
+                  >
+                  
+                  {feedbackStatuses.map((status) => (
+                    <option
+                    key={status}
+                    value={status}
+                    >
+                      {status}
+                    </option>
+                   ))}
+                  </select>
                   </div>
-
                 </div>
-
               </div>
-
             ))}
-
           </div>
 
           {/* DESKTOP */}
@@ -413,19 +482,29 @@ export default function Admin() {
                   </span>
 
                   <span className="w-2/12 flex justify-center">
-                    <span className={`px-4 py-1 rounded-full text-[10px] font-bold ${statusBadge(f.status)}`}>
-                      {f.status}
-                    </span>
+                    <select
+                    value={f.status}
+                    onChange={(e) =>
+                      handleFeedbackStatus( f.id, e.target.value)}
+                    className={`px-3, py-1, rounded-full, text-[10px], font-bold, outline-none, cursor-pointer, ${statusBadge(f.status)}
+                    `}
+                    >
+                      
+                      {feedbackStatuses.map((status) => (
+                        <option
+                        key={status}
+                        value={status}
+                        >
+                          {status}
+                        </option>
+                      ))}
+                    </select>
+
                   </span>
-
                 </div>
-
               ))}
-
             </div>
-
           </div>
-
         </div>
 
         {/* ================= SENSOR KATA ================= */}

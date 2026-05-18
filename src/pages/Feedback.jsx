@@ -150,74 +150,53 @@ const Feedback = () => {
   // =========================================
   const handleSubmit = async () => {
 
-    if (
-      !selectedCategory ||
-      rating === 0 ||
-      message.trim() === ""
-    ) {
-      alert("Isi semua field dulu!");
-      return;
-    }
+  if (
+    !selectedCategory ||
+    rating === 0 ||
+    message.trim() === ""
+  ) {
+    alert("Isi semua field dulu!");
+    return;
+  }
 
-    try {
+  try {
 
-      const response = await fetch(
-        `${API_URL}`,
-        {
-          method: "POST",
+    const newFeedback = {
+      id: `F${Date.now()}`,
+      kategori: selectedCategory,
+      pesan: message,
+      rating: rating,
+      status: "Unread",
+    };
 
-          headers: {
-            "Content-Type":
-              "application/json",
+    const oldFeedback =
+      JSON.parse(
+        localStorage.getItem("admin_feedback")
+      ) || [];
 
-            Authorization: `Bearer ${token}`,
-          },
+    const updatedFeedback = [
+      ...oldFeedback,
+      newFeedback,
+    ];
 
-          body: JSON.stringify({
-            kategori: selectedCategory,
-            pesan: message,
-            rating: rating,
-          }),
-        }
-      );
+    localStorage.setItem(
+      "admin_feedback",
+      JSON.stringify(updatedFeedback)
+    );
 
-      if (!response.ok) {
-        throw new Error(
-          "Gagal mengirim feedback"
-        );
-      }
+    setSelectedCategory(null);
+    setRating(0);
+    setMessage("");
 
-      // RESET FORM
-      setSelectedCategory(null);
+    alert("Feedback berhasil dikirim!");
 
-      setRating(0);
+  } catch (err) {
 
-      setMessage("");
+    console.error(err);
 
-      alert("Feedback berhasil dikirim!");
-
-      // REFRESH STATS
-      const statsResponse = await fetch(
-        `${API_URL}/stats`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const statsData =
-        await statsResponse.json();
-
-      setStats(statsData);
-
-    } catch (err) {
-
-      console.error(err);
-
-      alert("Terjadi kesalahan");
-    }
-  };
+    alert("Terjadi kesalahan");
+  }
+};
 
   // =========================================
   // LOADING SCREEN
