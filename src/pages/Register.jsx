@@ -4,7 +4,7 @@ import logo from "../assets/dailymind_logo.png"
 import { register } from "../AuthService"
 import { FcGoogle } from "react-icons/fc"
 
-export default function Login() {
+export default function Register() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -31,6 +31,32 @@ export default function Login() {
   } else {
     alert(result.message);
   }
+
+  // ambil data user lama
+  const storedUsers =
+    JSON.parse(localStorage.getItem("admin_users")) || [];
+
+  // buat user baru
+  const newUser = {
+    id: String(storedUsers.length + 1).padStart(4, "0"),
+    username: name,
+    email,
+    password,
+    status: "Active",
+    role: "user",
+    createdAt: new Date().toISOString(),
+  };
+
+  // simpan user baru
+  const updatedUsers = [...storedUsers, newUser];
+
+  localStorage.setItem(
+    "admin_users",
+    JSON.stringify(updatedUsers)
+  );
+
+  // pindah ke login
+  navigate("/login");
 };
 
 const [confirmPassword, setConfirmPassword] = useState("")
@@ -96,8 +122,8 @@ const [confirmPassword, setConfirmPassword] = useState("")
                   <input
                     type={showPassword ? "text" : "password"}
                     required
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="block w-full rounded-xl bg-white/5 px-3 py-2 pr-3 text-[#27374D] outline outline-1 outline-[#27374D] placeholder:text-[#27374D] focus:outline-2 focus:outline-[#27374D]"
                   />
                 </div>
@@ -115,8 +141,8 @@ const [confirmPassword, setConfirmPassword] = useState("")
                   <input
                     type={showPassword ? "text" : "password"}
                     required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={confirmPassword} 
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     className="block w-full rounded-xl bg-white/5 px-3 py-2 pr-3 text-[#27374D] outline outline-1 outline-[#27374D] placeholder:text-[#27374D] focus:outline-2 focus:outline-[#27374D]"
                   />
                 </div>
@@ -136,5 +162,5 @@ const [confirmPassword, setConfirmPassword] = useState("")
           </div>
         </div>
     </div>    
-  )
+  );
 }

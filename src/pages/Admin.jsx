@@ -1,13 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Search } from "lucide-react";
-
-// ================= DATA DUMMY =================
-const initialUsers = [
-  { id: "0001", email: "296318327@gmail.com", username: "Lorem Sit dolar", status: "Active" },
-  { id: "0002", email: "1323418332@gmail.com", username: "Lorem Sit dolar", status: "Banned" },
-  { id: "0003", email: "8189619919@gmail.com", username: "Lorem Sit dolar", status: "Banned" },
-  { id: "0004", email: "user_empat@gmail.com", username: "User Empat", status: "Active" },
-];
 
 const initialFeedback = [
   { id: "F001", kategori: "Bug", pesan: "Aplikasi sering keluar sendiri", status: "Unread" },
@@ -23,15 +15,25 @@ export default function Admin() {
 
   // ================= USERS =================
   const [users, setUsers] = useState(() => {
-    const stored = localStorage.getItem("admin_users");
-
-    if (!stored) {
-      localStorage.setItem("admin_users", JSON.stringify(initialUsers));
-      return initialUsers;
-    }
-
-    return JSON.parse(stored);
+    return JSON.parse(
+      localStorage.getItem("admin_users")
+    ) || [];
   });
+
+  useEffect(() => {
+  const syncUsers = () => {
+    const updatedUsers =
+      JSON.parse(localStorage.getItem("admin_users")) || [];
+
+    setUsers(updatedUsers);
+  };
+
+  window.addEventListener("storage", syncUsers);
+
+  return () =>
+    window.removeEventListener("storage", syncUsers);
+}, []);
+
 
   // ================= FEEDBACK =================
   // eslint-disable-next-line no-unused-vars
