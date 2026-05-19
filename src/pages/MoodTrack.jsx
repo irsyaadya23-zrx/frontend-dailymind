@@ -492,8 +492,6 @@ export default function MoodTrack() {
       </div>
     );
   }
-
-  // UI
  
   return (
 

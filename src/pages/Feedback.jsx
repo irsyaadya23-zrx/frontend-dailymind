@@ -6,19 +6,13 @@ import LainnyaImg from "../assets/lainnya.png";
 
 const Feedback = () => {
 
-  // =========================================
   // API
-  // =========================================
-  const API_URL = "http://localhost:5000/api/feedback";
+  
+  const API_URL =
+    "https://be-dailymind.vercel.app/feedbacks";
 
-  // =========================================
-  // TOKEN
-  // =========================================
-  const token = localStorage.getItem("token");
-
-  // =========================================
   // STATE
-  // =========================================
+
   const [selectedCategory, setSelectedCategory] =
     useState(null);
 
@@ -28,10 +22,8 @@ const Feedback = () => {
 
   const [message, setMessage] = useState("");
 
-  const [loading, setLoading] = useState(true);
-
-  const [loadingDots, setLoadingDots] =
-    useState("");
+  const [loading, setLoading] =
+    useState(true);
 
   const [stats, setStats] = useState({
     total: 0,
@@ -39,60 +31,107 @@ const Feedback = () => {
     monthly: 0,
   });
 
-  // =========================================
-  // LOADING DOTS ANIMATION
-  // =========================================
+  // GET FEEDBACK
+  
   useEffect(() => {
 
-    const interval = setInterval(() => {
-
-      setLoadingDots((prev) => {
-
-        if (prev.length >= 3) {
-          return "";
-        }
-
-        return prev + ".";
-      });
-
-    }, 400);
-
-    return () => clearInterval(interval);
-
-  }, []);
-
-  // =========================================
-  // GET FEEDBACK STATS
-  // =========================================
-  useEffect(() => {
-
-    const getFeedbackStats = async () => {
+    const getFeedbacks = async () => {
 
       try {
 
         const response = await fetch(
-          `${API_URL}/stats`,
+          API_URL,
           {
             method: "GET",
 
             headers: {
               "Content-Type":
                 "application/json",
-
-              Authorization: `Bearer ${token}`,
             },
+
+            credentials: "include",
           }
         );
 
+        // BELUM LOGIN
+        if (response.status === 401) {
+
+          console.log("Unauthorized");
+
+          setStats({
+            total: 0,
+            averageRating: 0,
+            monthly: 0,
+          });
+
+          return;
+        }
+
         if (!response.ok) {
           throw new Error(
-            "Gagal mengambil statistik"
+            "Gagal mengambil feedback"
           );
         }
 
         const data = await response.json();
 
-        setStats(data);
+        console.log(
+          "GET FEEDBACKS:",
+          data
+        );
+
+        // SUPPORT MULTIPLE FORMAT
+        const feedbacks =
+          data.feedbacks ||
+          data.data ||
+          data ||
+          [];
+
+        // TOTAL
+        const total =
+          feedbacks.length;
+
+        // AVG RATING
+        const averageRating =
+          total > 0
+            ? (
+                feedbacks.reduce(
+                  (acc, item) =>
+                    acc +
+                    (item.rating || 0),
+                  0
+                ) / total
+              ).toFixed(1)
+            : 0;
+
+        // BULAN INI
+        const currentMonth =
+          new Date().getMonth();
+
+        const currentYear =
+          new Date().getFullYear();
+
+        const monthly =
+          feedbacks.filter((item) => {
+
+            const createdAt =
+              new Date(
+                item.createdAt
+              );
+
+            return (
+              createdAt.getMonth() ===
+                currentMonth &&
+              createdAt.getFullYear() ===
+                currentYear
+            );
+          }).length;
+
+        setStats({
+          total,
+          averageRating,
+          monthly,
+        });
 
       } catch (err) {
 
@@ -104,18 +143,18 @@ const Feedback = () => {
       }
     };
 
-    getFeedbackStats();
+    getFeedbacks();
 
-  }, [token]);
+  }, []);
 
-  // =========================================
   // CATEGORY
-  // =========================================
+
   const categories = [
     {
       id: "pujian",
       label: "Pujian",
       icon: PujianImg,
+
       activeClass:
         "bg-green-100 border-green-500 text-green-700",
     },
@@ -124,6 +163,7 @@ const Feedback = () => {
       id: "saran",
       label: "Saran Fitur",
       icon: SaranImg,
+
       activeClass:
         "bg-yellow-100 border-yellow-500 text-yellow-700",
     },
@@ -132,6 +172,7 @@ const Feedback = () => {
       id: "keluhan",
       label: "Keluhan",
       icon: KeluhanImg,
+
       activeClass:
         "bg-orange-100 border-orange-500 text-orange-700",
     },
@@ -140,80 +181,117 @@ const Feedback = () => {
       id: "lainnya",
       label: "Lainnya",
       icon: LainnyaImg,
+
       activeClass:
         "bg-blue-100 border-blue-500 text-blue-700",
     },
   ];
 
-  // =========================================
   // SUBMIT FEEDBACK
-  // =========================================
+
   const handleSubmit = async () => {
 
-  if (
-    !selectedCategory ||
-    rating === 0 ||
-    message.trim() === ""
-  ) {
-    alert("Isi semua field dulu!");
-    return;
-  }
+    if (
+      !selectedCategory ||
+      rating === 0 ||
+      message.trim() === ""
+    ) {
 
-  try {
+      alert(
+        "Isi semua field dulu!"
+      );
 
-    const newFeedback = {
-      id: `F${Date.now()}`,
-      kategori: selectedCategory,
-      pesan: message,
-      rating: rating,
-      status: "Unread",
-    };
+      return;
+    }
 
-    const oldFeedback =
-      JSON.parse(
-        localStorage.getItem("admin_feedback")
-      ) || [];
+    try {
 
-    const updatedFeedback = [
-      ...oldFeedback,
-      newFeedback,
-    ];
+      const response = await fetch(
+        API_URL,
+        {
+          method: "POST",
 
-    localStorage.setItem(
-      "admin_feedback",
-      JSON.stringify(updatedFeedback)
-    );
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
 
-    setSelectedCategory(null);
-    setRating(0);
-    setMessage("");
+          credentials: "include",
 
-    alert("Feedback berhasil dikirim!");
+          body: JSON.stringify({
+            category:
+              selectedCategory,
 
-  } catch (err) {
+            rating,
 
-    console.error(err);
+            message,
+          }),
+        }
+      );
 
-    alert("Terjadi kesalahan");
-  }
-};
+      const data =
+        await response.json();
 
-  // =========================================
+      console.log(
+        "POST FEEDBACK:",
+        data
+      );
+
+      if (!response.ok) {
+
+        alert(
+          data.message ||
+            "Gagal mengirim feedback"
+        );
+
+        return;
+      }
+
+      // RESET
+      setSelectedCategory(null);
+
+      setRating(0);
+
+      setMessage("");
+
+      // UPDATE STATS
+      setStats((prev) => ({
+        ...prev,
+        total: prev.total + 1,
+      }));
+
+      alert(
+        "Feedback berhasil dikirim!"
+      );
+
+    } catch (err) {
+
+      console.error(err);
+
+      alert(
+        "Terjadi kesalahan"
+      );
+    }
+  };
+
   // LOADING SCREEN
-  // =========================================
+
   if (loading) {
+
     return (
+
       <div className="w-full min-h-screen flex justify-center items-center">
-
-        <p className="text-xl text-[#A3A3A3]">
-          Loading{loadingDots}
-        </p>
-
+        <div className="flex gap-2">
+          <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+          <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+          <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce"></span>
+        </div>
       </div>
     );
   }
 
   return (
+
     <div className="w-full px-4 py-2 sm:p-6 md:p-8 lg:p-10">
 
       {/* HEADER */}
@@ -292,10 +370,13 @@ const Feedback = () => {
                 <button
                   key={cat.id}
                   onClick={() =>
-                    setSelectedCategory(cat.id)
+                    setSelectedCategory(
+                      cat.id
+                    )
                   }
                   className={`flex flex-col items-center justify-center p-6 rounded-xl border-2 transition-all duration-200 ${
-                    selectedCategory === cat.id
+                    selectedCategory ===
+                    cat.id
                       ? cat.activeClass
                       : "bg-gray-300 border-transparent text-slate-600 hover:bg-slate-200"
                   }`}
@@ -325,37 +406,40 @@ const Feedback = () => {
 
             <div className="flex gap-2">
 
-              {[1, 2, 3, 4, 5].map((star) => {
+              {[1, 2, 3, 4, 5].map(
+                (star) => {
 
-                const isActive =
-                  hover !== null
-                    ? star <= hover
-                    : star <= rating;
+                  const isActive =
+                    hover !== null
+                      ? star <= hover
+                      : star <=
+                        rating;
 
-                return (
+                  return (
 
-                  <button
-                    key={star}
-                    type="button"
-                    onClick={() =>
-                      setRating(star)
-                    }
-                    onMouseEnter={() =>
-                      setHover(star)
-                    }
-                    onMouseLeave={() =>
-                      setHover(null)
-                    }
-                    className={`text-3xl transition-transform duration-150 ${
-                      isActive
-                        ? "text-yellow-400 scale-110"
-                        : "text-gray-300"
-                    }`}
-                  >
-                    ★
-                  </button>
-                );
-              })}
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() =>
+                        setRating(star)
+                      }
+                      onMouseEnter={() =>
+                        setHover(star)
+                      }
+                      onMouseLeave={() =>
+                        setHover(null)
+                      }
+                      className={`text-3xl transition-transform duration-150 ${
+                        isActive
+                          ? "text-yellow-400 scale-110"
+                          : "text-gray-300"
+                      }`}
+                    >
+                      ★
+                    </button>
+                  );
+                }
+              )}
             </div>
           </div>
 
@@ -372,7 +456,9 @@ const Feedback = () => {
                 type="text"
                 value={message}
                 onChange={(e) =>
-                  setMessage(e.target.value)
+                  setMessage(
+                    e.target.value
+                  )
                 }
                 placeholder="Tulis Feedback disini"
                 className="flex-1 p-4 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400 h-[40px] md:h-auto"
