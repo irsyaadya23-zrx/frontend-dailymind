@@ -49,7 +49,6 @@ export default function Pomodoro() {
             "Content-Type": "application/json",
           },
 
-          // PENTING UNTUK AUTH COOKIE
           credentials: "include",
         });
 
