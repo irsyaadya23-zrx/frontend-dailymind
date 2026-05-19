@@ -3,55 +3,259 @@ import { useLocation } from "react-router-dom";
 
 export default function Journal() {
 
+  // LOCATION
+
   const location = useLocation();
 
-  const [entries, setEntries] = useState(() => {
-    const saved = localStorage.getItem('dailyMind_jurnal');
-    return saved ? JSON.parse(saved) : [];
-  });
+  // API
 
-  const [inputText, setInputText] = useState("");
-  const [loading, setLoading] = useState(true);
+  const API_URL = "https://be-dailymind.vercel.app/journals";
 
-  // =========================================
-  // GET JOURNAL DARI DATABASE
-  // =========================================
+  // STATE
+
+  const [entries, setEntries] =
+    useState([]);
+
+  const [inputText, setInputText] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(true);
+
+  // DRAFT DARI PAGE LAIN
+
   useEffect(() => {
+
     if (location.state?.draft) {
-      setInputText(location.state.draft);
+
+      setInputText(
+        location.state.draft
+      );
     }
+
   }, [location.state]);
 
-  const handleSubmit = () => {
-    if (inputText.trim() === "") return;
-    
-    const newEntry = {
-      id: Date.now(),
-      content: inputText,
-      date: new Date().toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    }),
+  // GET JOURNALS
+
+  useEffect(() => {
+
+    const getJournals = async () => {
+
+      try {
+
+        const response = await fetch(
+          API_URL,
+          {
+            method: "GET",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+
+            credentials: "include",
+          }
+        );
+
+        // BELUM LOGIN
+        if (response.status === 401) {
+
+          console.log(
+            "Unauthorized"
+          );
+
+          setEntries([]);
+
+          return;
+        }
+
+        if (!response.ok) {
+
+          throw new Error(
+            "Gagal mengambil jurnal"
+          );
+        }
+
+        const data =
+          await response.json();
+
+        console.log(
+          "GET JOURNALS:",
+          data
+        );
+
+        // SUPPORT MULTIPLE FORMAT
+        const journals =
+          data.journals ||
+          data.data ||
+          data ||
+          [];
+
+        setEntries(journals);
+
+      } catch (err) {
+
+        console.error(err);
+
+      } finally {
+
+        setLoading(false);
+      }
+    };
+
+    getJournals();
+
+  }, []);
+
+  // SUBMIT JOURNAL
+
+  const handleSubmit = async () => {
+
+    if (
+      inputText.trim() === ""
+    ) return;
+
+    try {
+
+      const response = await fetch(
+        API_URL,
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          credentials: "include",
+
+          body: JSON.stringify({
+            content: inputText,
+          }),
+        }
+      );
+
+      const data =
+        await response.json();
+
+      console.log(
+        "POST JOURNAL:",
+        data
+      );
+
+      if (!response.ok) {
+
+        alert(
+          data.message ||
+            "Gagal membuat jurnal"
+        );
+
+        return;
+      }
+
+      // SUPPORT MULTIPLE FORMAT
+      const newJournal =
+        data.journal ||
+        data.data ||
+        data;
+
+      // TAMBAH KE STATE
+      setEntries((prev) => [
+        newJournal,
+        ...prev,
+      ]);
+
+      // EVENT UPDATE
+      window.dispatchEvent(
+        new Event("dataUpdated")
+      );
+
+      // RESET INPUT
+      setInputText("");
+
+    } catch (err) {
+
+      console.error(err);
+
+      alert(
+        "Terjadi kesalahan"
+      );
+    }
   };
 
-  const updatedEntries = [newEntry, ...entries];
+  // DELETE JOURNAL
 
-  setEntries(updatedEntries);
+  const handleDelete =
+    async (id) => {
 
-  localStorage.setItem(
-    "dailyMind_jurnal",
-    JSON.stringify(updatedEntries)
-  );
+      try {
 
-  window.dispatchEvent(new Event("dataUpdated"));
+        const response = await fetch(
+          `${API_URL}/${id}`,
+          {
+            method: "DELETE",
 
-  setInputText("");
-};
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
 
-  const headerColors = ["bg-[#CDF4FF] border-[#0592FF]", "bg-[#FFEEDB] border-[#FF7B4F]", "bg-[#FFFBCC] border-[#FFE100]", "bg-[#EAFCDC] border-[#5ACC4B]"];
+            credentials: "include",
+          }
+        );
+
+        if (!response.ok) {
+
+          throw new Error(
+            "Gagal menghapus jurnal"
+          );
+        }
+
+        // HAPUS DARI UI
+        setEntries((prev) =>
+          prev.filter(
+            (entry) =>
+              entry._id !== id
+          )
+        );
+
+      } catch (err) {
+
+        console.error(err);
+
+        alert(
+          "Gagal menghapus jurnal"
+        );
+      }
+    };
+
+  // HEADER COLORS
+
+  const headerColors = [
+    "bg-[#CDF4FF] border-[#0592FF]",
+    "bg-[#FFEEDB] border-[#FF7B4F]",
+    "bg-[#FFFBCC] border-[#FFE100]",
+    "bg-[#EAFCDC] border-[#5ACC4B]",
+  ];
+
+  // LOADING
+
+  if (loading) {
+
+    return (
+
+      <div className="w-full min-h-screen flex justify-center items-center">
+        <div className="flex gap-2">
+          <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+          <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+          <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce"></span>
+        </div>
+      </div>
+    );
+  }
 
   return (
+
     <div className="w-full px-4 py-2 sm:p-6 md:p-8 lg:p-10">
 
       <div className="flex flex-col min-h-screen gap-12 w-full">
@@ -82,9 +286,14 @@ export default function Journal() {
             <input
               type="text"
               value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
+              onChange={(e) =>
+                setInputText(
+                  e.target.value
+                )
+              }
               onKeyDown={(e) =>
-                e.key === "Enter" && handleSubmit()
+                e.key === "Enter" &&
+                handleSubmit()
               }
               placeholder="Apa yang terjadi hari ini?"
               className="peer w-full h-[40px] rounded-xl text-md text-[#000000] p-2 outline-2 outline-[#000000]/30 focus:outline-[#09EB00CC]"
@@ -92,8 +301,10 @@ export default function Journal() {
 
             {/* BUTTON */}
             <button
-              onClick={handleSubmit}
-              className="w-34 h-[40px] bg-[#ABE3A9] text-white rounded-xl shadow-md transition-colors duration-300 peer-focus:bg-[#09EB00CC]"
+              onClick={
+                handleSubmit
+              }
+              className="w-34 h-[40px] bg-[#ABE3A9] hover:bg-[#09EB00CC] text-white rounded-xl shadow-md transition-colors duration-300"
             >
               Submit
             </button>
@@ -110,51 +321,86 @@ export default function Journal() {
 
           <div className="flex flex-col gap-4">
 
-            {entries.length === 0 ? (
+            {entries.length ===
+            0 ? (
 
               <div className="bg-white rounded-2xl p-6 text-center shadow">
+
                 <p className="text-gray-500">
                   Belum ada jurnal
                 </p>
+
               </div>
 
             ) : (
 
-              entries.map((entry, index) => (
+              entries.map(
+                (
+                  entry,
+                  index
+                ) => (
 
-                <div
-                  key={entry._id}
-                  className="flex flex-col overflow-hidden rounded-3xl border shadow-sm transition-all hover:scale-[1.01]"
-                >
-
-                  {/* HEADER DATE */}
                   <div
-                    className={`px-6 py-3 border-b font-bold text-md md:text-lg ${
-                      headerColors[index % headerColors.length]
-                    }`}
+                    key={
+                      entry._id
+                    }
+                    className="flex flex-col overflow-hidden rounded-3xl border shadow-sm transition-all hover:scale-[1.01]"
                   >
 
-                    {new Date(entry.createdAt).toLocaleDateString(
-                      "id-ID",
-                      {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      }
-                    )}
+                    {/* HEADER DATE */}
+                    <div
+                      className={`px-6 py-3 border-b font-bold text-md md:text-lg ${
+                        headerColors[
+                          index %
+                            headerColors.length
+                        ]
+                      }`}
+                    >
 
+                      {new Date(
+                        entry.createdAt
+                      ).toLocaleDateString(
+                        "id-ID",
+                        {
+                          day: "numeric",
+                          month:
+                            "long",
+                          year:
+                            "numeric",
+                        }
+                      )}
+
+                    </div>
+
+                    {/* CONTENT */}
+                    <div className="bg-white p-6">
+
+                      <p className="text-gray-700 leading-relaxed">
+                        {
+                          entry.content
+                        }
+                      </p>
+
+                      {/* DELETE BUTTON */}
+                      <div className="flex justify-end mt-4">
+
+                        <button
+                          onClick={() =>
+                            handleDelete(
+                              entry._id
+                            )
+                          }
+                          className="px-4 py-2 bg-red-400 hover:bg-red-500 text-white rounded-xl text-sm font-semibold transition"
+                        >
+                          Hapus
+                        </button>
+
+                      </div>
+
+                    </div>
                   </div>
-
-                  {/* CONTENT */}
-                  <div className="bg-white p-6">
-
-                    <p className="text-gray-700 leading-relaxed">
-                      {entry.content}
-                    </p>
-
-                  </div>
-                </div>
-              ))
+                )
+              )
             )}
           </div>
         </div>
