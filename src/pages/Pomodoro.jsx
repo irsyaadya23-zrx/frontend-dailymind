@@ -38,110 +38,143 @@ export default function Pomodoro() {
 
   useEffect(() => {
 
-    const getPomodoros = async () => {
-
-      try {
-
-        const response = await fetch(API_URL, {
-          method: "GET",
-
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          credentials: "include",
-        });
-
-        // UNAUTHORIZED
-        if (response.status === 401) {
-          console.log("Belum login");
-
-          setSessions(0);
-
-          return;
-        }
-
-        if (!response.ok) {
-          throw new Error("Gagal mengambil pomodoro");
-        }
-
-        const data = await response.json();
-
-        console.log("GET POMODOROS:", data);
-
-        if (Array.isArray(data)) {
-          setSessions(data.length);
-        }
-
-        else if (Array.isArray(data.data)) {
-          setSessions(data.data.length);
-        }
-
-        else {
-          setSessions(0);
-        }
-
-      } catch (error) {
-        console.error(error);
-
-      } finally {
-        setLoading(false);
-
-      }
-    };
-
-    getPomodoros();
-
-  }, []);
-
-  // SAVE SESSION
- 
-  const saveSession = async () => {
+  const getPomodoros = async () => {
 
     try {
 
       const response = await fetch(API_URL, {
 
-        method: "POST",
+        method: "GET",
+
+        credentials: "include",
 
         headers: {
           "Content-Type": "application/json",
         },
-
-        // PENTING UNTUK COOKIE AUTH
-        credentials: "include",
-
-        body: JSON.stringify({
-          duration: 25,
-          mode: "work",
-        }),
-
       });
 
-      // JIKA BELUM LOGIN
+      // BELUM LOGIN
       if (response.status === 401) {
 
-        console.log("User belum login");
+        console.log("Belum login");
+
+        setSessions(0);
 
         return;
       }
 
       if (!response.ok) {
-        throw new Error("Gagal menyimpan pomodoro");
+        throw new Error("Gagal mengambil pomodoro");
       }
 
       const data = await response.json();
 
-      console.log("SAVE POMODORO:", data);
+      console.log("GET POMODOROS:", data);
 
-      setSessions((prev) => prev + 1);
+      // SUPPORT MULTIPLE FORMAT
+      const pomodoros =
+        data.pomodoros ||
+        data.data ||
+        data ||
+        [];
+
+      // TANGGAL HARI INI
+      const today =
+        new Date()
+          .toISOString()
+          .split("T")[0];
+
+      // FILTER HARI INI
+      const todaySessions =
+        pomodoros.filter((item) => {
+
+          const itemDate =
+            new Date(
+              item.createdAt ||
+              item.date
+            )
+              .toISOString()
+              .split("T")[0];
+
+          return itemDate === today;
+        });
+
+      setSessions(
+        todaySessions.length
+      );
 
     } catch (error) {
 
       console.error(error);
 
+    } finally {
+
+      setLoading(false);
     }
   };
+
+  getPomodoros();
+
+}, []);
+
+  // SAVE SESSION
+ 
+  const saveSession = async () => {
+
+  try {
+
+    const response = await fetch(
+      API_URL,
+      {
+
+        method: "POST",
+
+        credentials: "include",
+
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+
+        body: JSON.stringify({
+          duration: 25,
+          mode: "work",
+        }),
+      }
+    );
+
+    // BELUM LOGIN
+    if (response.status === 401) {
+
+      console.log(
+        "User belum login"
+      );
+
+      return;
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        "Gagal menyimpan pomodoro"
+      );
+    }
+
+    const data =
+      await response.json();
+
+    console.log(
+      "SAVE POMODORO:",
+      data
+    );
+
+    // TAMBAH SESSION HARI INI
+    setSessions((prev) => prev + 1);
+
+  } catch (error) {
+
+    console.error(error);
+  }
+};
 
   // TIMER
 
