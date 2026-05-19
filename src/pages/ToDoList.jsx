@@ -5,107 +5,138 @@ export default function ToDoList() {
 
   // API URL
 
-  const API_URL = "http://localhost:5000/api/todos";
-
-  // TOKEN
-
-  const token = localStorage.getItem("token");
+  const API_URL = "https://be-dailymind.vercel.app/todos";
 
   // STATE
 
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] =
+    useState(false);
 
   const [todos, setTodos] = useState([]);
 
-  const [completedCount, setCompletedCount] = useState(0);
+  const [completedCount, setCompletedCount] =
+    useState(0);
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] =
+    useState("");
 
   const [deadline, setDeadline] = useState(
     new Date().toISOString().split("T")[0]
   );
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] =
+    useState(true);
 
-  // GET TODOS DARI DATABASE
-
+  // GET TODOS
+ 
   useEffect(() => {
 
     const getTodos = async () => {
 
       try {
 
-        const response = await fetch(`${API_URL}`, {
-          method: "GET",
+        const response = await fetch(
+          API_URL,
+          {
+            method: "GET",
 
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+            credentials: "include",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+          }
+        );
 
         if (!response.ok) {
-          throw new Error("Gagal mengambil todo");
+          throw new Error(
+            "Gagal mengambil todo"
+          );
         }
 
         const data = await response.json();
 
-        // TODO BELUM SELESAI
-        const activeTodos = data.todos.filter(
-          (todo) => !todo.completed
-        );
+        const todosData =
+          data.todos || data || [];
 
-        // TODO SUDAH SELESAI
-        const completedTodos = data.todos.filter(
-          (todo) => todo.completed
-        );
+        // ACTIVE TODO
+        const activeTodos =
+          todosData.filter(
+            (todo) => !todo.completed
+          );
+
+        // COMPLETE TODO
+        const completedTodos =
+          todosData.filter(
+            (todo) => todo.completed
+          );
 
         setTodos(activeTodos);
 
-        setCompletedCount(completedTodos.length);
+        setCompletedCount(
+          completedTodos.length
+        );
 
       } catch (err) {
+
         console.error(err);
 
       } finally {
+
         setLoading(false);
       }
     };
 
     getTodos();
 
-  }, [token]);
+  }, []);
 
   // ADD TODO
 
   const handleAddTodo = async () => {
 
-    if (inputValue.trim() === "" || !deadline) return;
+    if (
+      inputValue.trim() === "" ||
+      !deadline
+    ) {
+      return;
+    }
 
     try {
 
-      const response = await fetch(`${API_URL}`, {
-        method: "POST",
+      const response = await fetch(
+        API_URL,
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+          credentials: "include",
 
-        body: JSON.stringify({
-          text: inputValue,
-          deadline,
-        }),
-      });
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify({
+            text: inputValue,
+            deadline,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Gagal menambahkan todo");
+        throw new Error(
+          "Gagal menambahkan todo"
+        );
       }
 
       const data = await response.json();
 
+      const newTodo =
+        data.todo || data;
+
       setTodos((prev) =>
-        [...prev, data.todo].sort(
+        [...prev, newTodo].sort(
           (a, b) =>
             new Date(a.deadline) -
             new Date(b.deadline)
@@ -115,19 +146,23 @@ export default function ToDoList() {
       setInputValue("");
 
     } catch (err) {
+
       console.error(err);
     }
   };
 
   // COMPLETE TODO
-
+ 
   const handleCheck = async (id) => {
 
     // ANIMASI CHECK
     setTodos((prev) =>
       prev.map((todo) =>
         todo._id === id
-          ? { ...todo, isChecking: true }
+          ? {
+              ...todo,
+              isChecking: true,
+            }
           : todo
       )
     );
@@ -137,30 +172,43 @@ export default function ToDoList() {
       try {
 
         const response = await fetch(
-          `${API_URL}/${id}/complete`,
+          `${API_URL}/${id}`,
           {
             method: "PATCH",
 
+            credentials: "include",
+
             headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              "Content-Type":
+                "application/json",
             },
+
+            body: JSON.stringify({
+              completed: true,
+            }),
           }
         );
 
         if (!response.ok) {
-          throw new Error("Gagal update todo");
+          throw new Error(
+            "Gagal update todo"
+          );
         }
 
-        // HAPUS DARI LIST ACTIVE
+        // HAPUS DARI ACTIVE
         setTodos((prev) =>
-          prev.filter((todo) => todo._id !== id)
+          prev.filter(
+            (todo) => todo._id !== id
+          )
         );
 
-        // TAMBAH COMPLETE COUNT
-        setCompletedCount((prev) => prev + 1);
+        // TAMBAH COMPLETE
+        setCompletedCount(
+          (prev) => prev + 1
+        );
 
       } catch (err) {
+
         console.error(err);
       }
 
@@ -176,20 +224,24 @@ export default function ToDoList() {
     totalTugas === 0
       ? 0
       : Math.round(
-          (completedCount / totalTugas) * 100
+          (completedCount /
+            totalTugas) *
+            100
         );
 
-  // LOADING
+  // LOADING SCREEN
 
   if (loading) {
-    return (
-      <div className="w-full min-h-screen flex justify-center items-center">
-        <p className="text-xl font-bold">
-          Loading...
-        </p>
+  return (
+    <div className="w-full min-h-screen flex justify-center items-center">
+      <div className="flex gap-2">
+        <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+        <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+        <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce"></span>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="w-full px-4 py-2 sm:p-6 md:p-8 lg:p-10">
@@ -207,7 +259,8 @@ export default function ToDoList() {
           </h1>
 
           <p className="text-gray-700 font-semibold">
-            Kelola tugasmu berdasarkan deadline.
+            Kelola tugasmu berdasarkan
+            deadline.
           </p>
 
         </motion.header>
@@ -217,41 +270,32 @@ export default function ToDoList() {
 
           {/* TOTAL */}
           <div className="flex flex-col justify-center items-center bg-white rounded-xl w-full h-full shadow-[0_8px_20px_rgba(0,0,0,0.15)]">
-
             <h2 className="text-md md:text-xl font-bold">
               Total
             </h2>
-
             <h2 className="text-md md:text-xl font-semibold">
-              {todos.length}
+              {totalTugas}
             </h2>
-
           </div>
 
           {/* ACTIVE */}
           <div className="flex flex-col justify-center items-center bg-white rounded-xl w-full h-full shadow-[0_8px_20px_rgba(0,0,0,0.15)]">
-
             <h2 className="text-md md:text-xl font-bold">
               Aktif
             </h2>
-
             <h2 className="text-md md:text-xl font-semibold text-[#0059FF]">
               {todos.length}
             </h2>
-
           </div>
 
           {/* COMPLETE */}
           <div className="flex flex-col justify-center items-center bg-white rounded-xl w-full h-full shadow-[0_8px_20px_rgba(0,0,0,0.15)]">
-
             <h2 className="text-md md:text-xl font-bold">
               Selesai
             </h2>
-
             <h2 className="text-md md:text-xl font-semibold text-[#00FF00]">
               {completedCount}
             </h2>
-
           </div>
         </div>
 
@@ -263,14 +307,20 @@ export default function ToDoList() {
             type="text"
             value={inputValue}
             onChange={(e) =>
-              setInputValue(e.target.value)
+              setInputValue(
+                e.target.value
+              )
             }
             onKeyDown={(e) =>
               e.key === "Enter" &&
               handleAddTodo()
             }
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onFocus={() =>
+              setIsFocused(true)
+            }
+            onBlur={() =>
+              setIsFocused(false)
+            }
             className="w-full peer flex-grow p-3 rounded-xl outline-2 outline-[#000000]/30 focus:outline-[#09EB00CC] md:w-auto"
             placeholder="Ketik tugas baru..."
           />
@@ -280,10 +330,16 @@ export default function ToDoList() {
             type="date"
             value={deadline}
             onChange={(e) =>
-              setDeadline(e.target.value)
+              setDeadline(
+                e.target.value
+              )
             }
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onFocus={() =>
+              setIsFocused(true)
+            }
+            onBlur={() =>
+              setIsFocused(false)
+            }
             className="w-full peer p-3 rounded-xl bg-white outline-2 outline-[#000000]/30 cursor-pointer md:w-auto"
           />
 
@@ -308,9 +364,18 @@ export default function ToDoList() {
 
             <motion.div
               key="todo-content"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              initial={{
+                opacity: 0,
+                y: 10,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              exit={{
+                opacity: 0,
+                y: -10,
+              }}
               className="space-y-6"
             >
 
@@ -336,7 +401,9 @@ export default function ToDoList() {
                     animate={{
                       width: `${progressPercent}%`,
                     }}
-                    transition={{ duration: 0.5 }}
+                    transition={{
+                      duration: 0.5,
+                    }}
                     className="h-full bg-[#09EB00CC]"
                   />
 
@@ -358,7 +425,9 @@ export default function ToDoList() {
                       key={todo._id}
                       todo={todo}
                       onCheck={() =>
-                        handleCheck(todo._id)
+                        handleCheck(
+                          todo._id
+                        )
                       }
                     />
                   ))}
@@ -373,17 +442,23 @@ export default function ToDoList() {
   );
 }
 
-// =========================================
 // TASK BOX
-// =========================================
+
 function TaskBox({ todo, onCheck }) {
 
   // PRIORITY
-  const getPriorityStyle = (targetDate) => {
+  const getPriorityStyle = (
+    targetDate
+  ) => {
 
     const diff =
       new Date(targetDate) -
-      new Date().setHours(0, 0, 0, 0);
+      new Date().setHours(
+        0,
+        0,
+        0,
+        0
+      );
 
     const days =
       diff / (1000 * 60 * 60 * 24);
@@ -416,8 +491,14 @@ function TaskBox({ todo, onCheck }) {
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{
+        opacity: 0,
+        x: -20,
+      }}
+      animate={{
+        opacity: 1,
+        x: 0,
+      }}
       exit={{
         opacity: 0,
         scale: 0.9,
