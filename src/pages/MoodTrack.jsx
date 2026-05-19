@@ -4,17 +4,13 @@ import { Smile, Meh, Frown } from "lucide-react";
 
 export default function MoodTrack() {
 
-  // =========================================
   // API
-  // =========================================
-  const API_URL = "http://localhost:5000/api/moods";
 
-  // TOKEN LOGIN
-  const token = localStorage.getItem("token");
+  const API_URL =
+    "https://be-dailymind.vercel.app/moods";
 
-  // =========================================
   // STATE
-  // =========================================
+
   const [moodSeries, setMoodSeries] = useState([
     {
       name: "Mood Level",
@@ -22,15 +18,16 @@ export default function MoodTrack() {
     },
   ]);
 
-  const [daysLabels, setDaysLabels] = useState([
-    "Senin",
-    "Selasa",
-    "Rabu",
-    "Kamis",
-    "Jumat",
-    "Sabtu",
-    "Minggu",
-  ]);
+  const [daysLabels, setDaysLabels] =
+    useState([
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "Kamis",
+      "Jumat",
+      "Sabtu",
+      "Minggu",
+    ]);
 
   const [fullDatesLabels, setFullDatesLabels] =
     useState([]);
@@ -44,35 +41,8 @@ export default function MoodTrack() {
   const [loading, setLoading] =
     useState(true);
 
-  const [dots, setDots] = useState("");
+  // GET INFO 7 HARI
 
-  // =========================================
-  // LOADING DOTS ANIMATION
-  // =========================================
-  useEffect(() => {
-
-    if (!loading) return;
-
-    const interval = setInterval(() => {
-
-      setDots((prev) => {
-
-        if (prev.length >= 3) {
-          return "";
-        }
-
-        return prev + ".";
-      });
-
-    }, 500);
-
-    return () => clearInterval(interval);
-
-  }, [loading]);
-
-  // =========================================
-  // GET 7 DAYS INFO
-  // =========================================
   const get7DaysInfo = () => {
 
     const dayNames = [
@@ -122,21 +92,34 @@ export default function MoodTrack() {
     return { days, fullDates };
   };
 
-  // =========================================
   // FETCH MOOD
-  // =========================================
+  
   const fetchUserMood = useCallback(async () => {
 
     try {
 
       const response = await fetch(API_URL, {
+
         method: "GET",
 
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
+
+        credentials: "include",
       });
+
+      // BELUM LOGIN
+      if (response.status === 401) {
+
+        console.log("Unauthorized");
+
+        setHistoryData([]);
+
+        setTodayMood(null);
+
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("Gagal mengambil mood");
@@ -144,20 +127,32 @@ export default function MoodTrack() {
 
       const data = await response.json();
 
-      const moods = data.moods || [];
+      console.log("GET MOODS:", data);
+
+      // SUPPORT MULTIPLE FORMAT
+      const moods =
+        data.moods ||
+        data.data ||
+        data ||
+        [];
 
       const { days, fullDates } =
         get7DaysInfo();
 
-      // DATA CHART
-      const chartData = days.map((dayLabel) => {
+      // CHART DATA
+      const chartData = days.map(
+        (dayLabel) => {
 
-        const found = moods.find(
-          (m) => m.day === dayLabel
-        );
+          const found = moods.find(
+            (m) =>
+              m.day === dayLabel
+          );
 
-        return found ? found.score : 0;
-      });
+          return found
+            ? found.score
+            : 0;
+        }
+      );
 
       setDaysLabels(days);
 
@@ -171,64 +166,80 @@ export default function MoodTrack() {
       ]);
 
       // HISTORY
-      setHistoryData([...moods].reverse());
+      setHistoryData(
+        [...moods].reverse()
+      );
 
       // TODAY MOOD
       const todayName = days[6];
 
-      const lastEntry = moods[moods.length - 1];
+      const lastEntry =
+        moods[moods.length - 1];
 
       if (
         lastEntry &&
         lastEntry.day === todayName
       ) {
-        setTodayMood(lastEntry.score);
+
+        setTodayMood(
+          lastEntry.score
+        );
       }
 
     } catch (err) {
-
       console.error(err);
 
     } finally {
-
       setLoading(false);
+
     }
 
-  }, [token]);
+  }, []);
 
-  // =========================================
   // FIRST LOAD
-  // =========================================
+
   useEffect(() => {
 
     fetchUserMood();
 
   }, [fetchUserMood]);
 
-  // =========================================
   // INPUT MOOD
-  // =========================================
-  const handleMoodInput = async (score) => {
+ 
+  const handleMoodInput = async (
+    score
+  ) => {
 
     try {
 
-      const response = await fetch(API_URL, {
-        method: "POST",
+      const response = await fetch(
+        API_URL,
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
 
-        body: JSON.stringify({
-          score,
-        }),
-      });
+          credentials: "include",
 
-      const data = await response.json();
+          body: JSON.stringify({
+            score,
+          }),
+        }
+      );
+
+      const data =
+        await response.json();
 
       if (!response.ok) {
-        alert(data.message || "Gagal input mood");
+
+        alert(
+          data.message ||
+          "Gagal input mood"
+        );
+
         return;
       }
 
@@ -237,25 +248,30 @@ export default function MoodTrack() {
       fetchUserMood();
 
     } catch (err) {
-
       console.error(err);
 
-      alert("Gagal menyimpan mood");
+      alert(
+        "Gagal menyimpan mood"
+      );
 
     }
   };
 
-  // =========================================
   // CHART OPTIONS
-  // =========================================
+
   const chartOptions = {
 
     chart: {
+
       type: "area",
 
-      toolbar: { show: false },
+      toolbar: {
+        show: false,
+      },
 
-      zoom: { enabled: false },
+      zoom: {
+        enabled: false,
+      },
 
       animations: {
         enabled: true,
@@ -276,6 +292,7 @@ export default function MoodTrack() {
     },
 
     fill: {
+
       type: "gradient",
 
       gradient: {
@@ -290,11 +307,16 @@ export default function MoodTrack() {
 
       categories: daysLabels,
 
-      axisBorder: { show: false },
+      axisBorder: {
+        show: false,
+      },
 
-      axisTicks: { show: false },
+      axisTicks: {
+        show: false,
+      },
 
       labels: {
+
         style: {
           colors: "#94a3b8",
           fontSize: "11px",
@@ -311,6 +333,7 @@ export default function MoodTrack() {
       tickAmount: 4,
 
       labels: {
+
         style: {
           colors: "#94a3b8",
         },
@@ -338,7 +361,8 @@ export default function MoodTrack() {
 
           if (
             fullDatesLabels.length > 0 &&
-            opts.dataPointIndex !== undefined
+            opts.dataPointIndex !==
+            undefined
           ) {
 
             return fullDatesLabels[
@@ -352,9 +376,8 @@ export default function MoodTrack() {
     },
   };
 
-  // =========================================
   // MOOD BUTTONS
-  // =========================================
+
   const moodButtons = [
     {
       label: "Bahagia",
@@ -364,7 +387,8 @@ export default function MoodTrack() {
       activeClass:
         "bg-green-100 border-green-500 text-green-700",
 
-      activeIcon: "text-green-600",
+      activeIcon:
+        "text-green-600",
 
       hoverClass:
         "hover:border-[#5ACC4B] hover:bg-[#EAFCDC]",
@@ -378,7 +402,8 @@ export default function MoodTrack() {
       activeClass:
         "bg-slate-200 border-slate-500 text-slate-700",
 
-      activeIcon: "text-slate-600",
+      activeIcon:
+        "text-slate-600",
 
       hoverClass:
         "hover:border-[#FFE100] hover:bg-[#FFFBCC]",
@@ -392,7 +417,8 @@ export default function MoodTrack() {
       activeClass:
         "bg-yellow-100 border-yellow-500 text-yellow-700",
 
-      activeIcon: "text-yellow-600",
+      activeIcon:
+        "text-yellow-600",
 
       hoverClass:
         "hover:border-[#FF7B4F] hover:bg-[#FFEEDB]",
@@ -406,39 +432,38 @@ export default function MoodTrack() {
       activeClass:
         "bg-red-100 border-red-500 text-red-700",
 
-      activeIcon: "text-red-600",
+      activeIcon:
+        "text-red-600",
 
       hoverClass:
         "hover:border-[#FF5F38] hover:bg-[#FFD0AF]",
     },
   ];
 
-  // =========================================
-  // LOADING SCREEN
-  // =========================================
+  // LOADING
+
   if (loading) {
 
     return (
+
       <div className="w-full min-h-screen flex justify-center items-center">
-
-        <h1 className="text-xl text-[#A3A3A3]">
-          Loading{dots}
-        </h1>
-
+        <div className="flex gap-2">
+          <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+          <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+          <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce"></span>
+        </div>
       </div>
     );
   }
 
-  // =========================================
   // UI
-  // =========================================
+ 
   return (
 
     <div className="w-full px-4 py-2 sm:p-6 md:p-8 lg:p-10">
 
       {/* HEADER */}
       <div className="mb-8">
-
         <h2 className="text-3xl md:text-4xl font-extrabold text-slate-800">
           Mood Tracker
         </h2>
@@ -446,7 +471,6 @@ export default function MoodTrack() {
         <p className="text-sm md:text-base text-gray-700 font-semibold">
           Lacak dan pahami suasana hatimu setiap hari
         </p>
-
       </div>
 
       {/* CHART */}
@@ -470,7 +494,6 @@ export default function MoodTrack() {
         </h3>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-
           {moodButtons.map((mood) => {
 
             const isAnsweredToday =
@@ -553,11 +576,9 @@ export default function MoodTrack() {
         </h3>
 
         <div className="border-t border-slate-50 pt-4 px-2">
-
           {historyData.length > 0 ? (
 
             <div className="flex flex-col gap-3 mt-2">
-
               {historyData.map((item, index) => {
 
                 const moodDetail =
@@ -594,7 +615,6 @@ export default function MoodTrack() {
                     </div>
 
                     <div>
-
                       <h4 className="font-bold text-slate-700">
                         {moodDetail?.label}
                       </h4>
@@ -603,7 +623,6 @@ export default function MoodTrack() {
                         {item.fullDate ||
                           item.day}
                       </p>
-
                     </div>
                   </div>
                 );
