@@ -96,105 +96,142 @@ export default function MoodTrack() {
   
   const fetchUserMood = useCallback(async () => {
 
-    try {
+  try {
 
-      const response = await fetch(API_URL, {
+    const response = await fetch(API_URL, {
 
-        method: "GET",
+      method: "GET",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+      credentials: "include",
 
-        credentials: "include",
-      });
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-      // BELUM LOGIN
-      if (response.status === 401) {
+    // BELUM LOGIN
+    if (response.status === 401) {
 
-        console.log("Unauthorized");
+      console.log("Unauthorized");
 
-        setHistoryData([]);
+      setHistoryData([]);
 
-        setTodayMood(null);
+      setTodayMood(null);
 
-        return;
-      }
-
-      if (!response.ok) {
-        throw new Error("Gagal mengambil mood");
-      }
-
-      const data = await response.json();
-
-      console.log("GET MOODS:", data);
-
-      // SUPPORT MULTIPLE FORMAT
-      const moods =
-        data.moods ||
-        data.data ||
-        data ||
-        [];
-
-      const { days, fullDates } =
-        get7DaysInfo();
-
-      // CHART DATA
-      const chartData = days.map(
-        (dayLabel) => {
-
-          const found = moods.find(
-            (m) =>
-              m.day === dayLabel
-          );
-
-          return found
-            ? found.score
-            : 0;
-        }
-      );
-
-      setDaysLabels(days);
-
-      setFullDatesLabels(fullDates);
-
-      setMoodSeries([
-        {
-          name: "Mood Level",
-          data: chartData,
-        },
-      ]);
-
-      // HISTORY
-      setHistoryData(
-        [...moods].reverse()
-      );
-
-      // TODAY MOOD
-      const todayName = days[6];
-
-      const lastEntry =
-        moods[moods.length - 1];
-
-      if (
-        lastEntry &&
-        lastEntry.day === todayName
-      ) {
-
-        setTodayMood(
-          lastEntry.score
-        );
-      }
-
-    } catch (err) {
-      console.error(err);
-
-    } finally {
-      setLoading(false);
-
+      return;
     }
 
-  }, []);
+    if (!response.ok) {
+      throw new Error("Gagal mengambil mood");
+    }
+
+    const data = await response.json();
+
+    console.log("GET MOODS:", data);
+
+    // SUPPORT FORMAT API
+    const moods =
+      data.moods ||
+      data.data ||
+      data ||
+      [];
+
+    const { days, fullDates } =
+      get7DaysInfo();
+
+    // FORMAT HARI INI
+    const today = new Date();
+
+    const todayDate =
+      today.toISOString().split("T")[0];
+
+    // CHART DATA
+    const chartData = days.map(
+      (_, index) => {
+
+        const targetDate =
+          new Date();
+
+        targetDate.setDate(
+          targetDate.getDate() - (6 - index)
+        );
+
+        const formatted =
+          targetDate
+            .toISOString()
+            .split("T")[0];
+
+        const found = moods.find((m) => {
+
+          const moodDate =
+            new Date(
+              m.createdAt ||
+              m.date
+            )
+              .toISOString()
+              .split("T")[0];
+
+          return moodDate === formatted;
+        });
+
+        return found
+          ? found.score
+          : 0;
+      }
+    );
+
+    setDaysLabels(days);
+
+    setFullDatesLabels(fullDates);
+
+    setMoodSeries([
+      {
+        name: "Mood Level",
+        data: chartData,
+      },
+    ]);
+
+    // HISTORY
+    setHistoryData(
+      [...moods].reverse()
+    );
+
+    // TODAY MOOD
+    const todayMoodData =
+      moods.find((m) => {
+
+        const moodDate =
+          new Date(
+            m.createdAt ||
+            m.date
+          )
+            .toISOString()
+            .split("T")[0];
+
+        return moodDate === todayDate;
+      });
+
+    if (todayMoodData) {
+
+      setTodayMood(
+        todayMoodData.score
+      );
+
+    } else {
+
+      setTodayMood(null);
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+  } finally {
+
+    setLoading(false);
+  }
+
+}, []);
 
   // FIRST LOAD
 
@@ -207,55 +244,55 @@ export default function MoodTrack() {
   // INPUT MOOD
  
   const handleMoodInput = async (
-    score
-  ) => {
+  score
+) => {
 
-    try {
+  try {
 
-      const response = await fetch(
-        API_URL,
-        {
-          method: "POST",
+    const response = await fetch(
+      API_URL,
+      {
+        method: "POST",
 
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
+        credentials: "include",
 
-          credentials: "include",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
 
-          body: JSON.stringify({
-            score,
-          }),
-        }
-      );
-
-      const data =
-        await response.json();
-
-      if (!response.ok) {
-
-        alert(
-          data.message ||
-          "Gagal input mood"
-        );
-
-        return;
+        body: JSON.stringify({
+          score,
+        }),
       }
+    );
 
-      setTodayMood(score);
+    const data =
+      await response.json();
 
-      fetchUserMood();
-
-    } catch (err) {
-      console.error(err);
+    if (!response.ok) {
 
       alert(
-        "Gagal menyimpan mood"
+        data.message ||
+        "Gagal input mood"
       );
 
+      return;
     }
-  };
+
+    setTodayMood(score);
+
+    fetchUserMood();
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert(
+      "Gagal menyimpan mood"
+    );
+  }
+};
 
   // CHART OPTIONS
 
