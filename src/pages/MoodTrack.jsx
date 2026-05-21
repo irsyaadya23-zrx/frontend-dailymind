@@ -175,7 +175,7 @@ export default function MoodTrack() {
         });
 
         return found
-          ? found.score
+          ? found.value
           : 0;
       }
     );
@@ -214,7 +214,7 @@ export default function MoodTrack() {
     if (todayMoodData) {
 
       setTodayMood(
-        todayMoodData.score
+        todayMoodData.value
       );
 
     } else {
@@ -243,32 +243,40 @@ export default function MoodTrack() {
 
   // INPUT MOOD
  
-  const handleMoodInput = async (
-  score
-) => {
+const handleMoodInput = async (score) => {
 
   try {
 
-    const response = await fetch(
-      API_URL,
-      {
-        method: "POST",
+    const moodMap = {
+      4: "Bahagia",
+      3: "Biasa Saja",
+      2: "Sedih",
+      1: "Sangat Sedih",
+    };
 
-        credentials: "include",
+    const response = await fetch(API_URL, {
 
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
+      method: "POST",
 
-        body: JSON.stringify({
-          score,
-        }),
-      }
-    );
+      credentials: "include",
 
-    const data =
-      await response.json();
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+
+        date: new Date().toISOString(),
+
+        value: score,
+
+        label: moodMap[score],
+      }),
+    });
+
+    const data = await response.json();
+
+    console.log(data);
 
     if (!response.ok) {
 
@@ -288,9 +296,7 @@ export default function MoodTrack() {
 
     console.error(err);
 
-    alert(
-      "Gagal menyimpan mood"
-    );
+    alert("Gagal menyimpan mood");
   }
 };
 
@@ -619,7 +625,7 @@ export default function MoodTrack() {
                 const moodDetail =
                   moodButtons.find(
                     (m) =>
-                      m.score === item.score
+                      m.score === item.value
                   );
 
                 const Icon = moodDetail
