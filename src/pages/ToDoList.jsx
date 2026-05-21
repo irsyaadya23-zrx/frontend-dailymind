@@ -58,7 +58,9 @@ export default function ToDoList() {
         const data = await response.json();
 
         const todosData =
-          data.todos || data || [];
+          data.todos ||
+          data.data || 
+          [];
 
         // ACTIVE TODO
         const activeTodos =
@@ -118,8 +120,8 @@ export default function ToDoList() {
           },
 
           body: JSON.stringify({
-            text: inputValue,
-            deadline,
+            task: inputValue,
+            date: deadline,
           }),
         }
       );
@@ -133,13 +135,14 @@ export default function ToDoList() {
       const data = await response.json();
 
       const newTodo =
-        data.todo || data;
+        data.todo ||
+        data.data;
 
       setTodos((prev) =>
         [...prev, newTodo].sort(
           (a, b) =>
-            new Date(a.deadline) -
-            new Date(b.deadline)
+            new Date(a.date) -
+            new Date(b.date)
         )
       );
 
@@ -485,7 +488,7 @@ function TaskBox({ todo, onCheck }) {
   };
 
   const status = getPriorityStyle(
-    todo.deadline
+    todo.date
   );
 
   return (
@@ -524,13 +527,13 @@ function TaskBox({ todo, onCheck }) {
               : "text-gray-800"
           }`}
         >
-          {todo.text}
+          {todo.task}
         </span>
 
         <span
-          className={`text-xs text-gray-500 text-center font-medium px-3 py-1 rounded-2xl w-[150px] border-2 border ${status.color.split(" ")[1]}`}
+          className={`text-xs text-gray-500 text-center font-medium px-3 py-1 rounded-2xl w-[180px] border-2 border ${status.color.split(" ")[1]}`}
         >
-          Deadline: {todo.deadline}
+          Deadline: {todo.date}
         </span>
 
       </div>
