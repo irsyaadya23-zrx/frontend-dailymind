@@ -1,5 +1,5 @@
 const BASE_URL = "https://be-dailymind.vercel.app";
-
+import { createAuthClient } from "better-auth/react";
 // ====================
 // REGISTER
 // ====================
@@ -86,8 +86,14 @@ export const login = async (email, password) => {
 // ====================
 // LOGIN GOOGLE
 // ====================
-export const loginWithGoogle = () => {
-  window.location.href = `${BASE_URL}/api/auth/sign-in/social?provider=google&callbackURL=http://localhost:5173/home`;
+export const loginWithGoogle = async () => {
+  const authclient = createAuthClient({
+    baseURL: BASE_URL,
+  });
+  await authclient.signIn.social({
+    provider: "google",
+    callbackURL: "http://localhost:5173/home",
+  });
 };
 
 // ====================
