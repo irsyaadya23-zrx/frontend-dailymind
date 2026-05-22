@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   Link,
   useLocation,
@@ -15,7 +16,13 @@ import todoIcon from '../assets/todo.png';
 import pomodoroIcon from '../assets/pomodoro.png';
 import jurnalIcon from '../assets/jurnal.png';
 import feedbackIcon from '../assets/feedback.png';
+import profile from '../assets/mood.png';
 import exitIcon from '../assets/exit.png';
+
+import {
+  getSession,
+  logout
+} from "../AuthService";
 
 const Sidebar = ({ isOpen, onClose }) => {
 
@@ -23,17 +30,39 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   const navigate = useNavigate();
 
+  // PROFILE MODAL
+  const [showProfile, setShowProfile] = React.useState(false);
+
+  // USER DATA
+  const [user, setUser] = React.useState(null);
+
+  // GET SESSION
+  React.useEffect(() => {
+
+    const fetchSession = async () => {
+
+      const session = await getSession();
+
+      console.log(session);
+
+      if (session?.user) {
+        setUser(session.user);
+      }
+    };
+
+    fetchSession();
+
+  }, []);
+
   // LOGOUT
+  const handleLogout = async () => {
 
-  const handleLogout = () => {
+    await logout();
 
-    // HAPUS TOKEN
     localStorage.removeItem("token");
 
-    // OPTIONAL
     localStorage.removeItem("user");
 
-    // PINDAH KE LOGIN
     navigate("/");
   };
 
@@ -75,6 +104,12 @@ const Sidebar = ({ isOpen, onClose }) => {
     },
 
     {
+      name: 'Profile',
+      icon: profile,
+      isProfile: true
+    },
+
+    {
       name: 'Exit',
       icon: exitIcon,
       isExit: true
@@ -82,221 +117,408 @@ const Sidebar = ({ isOpen, onClose }) => {
   ];
 
   return (
+    <>
 
-    <aside
-      className={`
-        fixed top-0 left-0 z-50
-        h-screen w-[180px]
-        transition-transform duration-300
-        lg:translate-x-0
-        ${isOpen
-          ? "translate-x-0"
-          : "-translate-x-full"}
-      `}
-      style={sidebarStyle}
-    >
+      <aside
+        className={`
+          fixed top-0 left-0 z-50
+          h-screen w-[180px]
+          transition-transform duration-300
+          lg:translate-x-0
+          ${isOpen
+            ? "translate-x-0"
+            : "-translate-x-full"}
+        `}
+        style={sidebarStyle}
+      >
 
-      {/* CLOSE BUTTON */}
-      <div className="flex justify-end lg:hidden mb-4">
+        {/* CLOSE BUTTON */}
+        <div className="flex justify-end lg:hidden mb-4">
 
-        <button onClick={onClose}>
-          <X size={28} />
-        </button>
+          <button onClick={onClose}>
+            <X size={28} />
+          </button>
 
-      </div>
+        </div>
 
-      {/* LOGO */}
-      <div style={logoContainerStyle}>
+        {/* LOGO */}
+        <div style={logoContainerStyle}>
+
+          <img
+            src={logoApp}
+            alt="DailyMind Logo"
+            style={logoImageStyle}
+          />
+
+        </div>
+
+        {/* MENU */}
+        <ul
+          style={{
+            listStyle: 'none',
+            padding: 0,
+            marginTop: '20px',
+            flex: 1
+          }}
+        >
+
+          {menus.map((item) => {
+
+            const isActive =
+              location.pathname === item.path;
+
+            return (
+
+              <li
+                key={item.name}
+                style={{ marginBottom: '5px' }}
+              >
+
+                {/* EXIT BUTTON */}
+                {item.isExit ? (
+
+                  <button
+                    onClick={handleLogout}
+                    style={{
+                      ...menuItemStyle,
+
+                      backgroundColor:
+                        'transparent',
+
+                      color: '#B91C1C',
+
+                      borderRadius: '12px',
+
+                      paddingRight: '20px',
+
+                      paddingLeft: '15px',
+
+                      width: '100%',
+
+                      border:
+                        '1.5px solid transparent',
+
+                      cursor: 'pointer',
+
+                      background: 'none'
+                    }}
+                  >
+
+                    <img
+                      src={item.icon}
+                      alt={item.name}
+                      style={{
+                        width: '24px',
+                        height: '24px',
+                        marginRight: '0px',
+                        objectFit: 'contain'
+                      }}
+                    />
+
+                    <span
+                      style={{
+                        marginRight: '12px',
+                        display: 'flex',
+                      }}
+                    ></span>
+
+                    <span
+                      style={{
+                        fontWeight: '600',
+                        fontSize: '16px',
+                        fontFamily:
+                          "'Manrope', sans-serif",
+                        lineHeight: '100%'
+                      }}
+                    >
+                      {item.name}
+                    </span>
+
+                  </button>
+
+                ) : item.isProfile ? (
+
+                  <button
+                    onClick={() => setShowProfile(true)}
+                    style={{
+                      ...menuItemStyle,
+
+                      backgroundColor: 'transparent',
+
+                      color: '#1F2A44',
+
+                      borderRadius: '12px',
+
+                      paddingRight: '20px',
+
+                      paddingLeft: '20px',
+
+                      width: '100%',
+
+                      border:
+                        '1.5px solid transparent',
+
+                      cursor: 'pointer',
+
+                      background: 'none',
+
+                      display: 'flex',
+
+                      alignItems: 'center'
+                    }}
+                  >
+
+                    <img
+                      src={item.icon}
+                      alt={item.name}
+                      style={{
+                        width: '24px',
+                        height: '24px',
+                        objectFit: 'contain'
+                      }}
+                    />
+
+                    <span
+                      style={{
+                        marginRight: '12px',
+                        display: 'flex',
+                      }}
+                    ></span>
+
+                    <span
+                      style={{
+                        fontWeight: '600',
+                        fontSize: '16px',
+                        fontFamily:
+                          "'Manrope', sans-serif",
+                      }}
+                    >
+                      {item.name}
+                    </span>
+
+                  </button>
+
+                ) : (
+
+                  // MENU NORMAL
+                  <Link
+                    to={item.path}
+                    style={{
+                      ...menuItemStyle,
+
+                      backgroundColor:
+                        isActive
+                          ? 'rgba(255, 255, 255, 0.2)'
+                          : 'transparent',
+
+                      color: '#1F2A44',
+
+                      boxShadow:
+                        isActive
+                          ? '0 4px 12px rgba(0,0,0,0.05)'
+                          : 'none',
+
+                      borderRadius:
+                        isActive
+                          ? '50px'
+                          : '12px',
+
+                      paddingRight: '20px',
+
+                      paddingLeft: '20px',
+
+                      marginLeft: '-5px',
+
+                      width:
+                        isActive
+                          ? 'calc(100% + 10px)'
+                          : '100%',
+
+                      border:
+                        isActive
+                          ? '1.5px solid white'
+                          : '1.5px solid transparent',
+                    }}
+                  >
+
+                    <img
+                      src={item.icon}
+                      alt={item.name}
+                      style={{
+                        width: '24px',
+                        height: '24px',
+                        marginRight: '0px',
+                        objectFit: 'contain'
+                      }}
+                    />
+
+                    <span
+                      style={{
+                        marginRight: '12px',
+                        display: 'flex',
+                      }}
+                    ></span>
+
+                    <span
+                      style={{
+                        fontWeight:
+                          isActive
+                            ? '900'
+                            : '600',
+
+                        fontSize: '16px',
+
+                        fontFamily:
+                          "'Manrope', sans-serif",
+
+                        lineHeight: '100%'
+                      }}
+                    >
+                      {item.name}
+                    </span>
+
+                  </Link>
+                )}
+
+              </li>
+            );
+          })}
+        </ul>
+      </aside>
+
+      {/* PROFILE MODAL */}
+      {showProfile && (
 
         <div
           style={{
-            filter:
-              'drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.2))',
-
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            // background: 'rgba(0,0,0,0.3)',
+            backdropFilter: 'blur(5px)',
             display: 'flex',
-
-            alignItems: 'center'
+            justifyContent: 'center',
+            padding: '20px',
+            alignItems: 'center',
+            zIndex: 999
           }}
-        ></div>
+        >
 
-        <img
-          src={logoApp}
-          alt="DailyMind Logo"
-          style={logoImageStyle}
-        />
+          <div
+            style={{
+              width: '100%',
+              maxWidth: '661px',
+              minHeight: '512px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.4)',
+              backdropFilter: 'blur(10px)',
+              borderRadius: '20px',
+              padding: '30px',
+              position: 'relative',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
+            }}
+          >
 
-      </div>
+            {/* CLOSE */}
+            <button
+              onClick={() => setShowProfile(false)}
+              style={{
+                position: 'absolute',
+                top: '15px',
+                right: '15px',
+                border: 'none',
+                background: 'none',
+                cursor: 'pointer'
+              }}
+            >
+              <X size={24} />
+            </button>
 
-      {/* MENU */}
-      <ul
-        style={{
-          listStyle: 'none',
-          padding: 0,
-          marginTop: '20px',
-          flex: 1
-        }}
-      >
-
-        {menus.map((item) => {
-
-          const isActive =
-            location.pathname === item.path;
-
-          return (
-
-            <li
-              key={item.name}
-              style={{ marginBottom: '5px' }}
+            {/* FOTO */}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '20px'
+              }}
             >
 
-              {/* EXIT BUTTON */}
-              {item.isExit ? (
+              <img
+                src={
+                  user?.image ||
+                  "https://i.imgur.com/HeIi0wU.png"
+                }
+                alt="Profile"
+                style={{
+                  width: '100px',
+                  height: '100px',
+                  borderRadius: '50%',
+                  objectFit: 'cover'
+                }}
+              />
 
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    ...menuItemStyle,
+            </div>
 
-                    backgroundColor:
-                      'transparent',
+            <h2
+              style={{
+                textAlign: 'center',
+                marginBottom: '25px'
+              }}
+            >
+              {user?.name || "Unknown User"}
+            </h2>
 
-                    color: '#B91C1C',
+            {/* EMAIL */}
+            <div style={{ marginBottom: '15px' }}>
 
-                    borderRadius: '12px',
+              <label>Email</label>
 
-                    paddingRight: '20px',
+              <input
+                type="text"
+                value={user?.email || ""}
+                readOnly
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  borderRadius: '10px',
+                  border: '1px solid #ccc',
+                  marginTop: '5px'
+                }}
+              />
 
-                    paddingLeft: '15px',
+            </div>
 
-                    width: '100%',
+            {/* NAMA */}
+            <div>
 
-                    border:
-                      '1.5px solid transparent',
+              <label>Nama</label>
 
-                    cursor: 'pointer',
+              <input
+                type="text"
+                value={user?.name || ""}
+                readOnly
+                style={{
+                  width: '100%',
+                  padding: '10px',
+                  borderRadius: '10px',
+                  border: '1px solid #ccc',
+                  marginTop: '5px'
+                }}
+              />
 
-                    background: 'none'
-                  }}
-                >
+            </div>
 
-                  <img
-                    src={item.icon}
-                    alt={item.name}
-                    style={{
-                      width: '24px',
-                      height: '24px',
-                      marginRight: '0px',
-                      objectFit: 'contain'
-                    }}
-                  />
+          </div>
 
-                  <span
-                    style={{
-                      marginRight: '12px',
-                      display: 'flex',
-                    }}
-                  ></span>
+        </div>
 
-                  <span
-                    style={{
-                      fontWeight: '600',
-                      fontSize: '16px',
-                      fontFamily:
-                        "'Manrope', sans-serif",
-                      lineHeight: '100%'
-                    }}
-                  >
-                    {item.name}
-                  </span>
+      )}
 
-                </button>
-
-              ) : (
-
-                // MENU NORMAL
-                <Link
-                  to={item.path}
-                  style={{
-                    ...menuItemStyle,
-
-                    backgroundColor:
-                      isActive
-                        ? 'rgba(255, 255, 255, 0.2)'
-                        : 'transparent',
-
-                    color: '#1F2A44',
-
-                    boxShadow:
-                      isActive
-                        ? '0 4px 12px rgba(0,0,0,0.05)'
-                        : 'none',
-
-                    borderRadius:
-                      isActive
-                        ? '50px 50px 50px 50px'
-                        : '12px',
-
-                    paddingRight: '20px',
-
-                    paddingLeft: '20px',
-
-                    marginLeft: '-5px',
-
-                    width:
-                      isActive
-                        ? 'calc(100% + 10px)'
-                        : '100%',
-
-                    border:
-                      isActive
-                        ? '1.5px solid white'
-                        : '1.5px solid transparent',
-                  }}
-                >
-
-                  <img
-                    src={item.icon}
-                    alt={item.name}
-                    style={{
-                      width: '24px',
-                      height: '24px',
-                      marginRight: '0px',
-                      objectFit: 'contain'
-                    }}
-                  />
-
-                  <span
-                    style={{
-                      marginRight: '12px',
-                      display: 'flex',
-                    }}
-                  ></span>
-
-                  <span
-                    style={{
-                      fontWeight:
-                        isActive
-                          ? '900'
-                          : '600',
-
-                      fontSize: '16px',
-
-                      fontFamily:
-                        "'Manrope', sans-serif",
-
-                      lineHeight: '100%'
-                    }}
-                  >
-                    {item.name}
-                  </span>
-
-                </Link>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </aside>
+    </>
   );
 };
 

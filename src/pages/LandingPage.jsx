@@ -67,7 +67,7 @@ const LandingPage = () => {
       <section className="min-h-screen bg-gradient-to-b from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC]">
 
         {/* ================= NAVBAR ================= */}
-        <nav className="fixed top-4 md:top-6 left-0 right-0 z-50 flex justify-center px-4">
+        <nav className="fixed top-4 md:top-6 left-0 right-0 z-50 flex justify-center px-4 font-['Manrope']">
 
           <div className="
             bg-blue-400/40
