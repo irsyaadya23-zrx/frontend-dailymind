@@ -110,7 +110,7 @@ export const forgotPassword = async (email) => {
         },
         body: JSON.stringify({
           email,
-          redirectTo: "http://localhost:5173/reset-password",
+          redirectTo: `${APP_URL}/reset-password`,
         }),
       },
     );
@@ -129,7 +129,7 @@ export const forgotPassword = async (email) => {
 
     return {
       success: true,
-      message: "Link reset password berhasil dikirim",
+      message: "Link reset password berhasil dikirim ke email",
     };
   } catch (error) {
     console.error(error);
