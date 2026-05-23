@@ -10,7 +10,7 @@ export default function Pomodoro() {
 
   // BACKEND URL
 
-  const API_URL = "https://be-dailymind.vercel.app/pomodoros";
+  const API_URL_POMODORO = import.meta.env.API_URL_POMODORO;
 
   // STATE
 
@@ -42,7 +42,7 @@ export default function Pomodoro() {
 
     try {
 
-      const response = await fetch(API_URL, {
+      const response = await fetch(API_URL_POMODORO, {
 
         method: "GET",
 
@@ -124,7 +124,7 @@ export default function Pomodoro() {
   try {
 
     const response = await fetch(
-      API_URL,
+      API_URL_POMODORO,
       {
 
         method: "POST",

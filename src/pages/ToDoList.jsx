@@ -5,7 +5,7 @@ export default function ToDoList() {
 
   // API URL
 
-  const API_URL = "https://be-dailymind.vercel.app/todos";
+  const API_URL_TODO = import.meta.env.API_URL_TODO;
 
   // STATE
 
@@ -36,7 +36,7 @@ export default function ToDoList() {
       try {
 
         const response = await fetch(
-          API_URL,
+          API_URL_TODO,
           {
             method: "GET",
 
@@ -108,7 +108,7 @@ export default function ToDoList() {
     try {
 
       const response = await fetch(
-        API_URL,
+        API_URL_TODO,
         {
           method: "POST",
 
@@ -175,7 +175,7 @@ export default function ToDoList() {
       try {
 
         const response = await fetch(
-          `${API_URL}/${id}`,
+          `${API_URL_TODO}/${id}`,
           {
             method: "PATCH",
 
