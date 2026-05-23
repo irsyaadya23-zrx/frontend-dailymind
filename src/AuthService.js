@@ -1,11 +1,11 @@
-const BASE_URL = import.meta.env.VITE_API_URL;
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 import { createAuthClient } from "better-auth/react";
 // ====================
 // REGISTER
 // ====================
 export const register = async (name, email, password) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/auth/sign-up/email`, {
+    const response = await fetch(`${VITE_API_URL}/api/auth/sign-up/email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export const register = async (name, email, password) => {
 // ====================
 export const login = async (email, password) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/auth/sign-in/email`, {
+    const response = await fetch(`${VITE_API_URL}/api/auth/sign-in/email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -88,11 +88,14 @@ export const login = async (email, password) => {
 // ====================
 export const loginWithGoogle = async () => {
   const authclient = createAuthClient({
-    baseURL: BASE_URL,
+    baseURL: VITE_API_URL,
   });
+  console.log("API URL:", VITE_API_URL);
+  console.log("CALLBACK:", import.meta.env.VITE_CALLBACK_URL);
+
   await authclient.signIn.social({
     provider: "google",
-    callbackURL: import.meta.env.CALLBACK_URL,
+    callbackURL: import.meta.env.VITE_CALLBACK_URL,
   });
 };
 
@@ -102,7 +105,7 @@ export const loginWithGoogle = async () => {
 export const forgotPassword = async (email) => {
   try {
     const response = await fetch(
-      `${BASE_URL}/api/auth/request-password-reset`,
+      `${VITE_API_URL}/api/auth/request-password-reset`,
       {
         method: "POST",
         headers: {
@@ -145,7 +148,7 @@ export const forgotPassword = async (email) => {
 // LOGOUT
 // ====================
 export const logout = async () => {
-  await fetch(`${BASE_URL}/api/auth/sign-out`, {
+  await fetch(`${VITE_API_URL}/api/auth/sign-out`, {
     method: "POST",
     credentials: "include",
   });
@@ -156,7 +159,7 @@ export const logout = async () => {
 // ====================
 export const getSession = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/api/auth/get-session`, {
+    const response = await fetch(`${VITE_API_URL}/api/auth/get-session`, {
       method: "GET",
       credentials: "include",
     });

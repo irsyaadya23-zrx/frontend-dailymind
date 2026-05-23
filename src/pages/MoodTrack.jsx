@@ -6,7 +6,7 @@ export default function MoodTrack() {
 
   // API
 
-  const API_URL_MOOD = import.meta.env.API_URL_MOOD;;
+  const API_URL_MOOD = import.meta.env.VITE_API_URL_MOOD;;
 
   // STATE
 
@@ -97,7 +97,7 @@ export default function MoodTrack() {
 
   try {
 
-    const response = await fetch(API_URL_JOURNAL, {
+    const response = await fetch(API_URL_MOOD, {
 
       method: "GET",
 
@@ -253,7 +253,7 @@ const handleMoodInput = async (score) => {
       1: "Sangat Sedih",
     };
 
-    const response = await fetch(API_URL_JOURNAL, {
+    const response = await fetch(API_URL_MOOD, {
 
       method: "POST",
 

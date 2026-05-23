@@ -5,7 +5,7 @@ export default function ToDoList() {
 
   // API URL
 
-  const API_URL_TODO = import.meta.env.API_URL_TODO;
+  const API_URL_TODO = import.meta.env.VITE_API_URL_TODO;
 
   // STATE
 

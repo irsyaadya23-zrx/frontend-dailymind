@@ -8,7 +8,7 @@ const Feedback = () => {
 
   // API
   
-  const API_URL_FEEDBACK = import.meta.env.API_URL_FEEDBACK;
+  const API_URL_FEEDBACK = import.meta.env.VITE_API_URL_FEEDBACK;
 
   // STATE
 

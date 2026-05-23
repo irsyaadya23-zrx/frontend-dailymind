@@ -10,7 +10,7 @@ export default function Pomodoro() {
 
   // BACKEND URL
 
-  const API_URL_POMODORO = import.meta.env.API_URL_POMODORO;
+  const API_URL_POMODORO = import.meta.env.VITE_API_URL_POMODORO;
 
   // STATE
 

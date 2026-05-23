@@ -9,7 +9,7 @@ export default function Journal() {
 
   // API
 
-  const API_URL_JOURNAL = import.meta.env.API_URL_JOURNAL;
+  const API_URL_JOURNAL = import.meta.env.VITE_API_URL_JOURNAL;
 
   // STATE
 

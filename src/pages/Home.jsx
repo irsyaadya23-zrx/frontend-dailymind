@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   
-  const API_URL_TODO = import.meta.env.API_URL_TODO;
-  const API_URL_JOURNAL = import.meta.env.API_URL_JOURNAL;
-  const API_URL_MOOD = import.meta.env.API_URL_MOOD;
+  const API_URL_TODO = import.meta.env.VITE_API_URL_TODO;
+  const API_URL_JOURNAL = import.meta.env.VITE_API_URL_JOURNAL;
+  const API_URL_MOOD = import.meta.env.VITE_API_URL_MOOD;
 
   const [todos, setTodos] = useState([]);
   const [journals, setJournals] = useState([]);

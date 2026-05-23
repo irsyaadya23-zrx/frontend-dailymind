@@ -126,8 +126,9 @@ export default function Login() {
 
             {/* Button Google Login */}
             <div className="mb-2">
-                <button onClick={loginWithGoogle}
-                  type="submit"
+                <button 
+                  onClick={loginWithGoogle}
+                  type="button"
                   className="flex w-full item-center justify-center gap-3 mt-3 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-[#27374D] hover:bg-[#F7F7F7] transition"
                 >
                     <FcGoogle size={20} />
