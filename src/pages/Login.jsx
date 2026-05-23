@@ -13,16 +13,24 @@ export default function Login() {
   const navigate = useNavigate()
   
   const handleLogin = async (e) => {
-  e.preventDefault()
 
-  const result = await login(email, password)
+    e.preventDefault();
 
-  if (result.success) {
-    navigate("/home");
-  } else {
-    alert(result.message);
-  }
-};
+    const result = await login(email, password);
+
+    if (result.success) {
+
+      // CEK ADMIN
+      if (result.user.email === "admin@dailymind.com") {
+        navigate("/admin");
+      } else {
+        navigate("/home");
+      }
+
+    } else {
+      alert(result.message);
+    }
+  };
 
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC] px-6">

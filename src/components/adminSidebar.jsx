@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   Link,
   useLocation,
@@ -7,12 +6,10 @@ import {
 } from "react-router-dom";
 
 import { X } from "lucide-react";
-
 import logoApp from "../assets/dailymind_logo.png";
-
 import homeIcon from "../assets/home.png";
-
 import exitIcon from "../assets/exit.png";
+import { logout } from "../AuthService";
 
 const AdminSidebar = ({
   isOpen,
@@ -23,20 +20,24 @@ const AdminSidebar = ({
 
   const navigate = useNavigate();
 
-  // =========================================
   // LOGOUT ADMIN
-  // =========================================
-  const handleLogout = () => {
 
-    // HAPUS TOKEN ADMIN
-    localStorage.removeItem("adminToken");
+ const handleLogout = async () => {
 
-    // OPTIONAL
-    localStorage.removeItem("admin");
+  try {
+
+    // LOGOUT BETTER AUTH
+    await logout();
 
     // REDIRECT KE LOGIN
     navigate("/");
-  };
+
+  } catch (error) {
+
+    console.error(error);
+
+  }
+};
 
   const menus = [
     {
