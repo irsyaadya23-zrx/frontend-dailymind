@@ -1,5 +1,16 @@
 import { useState, useEffect } from "react";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Trash2 } from "lucide-react";
+
+import {
+  getUsers,
+  banUser,
+  unbanUser,
+  getFeedbacks,
+  updateFeedbackStatus,
+  getBannedWords,
+  addBannedWord,
+  deleteBannedWord,
+} from "../AdminService";
 
 const feedbackStatuses = [
   "Unread",
@@ -8,201 +19,313 @@ const feedbackStatuses = [
   "Resolve",
 ];
 
-const initialWords = [
-  { id: 1, word: "kasar1" },
-  { id: 2, word: "bodoh" },
-];
-
 export default function Admin() {
 
   // ================= USERS =================
-  const [users, setUsers] = useState(() => {
-    return JSON.parse(
-      localStorage.getItem("admin_users")
-    ) || [];
-  });
-
-  useEffect(() => {
-  const syncUsers = () => {
-    const updatedUsers =
-      JSON.parse(localStorage.getItem("admin_users")) || [];
-
-    setUsers(updatedUsers);
-  };
-
-  window.addEventListener("storage", syncUsers);
-
-  return () =>
-    window.removeEventListener("storage", syncUsers);
-}, []);
-
-useEffect(() => {
-
-  const syncFeedback = () => {
-
-    const updatedFeedback =
-      JSON.parse(
-        localStorage.getItem("admin_feedback")
-      ) || [];
-
-    setFeedback(updatedFeedback);
-  };
-
-  window.addEventListener(
-    "storage",
-    syncFeedback
-  );
-
-  return () =>
-    window.removeEventListener(
-      "storage",
-      syncFeedback
-    );
-
-}, []);
-
+  const [users, setUsers] = useState([]);
 
   // ================= FEEDBACK =================
-  const [feedback, setFeedback] = useState(() => {
+  const [feedback, setFeedback] = useState([]);
 
-  const stored =
-    localStorage.getItem("admin_feedback");
-
-  return stored
-    ? JSON.parse(stored)
-    : [];
-});
-
-  // ================= WORDS =================
-  const [words, setWords] = useState(() => {
-    const stored = localStorage.getItem("admin_words");
-
-    if (!stored) {
-      localStorage.setItem("admin_words", JSON.stringify(initialWords));
-      return initialWords;
-    }
-
-    return JSON.parse(stored);
-  });
+  // ================= BANNED WORDS =================
+  const [words, setWords] = useState([]);
 
   // ================= FORM =================
   const [search, setSearch] = useState("");
   const [newWord, setNewWord] = useState("");
-  const [searchedUser, setSearchedUser] = useState(null);
+  const [searchedUser, setSearchedUser] =
+    useState(null);
 
-  // ================= SEARCH USER =================
-  const handleSearchUser = () => {
-    if (search.trim() === "") {
-      setSearchedUser(null);
-      return;
+  // FETCH USERS
+
+  const fetchUsers = async () => {
+
+    try {
+
+      const data = await getUsers();
+
+      setUsers(
+        data.users || data || []
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
     }
-
-    const foundUser = users.find((u) => u.id === search);
-    setSearchedUser(foundUser || null);
   };
 
-  // ================= TOGGLE STATUS =================
-  const handleToggleStatus = () => {
-    if (!searchedUser) return;
+  // FETCH FEEDBACK
 
-    const newStatus =
-      searchedUser.status === "Banned"
-        ? "Active"
-        : "Banned";
+  const fetchFeedback = async () => {
 
-    const updatedUsers = users.map((u) => {
-      if (u.id === searchedUser.id) {
-        return {
-          ...u,
-          status: newStatus,
-        };
-      }
+  try {
 
-      return u;
-    });
+    const data =
+      await getFeedbacks();
 
-    setUsers(updatedUsers);
+    console.log("FEEDBACK API:", data);
 
-    localStorage.setItem(
-      "admin_users",
-      JSON.stringify(updatedUsers)
+    // PAKSA ARRAY
+    const feedbackArray =
+      Array.isArray(data)
+        ? data
+        : Array.isArray(data?.feedbacks)
+        ? data.feedbacks
+        : Array.isArray(data?.data)
+        ? data.data
+        : [];
+
+    setFeedback(feedbackArray);
+
+  } catch (error) {
+
+    console.error(error);
+
+    setFeedback([]);
+
+  }
+};
+
+  // FETCH BANNED WORDS
+
+  const fetchWords = async () => {
+
+  try {
+
+    const data =
+      await getBannedWords();
+
+    console.log(
+      "WORDS API:",
+      data
     );
 
-    setSearchedUser({
-      ...searchedUser,
-      status: newStatus,
-    });
+    // PAKSA ARRAY
+    const wordsArray =
+      Array.isArray(data)
+        ? data
+        : Array.isArray(data?.words)
+        ? data.words
+        : Array.isArray(data?.data)
+        ? data.data
+        : [];
+
+    setWords(wordsArray);
+
+  } catch (error) {
+
+    console.error(error);
+
+    setWords([]);
+
+  }
+};
+
+  // INITIAL FETCH
+
+  useEffect(() => {
+  const fetchAll = async () => {
+    try {
+      await Promise.all([
+        fetchUsers(),
+        fetchFeedback(),
+        fetchWords()
+      ]);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-    // ================= UPDATE FEEDBACK STATUS =================
-  const handleFeedbackStatus = (id, newStatus) => {
-    const updatedFeedback = feedback.map((item) => {
-      if (item.id === id) {
-      return {
-        ...item,
-        status: newStatus,
-      };
-    }
-    return item;
-  });
-  setFeedback(updatedFeedback);
+  fetchAll();
+}, []);
 
-  localStorage.setItem(
-    "admin_feedback",
-    JSON.stringify(updatedFeedback)
+  // SEARCH USER
+
+  const handleSearchUser = () => {
+
+  // kalau kosong
+  if (!search.trim()) {
+
+    setSearchedUser(null);
+
+    return;
+  }
+
+  const foundUser = users.find(
+    (u) =>
+      u.id === search
+  );
+
+  setSearchedUser(
+    foundUser || null
   );
 };
 
-  // ================= ADD WORD =================
-  const addWord = () => {
-    if (!newWord.trim()) return;
+  // TOGGLE USER STATUS
 
-    const newEntry = {
-      id: Date.now(),
-      word: newWord,
-    };
+  const handleToggleStatus =
+  async () => {
 
-    const updatedWords = [...words, newEntry];
+    if (!searchedUser) return;
 
-    setWords(updatedWords);
+    try {
 
-    localStorage.setItem(
-      "admin_words",
-      JSON.stringify(updatedWords)
-    );
+      if (
+        searchedUser.banned
+      ) {
 
-    setNewWord("");
-  };
+        await unbanUser(
+          searchedUser.id
+        );
 
-  // ================= BADGE =================
-  const statusBadge = (status) => {
+      } else {
 
-  if (status === "Active")
-    return "bg-green-500 text-white";
+        await banUser(
+          searchedUser.id
+        );
 
-  if (status === "Banned")
-    return "bg-red-500 text-white";
+      }
 
-  if (status === "Unread")
-    return "bg-red-500 text-white";
+      // REFRESH USERS
+      const updatedUsers =
+        await getUsers();
 
-  if (status === "In Progress")
-    return "bg-yellow-400 text-black";
+      const finalUsers =
+        updatedUsers.users ||
+        updatedUsers ||
+        [];
 
-  if (status === "In Review")
-    return "bg-green-500 text-white";
+      setUsers(finalUsers);
 
-  if (status === "Resolve")
-    return "bg-blue-500 text-white";
+      // UPDATE SEARCHED USER
+      const updatedUser =
+        finalUsers.find(
+          (u) =>
+            u.id ===
+            searchedUser.id
+        );
 
-  return "bg-gray-400 text-white";
+      setSearchedUser(
+        updatedUser || null
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
 };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC] font-['Sarabun'] pb-10">
+  // UPDATE FEEDBACK STATUS
 
-      {/* ================= HEADER ================= */}
-      <div className="border-b border-white px-5 py-8 md:px-8 md:py-10">
+  const handleFeedbackStatus =
+    async (id, newStatus) => {
+
+      try {
+
+        await updateFeedbackStatus(
+          id,
+          newStatus
+        );
+
+        await fetchFeedback();
+
+      } catch (error) {
+
+        console.error(error);
+
+      }
+    };
+
+  // ADD BANNED WORD
+
+  const handleAddWord =
+    async () => {
+
+      if (!newWord.trim()) return;
+
+      try {
+
+        await addBannedWord(
+          newWord
+        );
+
+        setNewWord("");
+
+        await fetchWords();
+
+      } catch (error) {
+
+        console.error(error);
+
+      }
+    };
+
+  // DELETE WORD
+
+  const handleDeleteWord =
+    async (id) => {
+
+      try {
+
+        await deleteBannedWord(id);
+
+        await fetchWords();
+
+      } catch (error) {
+
+        console.error(error);
+
+      }
+    };
+
+  // STATUS BADGE
+
+  const statusBadge = (status) => {
+
+    if (status === "Active")
+      return "bg-green-500 text-white";
+
+    if (status === "Banned")
+      return "bg-red-500 text-white";
+
+    if (status === "Unread")
+      return "bg-red-400 text-black";
+
+    if (status === "In Progress")
+      return "bg-yellow-400 text-black";
+
+    if (status === "In Review")
+      return "bg-blue-500 text-white";
+
+    if (status === "Resolve")
+      return "bg-green-500 text-white";
+
+    return "bg-gray-400 text-white";
+  };
+
+  return (
+
+    <div className="
+      min-h-screen
+      bg-gradient-to-br
+      from-[#A1C4FD]
+      via-[#C2E9FB]
+      to-[#E0C3FC]
+      font-['Sarabun']
+      pb-10
+    ">
+
+      {/* HEADER */}
+      <div className="
+        border-b
+        border-white
+        px-5
+        py-8
+        md:px-8
+        md:py-10
+      ">
 
         <h1 className="
           text-[28px]
@@ -210,14 +333,13 @@ useEffect(() => {
           text-[#27374D]
           font-bold
           font-['Coiny']
-          leading-tight
         ">
           Welcome, Admin Daily Mind
         </h1>
 
       </div>
 
-      {/* ================= CONTENT ================= */}
+      {/* CONTENT */}
       <div className="
         px-4
         md:px-8
@@ -228,7 +350,7 @@ useEffect(() => {
         mt-6
       ">
 
-        {/* ================= STAT CARD ================= */}
+        {/* STAT CARD */}
         <div className="
           grid
           grid-cols-1
@@ -244,14 +366,21 @@ useEffect(() => {
               value: users.length,
             },
             {
-              label: "Feedback Belum dibaca",
-              value: feedback.filter(
-                (f) => f.status === "Unread"
-              ).length,
+              label:
+                "Feedback Belum dibaca",
+
+              value:
+                feedback?.filter(
+                  (f) =>
+                    f.status ===
+                    "Unread"
+                ).length,
             },
             {
-              label: "Total Jurnal Anonim",
-              value: 0,
+              label:
+                "Total Kata Terlarang",
+
+              value: words.length,
             },
           ].map((stat, i) => (
 
@@ -274,11 +403,21 @@ useEffect(() => {
               "
             >
 
-              <p className="text-gray-600 font-medium text-sm md:text-base">
+              <p className="
+                text-gray-600
+                font-medium
+                text-sm
+                md:text-base
+              ">
                 {stat.label}
               </p>
 
-              <h2 className="text-2xl md:text-3xl font-bold text-[#27374D]">
+              <h2 className="
+                text-2xl
+                md:text-3xl
+                font-bold
+                text-[#27374D]
+              ">
                 {stat.value}
               </h2>
 
@@ -288,83 +427,100 @@ useEffect(() => {
 
         </div>
 
-        {/* ================= USER MONITORING ================= */}
-        <div className="bg-white rounded-3xl p-4 shadow-md border border-white overflow-hidden">
+        {/* USER MONITORING */}
+        <div className="
+          bg-[#E5E7EB]
+          rounded-3xl
+          p-3
+          shadow-md
+          border
+          border-white
+          overflow-hidden
+        ">
 
           <div className="
             bg-[#A1C4FD]
             text-center
             py-4
             font-bold
-            text-sm
-            md:text-base
             rounded-t-2xl
           ">
             User Monitoring
           </div>
 
-          {/* MOBILE CARD */}
-          <div className="md:hidden mt-4 flex flex-col gap-4 max-h-[400px] overflow-y-auto">
-
-            {users.map((u) => (
-
-              <div
-                key={u.id}
-                className="border border-gray-200 rounded-2xl p-4 bg-white shadow-sm"
-              >
-
-                <div className="space-y-2 text-sm">
-
-                  <p>
-                    <span className="font-bold">ID:</span> {u.id}
-                  </p>
-
-                  <p className="break-all">
-                    <span className="font-bold">Email:</span> {u.email}
-                  </p>
-
-                  <p>
-                    <span className="font-bold">Username:</span> {u.username}
-                  </p>
-
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold">Status:</span>
-
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${statusBadge(u.status)}`}>
-                      {u.status}
-                    </span>
-                  </div>
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-          {/* DESKTOP TABLE */}
           <div className="hidden md:block">
 
-            <div className="bg-[#D1D5DB] px-6 py-3 flex text-sm font-bold text-gray-700">
-              <span className="w-2/12 text-center">ID</span>
-              <span className="w-4/12 text-center">Email</span>
-              <span className="w-4/12 text-center">Username</span>
-              <span className="w-2/12 text-center">Status</span>
+            <div className="
+              bg-[#D1D5DB]
+              px-6
+              py-3
+              flex
+              text-sm
+              font-bold
+              text-gray-700
+            ">
+
+              <span className="
+                w-2/12
+                text-center
+              ">
+                ID
+              </span>
+
+              <span className="
+                w-4/12
+                text-center
+              ">
+                Email
+              </span>
+
+              <span className="
+                w-4/12
+                text-center
+              ">
+                Username
+              </span>
+
+              <span className="
+                w-2/12
+                text-center
+              ">
+                Status
+              </span>
+
             </div>
 
-            <div className="max-h-[250px] overflow-y-auto px-6 pb-4">
+            <div className="
+              max-h-[250px]
+              overflow-y-auto
+              px-6
+              pb-4
+            ">
 
               {users.map((u) => (
 
                 <div
                   key={u.id}
-                  className="flex items-center py-3 border-b border-gray-100 text-sm text-center"
+                  className="
+                    flex
+                    items-center
+                    py-3
+                    border-b
+                    border-gray-100
+                    text-sm
+                    text-center
+                  "
                 >
 
-                  <span className="w-2/12">{u.id}</span>
+                  <span className="w-2/12">
+                    {u.id}
+                  </span>
 
-                  <span className="w-4/12 truncate px-2">
+                  <span className="
+                    w-4/12
+                    truncate
+                    px-2
+                  ">
                     {u.email}
                   </span>
 
@@ -372,10 +528,35 @@ useEffect(() => {
                     {u.username}
                   </span>
 
-                  <span className="w-2/12 flex justify-center">
-                    <span className={`px-4 py-1 rounded-full text-[10px] font-bold ${statusBadge(u.status)}`}>
-                      {u.status}
+                  <span className="
+                    w-2/12
+                    flex
+                    justify-center
+                  ">
+
+                    <span className={`
+                      px-4
+                      py-1
+                      rounded-full
+                      text-[10px]
+                      font-bold
+                      ${
+                        statusBadge(
+                          u.banned
+                            ? "Banned"
+                            : "Active"
+                        )
+                      }
+                    `}>
+
+                      {
+                        u.banned
+                          ? "Banned"
+                          : "Active"
+                      }
+
                     </span>
+
                   </span>
 
                 </div>
@@ -388,8 +569,16 @@ useEffect(() => {
 
         </div>
 
-        {/* ================= FEEDBACK ================= */}
-        <div className="bg-[#E5E7EB] rounded-3xl p-3 shadow-md border border-white overflow-hidden">
+        {/* FEEDBACK */}
+        <div className="
+          bg-[#E5E7EB]
+          rounded-3xl
+          p-3
+          shadow-md
+          border
+          border-white
+          overflow-hidden
+        ">
 
           <div className="
             bg-[#D8B4FE]
@@ -401,112 +590,149 @@ useEffect(() => {
             Laporan Feedback Pengguna
           </div>
 
-          {/* MOBILE */}
-          <div className="md:hidden mt-4 flex flex-col gap-4 max-h-[400px] overflow-y-auto">
-
-            {feedback.map((f) => (
-
-              <div
-                key={f.id}
-                className="border border-gray-200 rounded-2xl p-4 bg-white shadow-sm"
-              >
-
-                <div className="space-y-2 text-sm">
-
-                  <p>
-                    <span className="font-bold">ID:</span> {f.id}
-                  </p>
-
-                  <p>
-                    <span className="font-bold">Kategori:</span> {f.kategori}
-                  </p>
-
-                  <p>
-                    <span className="font-bold">Pesan:</span> "{f.pesan}"
-                  </p>
-
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold">Status:</span>
-
-                  <select
-                    value={f.status}
-                    onChange={(e) =>
-                      handleFeedbackStatus( f.id, e.target.value)
-                    }
-                    className={`px-3, py-1, rounded-full, text-[10px], font-bold, outline-none, ${statusBadge(f.status)}
-                    `}
-                  >
-                  
-                  {feedbackStatuses.map((status) => (
-                    <option
-                    key={status}
-                    value={status}
-                    >
-                      {status}
-                    </option>
-                   ))}
-                  </select>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* DESKTOP */}
           <div className="hidden md:block">
 
-            <div className="  bg-[#D1D5DB] px-6 py-3 flex text-sm font-bold text-gray-700">
-              <span className="w-2/12 text-center">Id Feed</span>
-              <span className="w-3/12 text-center">Kategori</span>
-              <span className="w-5/12 text-center">Isi Pesan</span>
-              <span className="w-2/12 text-center">Status</span>
+            <div className="
+              bg-[#D1D5DB]
+              px-6
+              py-3
+              flex
+              text-sm
+              font-bold
+              text-gray-700
+            ">
+
+              <span className="
+                w-2/12
+                text-center
+              ">
+                Id Feed
+              </span>
+
+              <span className="
+                w-3/12
+                text-center
+              ">
+                Kategori
+              </span>
+
+              <span className="
+                w-5/12
+                text-center
+              ">
+                Isi Pesan
+              </span>
+
+              <span className="
+                w-2/12
+                text-center
+              ">
+                Status
+              </span>
+
             </div>
 
-            <div className="max-h-[250px] overflow-y-auto px-6 pb-4">
+            <div className="
+              max-h-[250px]
+              overflow-y-auto
+              px-6
+              pb-4
+            ">
 
-              {feedback.map((f) => (
+              {feedback?.map((f) => (
 
                 <div
                   key={f.id}
-                  className="flex items-center py-3 border-b border-gray-100 text-sm text-center"
+                  className="
+                    flex
+                    items-center
+                    py-3
+                    border-b
+                    border-gray-400
+                    text-sm
+                    text-center
+                  "
                 >
 
-                  <span className="w-2/12">{f.id}</span>
-
-                  <span className="w-3/12">{f.kategori}</span>
-
-                  <span className="w-5/12 text-left px-4 italic">
-                    "{f.pesan}"
+                  <span className="w-2/12">
+                    {f.id}
                   </span>
 
-                  <span className="w-2/12 flex justify-center">
+                  <span className="w-3/12">
+                    {f.kategori}
+                  </span>
+
+                  <span className="
+                    w-5/12
+                    text-center
+                    px-4
+                  ">
+                    {f.pesan}
+                  </span>
+
+                  <span className="
+                    w-2/12
+                    flex
+                    justify-center
+                  ">
+
                     <select
-                    value={f.status}
-                    onChange={(e) =>
-                      handleFeedbackStatus( f.id, e.target.value)}
-                    className={`px-3, py-1, rounded-full, text-[10px], font-bold, outline-none, cursor-pointer, ${statusBadge(f.status)}
-                    `}
+                      value={f.status}
+                      onChange={(e) =>
+                        handleFeedbackStatus(
+                          f.id,
+                          e.target.value
+                        )
+                      }
+                      className={`
+                        px-3
+                        py-1
+                        rounded-full
+                        text-[10px]
+                        font-bold
+                        outline-none
+                        cursor-pointer
+                        ${statusBadge(f.status)}
+                      `}
                     >
-                      
-                      {feedbackStatuses.map((status) => (
-                        <option
-                        key={status}
-                        value={status}
-                        >
-                          {status}
-                        </option>
-                      ))}
+
+                      {feedbackStatuses.map(
+                        (status) => (
+
+                          <option
+                            key={status}
+                            value={status}
+                          >
+                            {status}
+                          </option>
+
+                        )
+                      )}
+
                     </select>
 
                   </span>
+
                 </div>
+
               ))}
+
             </div>
+
           </div>
+
         </div>
 
-        {/* ================= SENSOR KATA ================= */}
-        <div className="bg-white rounded-3xl shadow-md p-4 md:p-6 border border-white">
+        {/* SENSOR KATA */}
+        <div className="
+          bg-white
+          rounded-3xl
+          shadow-md
+          p-4
+          md:p-6
+          border
+          border-white
+        ">
 
           <div className="
             bg-[#B4D9FC]
@@ -531,7 +757,11 @@ useEffect(() => {
               type="text"
               placeholder="Tulis Kata"
               value={newWord}
-              onChange={(e) => setNewWord(e.target.value)}
+              onChange={(e) =>
+                setNewWord(
+                  e.target.value
+                )
+              }
               className="
                 flex-1
                 px-4
@@ -540,12 +770,13 @@ useEffect(() => {
                 border
                 border-gray-200
                 outline-none
-                focus:border-blue-400
               "
             />
 
             <button
-              onClick={addWord}
+              onClick={
+                handleAddWord
+              }
               className="
                 bg-[#B4D9FC]
                 px-6
@@ -556,33 +787,59 @@ useEffect(() => {
                 justify-center
                 gap-2
                 hover:bg-blue-300
-                transition-colors
               "
             >
-              <Plus size={20} strokeWidth={3} />
+
+              <Plus
+                size={20}
+                strokeWidth={3}
+              />
+
               Tambah
+
             </button>
 
           </div>
 
-          <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto">
+          <div className="
+            flex
+            flex-wrap
+            gap-2
+          ">
 
-            {words.map((w) => (
+            {words?.map((w) => (
 
-              <span
+              <div
                 key={w.id}
                 className="
                   bg-red-400
                   text-white
                   px-4
-                  py-1
+                  py-2
                   rounded-full
                   text-xs
                   font-medium
+                  flex
+                  items-center
+                  gap-2
                 "
               >
+
                 {w.word}
-              </span>
+
+                <button
+                  onClick={() =>
+                    handleDeleteWord(
+                      w.id
+                    )
+                  }
+                >
+
+                  <Trash2 size={14} />
+
+                </button>
+
+              </div>
 
             ))}
 
@@ -590,8 +847,16 @@ useEffect(() => {
 
         </div>
 
-        {/* ================= SEARCH USER ================= */}
-        <div className="bg-white rounded-3xl shadow-md p-4 md:p-6 border border-white">
+        {/* SEARCH USER */}
+        <div className="
+          bg-white
+          rounded-3xl
+          shadow-md
+          p-4
+          md:p-6
+          border
+          border-white
+        ">
 
           <div className="
             bg-[#C2E9FB]
@@ -613,9 +878,19 @@ useEffect(() => {
 
             <input
               type="text"
-              placeholder="Masukan User Id (contoh: 0001)"
+              placeholder="Masukan User Id"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearch(value);
+
+                // kalau input kosong
+                if (!value.trim()) {
+
+                  setSearchedUser(null);
+
+                }
+              }}
               className="
                 flex-1
                 px-4
@@ -624,12 +899,13 @@ useEffect(() => {
                 border
                 border-gray-200
                 outline-none
-                focus:border-blue-400
               "
             />
 
             <button
-              onClick={handleSearchUser}
+              onClick={
+                handleSearchUser
+              }
               className="
                 bg-[#CDF4FF]
                 px-6
@@ -640,16 +916,17 @@ useEffect(() => {
                 items-center
                 justify-center
                 gap-2
-                transition-colors
               "
             >
-              <Search size={18} strokeWidth={2.5} />
+
+              <Search size={18} />
+
               Search
+
             </button>
 
           </div>
 
-          {/* HASIL */}
           {searchedUser && (
 
             <div className="
@@ -669,68 +946,63 @@ useEffect(() => {
 
               <div>
 
-                <p className="text-sm text-gray-500 font-medium">
-                  Hasil Pencarian:
+                <p className="
+                  text-lg
+                  font-bold
+                  text-[#27374D]
+                ">
+
+                  ID:
+                  {
+                    searchedUser.id
+                  }
+
                 </p>
 
-                <p className="text-lg font-bold text-[#27374D]">
-                  ID: {searchedUser.id}
+                <p className="
+                  text-sm
+                  text-gray-600
+                ">
+
+                  {
+                    searchedUser.username
+                  }
+
                 </p>
-
-                <p className="text-sm text-gray-600">
-                  {searchedUser.username}
-                </p>
-
-                <div className="mt-2 flex items-center gap-2">
-
-                  <span className="text-sm">
-                    Status:
-                  </span>
-
-                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${statusBadge(searchedUser.status)}`}>
-                    {searchedUser.status}
-                  </span>
-
-                </div>
 
               </div>
 
               <button
-                onClick={handleToggleStatus}
+                onClick={
+                  handleToggleStatus
+                }
                 className={`
                   px-6
                   py-3
                   rounded-xl
                   text-white
                   font-bold
-                  transition-colors
-                  shadow-sm
-                  w-full
-                  md:w-auto
                   ${
-                    searchedUser.status === "Banned"
-                      ? "bg-green-500 hover:bg-green-600"
-                      : "bg-red-500 hover:bg-red-600"
+                    (
+                      searchedUser.banned
+                    ) === "Banned"
+                      ? `
+                        bg-green-500
+                      `
+                      : `
+                        bg-red-500
+                      `
                   }
                 `}
               >
 
-                {searchedUser.status === "Banned"
-                  ? "Unban User"
-                  : "Ban User"}
+                {
+                  searchedUser.banned
+                    ? "Unban User"
+                    : "Ban User"
+                }
 
               </button>
-
-            </div>
-
-          )}
-
-          {/* NOT FOUND */}
-          {search !== "" && !searchedUser && (
-
-            <div className="mt-4 text-center text-sm text-red-500 font-medium">
-
-              *User dengan ID tersebut tidak ditemukan.
 
             </div>
 
