@@ -2,64 +2,172 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  
+  const TODO_API = "https://be-dailymind.vercel.app/todos";
+  const JOURNAL_API = "https://be-dailymind.vercel.app/journals";
+  const MOOD_API = "https://be-dailymind.vercel.app/moods";
 
-  // TODOS
-  const [todos, setTodos] = useState(() => {
-    return JSON.parse(localStorage.getItem("dailyMind_todos")) || [];
-  });
-
-  const loadTodos = () => {
-    const data =
-      JSON.parse(localStorage.getItem("dailyMind_todos")) || [];
-    setTodos(data);
-  };
-
-  // JOURNALS
-  const [journals, setJournals] = useState(() => {
-    return JSON.parse(localStorage.getItem("dailyMind_jurnal")) || [];
-  });
-
-  const loadJournals = () => {
-    const data =
-      JSON.parse(localStorage.getItem("dailyMind_jurnal")) || [];
-    setJournals(data);
-  };
-
-  useEffect(() => {
-    loadMoodStreak();
-
-    const handleUpdate = () => {
-      loadTodos();
-      loadJournals();
-    };
-
-    window.addEventListener("dataUpdated", handleUpdate);
-
-    return () => {
-      window.removeEventListener("dataUpdated", handleUpdate);
-    };
-  }, []);
-
-  //STREAK MOOD
+  const [todos, setTodos] = useState([]);
+  const [journals, setJournals] = useState([]);
   const [moodStreak, setMoodStreak] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  const loadMoodStreak = () => {
-  const streak =
-    JSON.parse(localStorage.getItem("dailyMind_moodStreak")) || 0;
+  const [journalInput, setJournalInput] = useState("");
 
-  setMoodStreak(streak);
+  const navigate = useNavigate();
+
+  // HANDLE JOURNAL
+  const handleAddJournal = () => {
+    navigate("/Journal", {
+      state: {
+        draft: journalInput,
+      },
+    });
+  };
+
+  //FETCH DATA
+  const fetchHomeData = async () => {
+  try {
+
+    const [
+      todoRes,
+      journalRes,
+      moodRes,
+    ] = await Promise.all([
+      fetch(TODO_API, {
+        credentials: "include",
+      }),
+
+      fetch(JOURNAL_API, {
+        credentials: "include",
+      }),
+
+      fetch(MOOD_API, {
+        credentials: "include",
+      }),
+    ]);
+
+    // TODO
+    const todoData = await todoRes.json();
+
+    const todos =
+      todoData.todos ||
+      todoData.data ||
+      [];
+
+    // hanya todo aktif
+    const activeTodos =
+      todos.filter(
+        (todo) => !todo.completed
+      );
+
+    setTodos(activeTodos);
+
+    // JOURNAL
+    const journalData =
+      await journalRes.json();
+
+    const journals =
+      journalData.journals ||
+      journalData.data ||
+      [];
+
+    setJournals(journals);
+
+    // MOOD
+    const moodData =
+      await moodRes.json();
+
+    const moods =
+      moodData.moods ||
+      moodData.data ||
+      [];
+
+    // HITUNG STREAK
+    let streak = 0;
+
+    const sortedMoods =
+      [...moods].sort(
+        (a, b) =>
+          new Date(b.createdAt) -
+          new Date(a.createdAt)
+      );
+
+    for (let i = 0; i < sortedMoods.length; i++) {
+
+      const current =
+        new Date(
+          sortedMoods[i].createdAt
+        );
+
+      const prev =
+        new Date();
+
+      prev.setDate(
+        prev.getDate() - i
+      );
+
+      const currentDate =
+        current
+          .toISOString()
+          .split("T")[0];
+
+      const prevDate =
+        prev
+          .toISOString()
+          .split("T")[0];
+
+      if (currentDate === prevDate) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+
+    setMoodStreak(streak);
+
+  } catch (err) {
+
+    console.error(err);
+
+  } finally {
+
+    setLoading(false);
+  }
 };
 
-const navigate = useNavigate();
-const [journalInput, setJournalInput] = useState("");
+useEffect(() => {
 
-const handleAddJournal = () => {
-  navigate("/Journal", {
-    state: {
-      draft: journalInput,
-    },
-  });
-};
+  fetchHomeData();
+
+  const handleUpdate = () => {
+    fetchHomeData();
+  }
+
+  window.addEventListener(
+    "dataUpdated",
+    handleUpdate
+  );
+
+  return () => {
+    window.removeEventListener(
+      "dataUpdated",
+      handleUpdate
+    );
+  };
+}, []);
+
+if (loading) {
+  return (
+    <div className="w-full min-h-screen flex justify-center items-center">
+      <div className="flex gap-2">
+        <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+        <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+        <span className="w-3 h-3 bg-[#E0C3FC] rounded-full animate-bounce"></span>
+      </div>
+    </div>
+  );
+}
 
 return (
     <div className="min-h-screen font-inter flex flex-col bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC] overflow-hidden">
@@ -149,7 +257,7 @@ return (
             ) : (
               journals.map((item) => (
                 <div
-                  key={item.id}
+                  key={item._id}
                   className="bg-white/90 p-6 sm:p-8 rounded-[25px] sm:rounded-[35px] shadow-sm border border-white/20 transition-all duration-300 hover:shadow-lg"
                 >
 
@@ -225,10 +333,10 @@ return (
                 ) : (
                   todos.map((todo) => (
                     <li
-                      key={todo.id}
+                      key={todo._id}
                       className="mb-2 break-words"
                     >
-                      {todo.text}
+                      {todo.task}
                     </li>
                   ))
                 )}
