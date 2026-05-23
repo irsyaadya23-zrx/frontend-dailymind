@@ -9,7 +9,7 @@ export default function Journal() {
 
   // API
 
-  const API_URL = "https://be-dailymind.vercel.app/journals";
+  const API_URL_JOURNAL = import.meta.env.API_URL_JOURNAL;
 
   // STATE
 
@@ -44,7 +44,7 @@ export default function Journal() {
       try {
 
         const response = await fetch(
-          API_URL,
+          API_URL_JOURNAL,
           {
             method: "GET",
 
@@ -118,7 +118,7 @@ export default function Journal() {
     try {
 
       const response = await fetch(
-        API_URL,
+        API_URL_JOURNAL,
         {
           method: "POST",
 
@@ -191,7 +191,7 @@ export default function Journal() {
       try {
 
         const response = await fetch(
-          `${API_URL}/${id}`,
+          `${API_URL_JOURNAL}/${id}`,
           {
             method: "DELETE",
 

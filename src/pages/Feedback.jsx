@@ -8,8 +8,7 @@ const Feedback = () => {
 
   // API
   
-  const API_URL =
-    "https://be-dailymind.vercel.app/feedbacks";
+  const API_URL_FEEDBACK = import.meta.env.API_URL_FEEDBACK;
 
   // STATE
 
@@ -40,7 +39,7 @@ const Feedback = () => {
       try {
 
         const response = await fetch(
-          API_URL,
+          API_URL_FEEDBACK,
           {
             method: "GET",
 
@@ -207,7 +206,7 @@ const Feedback = () => {
     try {
 
       const response = await fetch(
-        API_URL,
+        API_URL_FEEDBACK,
         {
           method: "POST",
 

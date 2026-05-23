@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   
-  const TODO_API = "https://be-dailymind.vercel.app/todos";
-  const JOURNAL_API = "https://be-dailymind.vercel.app/journals";
-  const MOOD_API = "https://be-dailymind.vercel.app/moods";
+  const API_URL_TODO = import.meta.env.API_URL_TODO;
+  const API_URL_JOURNAL = import.meta.env.API_URL_JOURNAL;
+  const API_URL_MOOD = import.meta.env.API_URL_MOOD;
 
   const [todos, setTodos] = useState([]);
   const [journals, setJournals] = useState([]);
@@ -34,15 +34,15 @@ const Home = () => {
       journalRes,
       moodRes,
     ] = await Promise.all([
-      fetch(TODO_API, {
+      fetch(API_URL_TODO, {
         credentials: "include",
       }),
 
-      fetch(JOURNAL_API, {
+      fetch(API_URL_JOURNAL, {
         credentials: "include",
       }),
 
-      fetch(MOOD_API, {
+      fetch(API_URL_MOOD, {
         credentials: "include",
       }),
     ]);
