@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-const BASE_URL = "";
+const BASE_URL = "import.meta.env.VITE_API_URL_RESET";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
@@ -16,7 +16,7 @@ export default function ResetPassword() {
 
     try {
       const response = await fetch(
-        // ${BASE_URL}/api/auth/reset-password,
+        `${BASE_URL}/api/auth/reset-password`,
         {
           method: "POST",
           headers: {
