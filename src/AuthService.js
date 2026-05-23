@@ -97,6 +97,51 @@ export const loginWithGoogle = async () => {
 };
 
 // ====================
+// FORGOT PASSWORD
+// ====================
+export const forgotPassword = async (email) => {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/api/auth/request-password-reset`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          redirectTo: "http://localhost:5173/reset-password",
+        }),
+      },
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        message:
+          data?.error?.message ||
+          data?.message ||
+          "Gagal mengirim reset password",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Link reset password berhasil dikirim",
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      success: false,
+      message: "Tidak bisa connect ke server",
+    };
+  }
+};
+
+// ====================
 // LOGOUT
 // ====================
 export const logout = async () => {

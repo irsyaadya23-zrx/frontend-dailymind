@@ -9,6 +9,7 @@ import Feedback from "../pages/Feedback";
 import Register from "../pages/Register";
 import Admin from "../pages/Admin";
 import LandingPage from "../pages/LandingPage";
+import ResetPassword from "../pages/ResetPassword";
 
 import ProtectedRoute from "../routes/ProtectedRoute";
 import MainLayout from "../layouts/MainLayout";
@@ -20,6 +21,7 @@ export default function AppRoutes() {
       <Routes>
         {/* DEFAULT */}
         <Route path="/" element={<LandingPage />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* PUBLIC */}
         <Route element={<AuthLayout />} >

@@ -1,14 +1,15 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import logo from "../assets/dailymind_logo.png"
-import { login, loginWithGoogle } from "../AuthService"
+import { login, loginWithGoogle, forgotPassword  } from "../AuthService"
 import { FcGoogle } from "react-icons/fc"
 import { Link } from "react-router-dom"
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [showPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const navigate = useNavigate()
   
@@ -30,6 +31,18 @@ export default function Login() {
     } else {
       alert(result.message);
     }
+  };
+  
+  const handleForgotPassword = async () => {
+
+    if (!email) {
+      alert("Masukkan email terlebih dahulu");
+      return;
+    }
+
+    const result = await forgotPassword(email);
+
+    alert(result.message);
   };
 
   return (
@@ -71,7 +84,9 @@ export default function Login() {
                   <label className="block text-sm font-medium text-[#27374D]">
                     Password
                   </label>
-                  <span className="text-sm text-[#27374D] cursor-pointer hover:text-[#171F35] underline">
+                  <span 
+                    onClick={handleForgotPassword}
+                    className="text-sm text-[#27374D] cursor-pointer hover:text-[#171F35] underline">
                     Forgot password?
                   </span>
                 </div>
@@ -84,6 +99,15 @@ export default function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     className="block w-full rounded-xl bg-white/5 px-3 py-2 pr-3 text-[#27374D] outline outline-1 outline-[#27374D] placeholder:text-[#27374D] focus:outline-2 focus:outline-[#27374D]"
                   />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#27374D]">
+
+                    {showPassword ? <FaEye /> : <FaEyeSlash />}
+                  </button>
+
                 </div>
               </div>
 
