@@ -1,4 +1,5 @@
 const VITE_API_URL = import.meta.env.VITE_API_URL;
+const VITE_APP_URL = import.meta.env.VITE_APP_URL;
 import { createAuthClient } from "better-auth/react";
 // ====================
 // REGISTER
@@ -113,7 +114,7 @@ export const forgotPassword = async (email) => {
         },
         body: JSON.stringify({
           email,
-          redirectTo: `${APP_URL}/reset-password`,
+          redirectTo: `${VITE_APP_URL}/reset-password`,
         }),
       },
     );
