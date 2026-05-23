@@ -16,7 +16,7 @@ import todoIcon from '../assets/todo.png';
 import pomodoroIcon from '../assets/pomodoro.png';
 import jurnalIcon from '../assets/jurnal.png';
 import feedbackIcon from '../assets/feedback.png';
-import profile from '../assets/mood.png';
+import profile from '../assets/profile.png';
 import exitIcon from '../assets/exit.png';
 
 import {
@@ -251,7 +251,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
                       paddingRight: '20px',
 
-                      paddingLeft: '20px',
+                      paddingLeft: '15px',
 
                       width: '100%',
 
