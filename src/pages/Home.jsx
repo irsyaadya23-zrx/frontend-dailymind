@@ -181,7 +181,7 @@ return (
           {/* KIRI */}
           <div className="flex-1">
 
-            <h1 className="text-3xl sm:text-4xl lg:text-[42px] text-[#1F2A44] font-['Coiny'] leading-tight">
+            <h1 className="text-3xl sm:text-4xl lg:text-[42px] text-[#1F2A44] font-['Poppins'] font-bold leading-tight">
               How Is Your Mood Today?
             </h1>
 

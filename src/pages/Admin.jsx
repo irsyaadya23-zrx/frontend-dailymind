@@ -313,7 +313,7 @@ export default function Admin() {
       from-[#A1C4FD]
       via-[#C2E9FB]
       to-[#E0C3FC]
-      font-['Sarabun']
+      font-['Plus Jakarta Sans']
       pb-10
     ">
 
@@ -332,7 +332,7 @@ export default function Admin() {
           md:text-[40px]
           text-[#27374D]
           font-bold
-          font-['Coiny']
+          font-['Poppins']
         ">
           Welcome, Admin Daily Mind
         </h1>
