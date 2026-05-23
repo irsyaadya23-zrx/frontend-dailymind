@@ -294,11 +294,11 @@ useEffect(() => {
           <div className="
             bg-[#A1C4FD]
             text-center
-            py-3
+            py-4
             font-bold
-            rounded-2xl
             text-sm
             md:text-base
+            rounded-t-2xl
           ">
             User Monitoring
           </div>
@@ -346,7 +346,7 @@ useEffect(() => {
           {/* DESKTOP TABLE */}
           <div className="hidden md:block">
 
-            <div className="bg-[#E5E7EB] px-6 py-2 flex text-sm font-bold text-gray-700 mt-4">
+            <div className="bg-[#D1D5DB] px-6 py-3 flex text-sm font-bold text-gray-700">
               <span className="w-2/12 text-center">ID</span>
               <span className="w-4/12 text-center">Email</span>
               <span className="w-4/12 text-center">Username</span>
@@ -389,16 +389,14 @@ useEffect(() => {
         </div>
 
         {/* ================= FEEDBACK ================= */}
-        <div className="bg-white rounded-3xl p-4 shadow-md border border-white overflow-hidden">
+        <div className="bg-[#E5E7EB] rounded-3xl p-3 shadow-md border border-white overflow-hidden">
 
           <div className="
-            bg-[#E0C3FC]
+            bg-[#D8B4FE]
             text-center
-            py-3
+            py-4
             font-bold
-            rounded-2xl
-            text-sm
-            md:text-base
+            rounded-t-2xl
           ">
             Laporan Feedback Pengguna
           </div>
@@ -457,7 +455,7 @@ useEffect(() => {
           {/* DESKTOP */}
           <div className="hidden md:block">
 
-            <div className="bg-[#E5E7EB] px-6 py-2 flex text-sm font-bold text-gray-700 mt-4">
+            <div className="  bg-[#D1D5DB] px-6 py-3 flex text-sm font-bold text-gray-700">
               <span className="w-2/12 text-center">Id Feed</span>
               <span className="w-3/12 text-center">Kategori</span>
               <span className="w-5/12 text-center">Isi Pesan</span>
