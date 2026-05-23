@@ -1,0 +1,84 @@
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+
+const BASE_URL = "";
+
+export default function ResetPassword() {
+  const [password, setPassword] = useState("");
+  const [searchParams] = useSearchParams();
+
+  const navigate = useNavigate();
+
+  const token = searchParams.get("token");
+
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(
+        // ${BASE_URL}/api/auth/reset-password,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            newPassword: password,
+            token,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data?.message || "Gagal reset password");
+        return;
+      }
+
+      alert("Password berhasil diubah");
+
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+      alert("Tidak bisa connect ke server");
+    }
+  };
+
+  return (
+  <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC]">
+
+    <div className="max-w-[512px] w-full flex justify-center items-center bg-gradient-to-br from-[#FFFFFF] via-[#FFFFFF]/10 to-[#FFFFFF] p-[2px] rounded-3xl">
+      
+      <div className="w-full flex items-center justify-center bg-gradient-to-b from-[#FFFFFF]/20 via-[#FFFFFF]/10 to-[#FFFFFF]/40 rounded-3xl p-6">
+        
+        <form
+          onSubmit={handleResetPassword}
+          className="flex flex-col gap-4 w-[350px]"
+        >
+          <h1 className="text-2xl font-bold text-center">
+            Reset Password
+          </h1>
+
+          <input
+            type="password"
+            placeholder="Password baru"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="border p-2 rounded-full border-[#27374D]"
+            required
+          />
+
+          <button
+            type="submit"
+            className="bg-[#27374D] text-white p-2 rounded-full"
+          >
+            Simpan Password Baru
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+);
+}
