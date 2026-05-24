@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-const [password, setPassword] = useState("");
-const [showPassword, setShowPassword] = useState(false);
-const [searchParams] = useSearchParams();
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
@@ -13,6 +10,7 @@ export default function ResetPassword() {
   
   const [password, setPassword] = useState("");
   const [searchParams] = useSearchParams();
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -85,7 +83,7 @@ export default function ResetPassword() {
              onClick={() => setShowPassword(!showPassword)}
              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#27374D]"
            >
-             {showPassword ? <FaEyeSlash /> : <FaEye />}
+             {showPassword ? <FaEye /> : <FaEyeSlash />}
            </button>
          </div>
 
