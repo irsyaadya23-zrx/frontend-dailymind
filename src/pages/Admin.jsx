@@ -508,35 +508,40 @@ export default function Admin() {
                     border-b
                     border-gray-100
                     text-sm
-                    text-center
-                    min-w-[700px]
+                    min-w-[900px]
+                    gap-4
                   "
                 >
 
-                  <span className="w-2/12">
+                  <span className="
+                    w-[260px]
+                    break-all
+                    whitespace-normal
+                    text-center
+                  ">
                     {u.id}
                   </span>
 
                   <span className="
-                    w-4/12
-                    px-2
-                    break-words
+                    w-[300px]
+                    break-all
                     whitespace-normal
+                    text-center
                   ">
                     {u.email}
                   </span>
 
                   <span className="
-                    w-4/12
-                    break-words
+                    flex-1
+                    break-all
                     whitespace-normal
-                    px-2
+                    text-center
                   ">
                     {u.username}
                   </span>
 
                   <span className="
-                    w-2/12
+                    w-[120px]
                     flex
                     justify-center
                   ">
