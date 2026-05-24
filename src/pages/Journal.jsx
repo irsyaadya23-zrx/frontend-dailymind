@@ -24,7 +24,10 @@ export default function Journal() {
     useState(true);
 
   const [words, setWords] =
-    useState([]);
+    useState([
+      { word: "bego" },
+      { word: "tolol" }
+    ]);
 
   // DRAFT DARI PAGE LAIN
 
