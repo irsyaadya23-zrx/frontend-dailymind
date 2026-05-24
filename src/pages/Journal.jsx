@@ -309,31 +309,34 @@ export default function Journal() {
 
   let result = text;
 
+  console.log("TEXT:", text);
+  console.log("WORDS:", words);
+
   words.forEach((w) => {
 
     const badWord = w.word;
 
-    result = result.replaceAll(
-      badWord,
-      "*".repeat(
-        badWord.length
-      )
-    );
+    console.log("BADWORD:", badWord);
 
-    result = result.replaceAll(
-      badWord.toLowerCase(),
-      "*".repeat(
-        badWord.length
-      )
-    );
+    const regex =
+      new RegExp(
+        badWord,
+        "gi"
+      );
 
-    result = result.replaceAll(
-      badWord.toUpperCase(),
-      "*".repeat(
-        badWord.length
-      )
-    );
+    result =
+      result.replace(
+        regex,
+        "*".repeat(
+          badWord.length
+        )
+      );
   });
+
+  console.log(
+    "RESULT:",
+    result
+  );
 
   return result;
 };
