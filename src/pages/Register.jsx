@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom"
 import logo from "../assets/dailymind_logo.png"
 import { register } from "../AuthService"
 import { FcGoogle } from "react-icons/fc"
+import { FaEye, FaEyeSlash } from "react-icons/fa"
 
 export default function Register() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [showPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const navigate = useNavigate()
   
@@ -126,6 +127,14 @@ const [confirmPassword, setConfirmPassword] = useState("")
                     onChange={(e) => setPassword(e.target.value)}
                     className="block w-full rounded-xl bg-white/5 px-3 py-2 pr-3 text-[#27374D] outline outline-1 outline-[#27374D] placeholder:text-[#27374D] focus:outline-2 focus:outline-[#27374D]"
                   />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-3 flex items-center text-[#27374D]"
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
                 </div>
               </div>
 
@@ -145,6 +154,15 @@ const [confirmPassword, setConfirmPassword] = useState("")
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     className="block w-full rounded-xl bg-white/5 px-3 py-2 pr-3 text-[#27374D] outline outline-1 outline-[#27374D] placeholder:text-[#27374D] focus:outline-2 focus:outline-[#27374D]"
                   />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-3 flex items-center text-[#27374D]"
+                   >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+
                 </div>
               </div>
 
