@@ -448,7 +448,7 @@ export default function Admin() {
             User Monitoring
           </div>
 
-          <div className="hidden md:block">
+          <div className="overflow-x-auto">
 
             <div className="
               bg-[#D1D5DB]
@@ -503,12 +503,13 @@ export default function Admin() {
                   key={u.id}
                   className="
                     flex
-                    items-center
+                    items-start
                     py-3
                     border-b
                     border-gray-100
                     text-sm
                     text-center
+                    min-w-[700px]
                   "
                 >
 
@@ -518,13 +519,19 @@ export default function Admin() {
 
                   <span className="
                     w-4/12
-                    truncate
                     px-2
+                    break-words
+                    whitespace-normal
                   ">
                     {u.email}
                   </span>
 
-                  <span className="w-4/12">
+                  <span className="
+                    w-4/12
+                    break-words
+                    whitespace-normal
+                    px-2
+                  ">
                     {u.username}
                   </span>
 
@@ -590,7 +597,7 @@ export default function Admin() {
             Laporan Feedback Pengguna
           </div>
 
-          <div className="hidden md:block">
+          <div className="overflow-x-auto">
 
             <div className="
               bg-[#D1D5DB]
@@ -645,12 +652,13 @@ export default function Admin() {
                   key={f.id}
                   className="
                     flex
-                    items-center
+                    items-start
                     py-3
                     border-b
                     border-gray-400
                     text-sm
                     text-center
+                    min-w-[850px]
                   "
                 >
 
@@ -658,16 +666,23 @@ export default function Admin() {
                     {f.id}
                   </span>
 
-                  <span className="w-3/12">
-                    {f.kategori}
+                  <span className="
+                    w-3/12
+                    break-words
+                    whitespace-normal
+                    px-2
+                  ">
+                    {f.category}
                   </span>
 
                   <span className="
                     w-5/12
-                    text-center
+                    text-left
                     px-4
+                    break-words
+                    whitespace-normal
                   ">
-                    {f.pesan}
+                    {f.message}
                   </span>
 
                   <span className="
