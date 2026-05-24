@@ -31,7 +31,7 @@ export default function AppRoutes() {
         </Route>
 
         {/*  PRIVATE */}
-        <Route element={<ProtectedRoute />}>
+        {/* <Route element={<ProtectedRoute />}> */}
             <Route element={<MainLayout />} >
                 <Route path="/home" element={<Home />} />
                 <Route path="/moodtrack" element={<MoodTrack />} />
@@ -40,7 +40,7 @@ export default function AppRoutes() {
                 <Route path="/journal" element={<Journal />} />
                 <Route path="/feedback" element={<Feedback />} />
             </Route>
-        </Route>
+        {/* </Route> */}
 
         <Route element={<AdminLayout />} >
             <Route path="/Admin" element={<Admin />} />
