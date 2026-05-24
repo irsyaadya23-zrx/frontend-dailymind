@@ -424,14 +424,10 @@ const LandingPage = () => {
               bg-[#D9D9D9]
               rounded-3xl
               shadow-xl
-              flex
-              items-center
-              justify-center
-              text-gray-400
-              text-sm
+              overflow-hidden
             ">
 
-              [IMAGE PLACEHOLDER]
+              <img src="/gambar landing page.png" className="w-full h-full object-cover"/>
 
             </div>
 
