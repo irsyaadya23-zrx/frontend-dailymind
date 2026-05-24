@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-const BASE_URL = "import.meta.env.VITE_API_URL_RESET";
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 export default function ResetPassword() {
+
+  console.log("RESET PAGE RENDER");
+  
   const [password, setPassword] = useState("");
   const [searchParams] = useSearchParams();
 
@@ -11,14 +14,17 @@ export default function ResetPassword() {
 
   const token = searchParams.get("token");
 
+  console.log(token)
+
   const handleResetPassword = async (e) => {
     e.preventDefault();
 
     try {
       const response = await fetch(
-        `${BASE_URL}/api/auth/reset-password`,
+        `${VITE_API_URL}/api/auth/reset-password`,
         {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -40,8 +46,8 @@ export default function ResetPassword() {
 
       navigate("/login");
     } catch (error) {
-      console.error(error);
-      alert("Tidak bisa connect ke server");
+      console.error("RESET ERROR:", error);
+      alert(error.message);
     }
   };
 
