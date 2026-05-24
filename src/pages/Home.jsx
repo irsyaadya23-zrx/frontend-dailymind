@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getBannedWords } from "../AdminService";
 
 const Home = () => {
   
@@ -14,6 +15,9 @@ const Home = () => {
 
   const [journalInput, setJournalInput] = useState("");
 
+  const [words, setWords] =
+    useState([]);
+
   const navigate = useNavigate();
 
   // HANDLE JOURNAL
@@ -24,6 +28,54 @@ const Home = () => {
       },
     });
   };
+
+  // BANNED WORDS
+    useEffect(() => {
+  
+    const fetchWords =
+      async () => {
+  
+        try {
+  
+          const data =
+            await getBannedWords();
+  
+          console.log(
+            "BANNED WORDS:",
+            data
+          );
+  
+          const wordsArray =
+            Array.isArray(data)
+              ? data
+              : Array.isArray(data?.words)
+              ? data.words
+              : Array.isArray(data?.data)
+              ? data.data
+              : [];
+  
+          setWords(
+            wordsArray.length > 0
+              ? wordsArray
+              : [
+                  { word: "bego" },
+                  { word: "tolol" }
+                ] 
+          );
+  
+        } catch (error) {
+  
+          console.error(error);
+        }
+      };
+  
+    fetchWords();
+  
+  }, []);
+  
+      useEffect(() => {
+        console.log("WORDS:", words);
+      }, [words]);
 
   //FETCH DATA
 const fetchHomeData = async () => {
@@ -241,6 +293,33 @@ if (loading) {
   );
 }
 
+  //FUNCTION SENSOR KATA
+  const censorText = (text) => {
+
+  let result = text;
+
+  words.forEach((w) => {
+
+    const badWord =
+      w.word || w;
+
+    if (!badWord) return;
+
+    result =
+      result.replace(
+        new RegExp(
+          badWord,
+          "gi"
+        ),
+        "*".repeat(
+          badWord.length
+        )
+      );
+  });
+
+  return result;
+};
+
 return (
     <div className="min-h-screen font-inter flex flex-col bg-gradient-to-br from-[#A1C4FD] via-[#C2E9FB] to-[#E0C3FC] overflow-hidden">
 
@@ -338,7 +417,7 @@ return (
                   </p>
 
                   <p className="text-[#1F2A44]/80 leading-relaxed text-sm sm:text-[15px] font-medium break-words">
-                    {item.content}
+                    {censorText(item.content)}
                   </p>
 
                 </div>
