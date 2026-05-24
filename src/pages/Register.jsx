@@ -133,7 +133,7 @@ const [confirmPassword, setConfirmPassword] = useState("")
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-3 flex items-center text-[#27374D]"
                   >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    {showPassword ? <FaEye /> : <FaEyeSlash />}
                   </button>
                 </div>
               </div>
@@ -160,7 +160,7 @@ const [confirmPassword, setConfirmPassword] = useState("")
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-3 flex items-center text-[#27374D]"
                    >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    {showPassword ? <FaEye /> : <FaEyeSlash />}
                   </button>
 
                 </div>
