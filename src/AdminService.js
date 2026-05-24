@@ -73,7 +73,7 @@ export const unbanUser = async (userId) => {
 // ================= FEEDBACK =================
 export const getFeedbacks = async () => {
   try {
-    const response = await fetch(`${BASE_URL}/feedbacks`, {
+    const response = await fetch(`${BASE_URL}/admin/feedbacks`, {
       method: "GET",
       credentials: "include",
     });
