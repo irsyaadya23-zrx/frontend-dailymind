@@ -238,6 +238,16 @@ export default function Journal() {
 
       try {
 
+        console.log(
+        "DELETE ID:",
+        id
+      );
+
+      console.log(
+        "DELETE URL:",
+        `${API_URL_JOURNAL}/${id}`
+      );
+
         const response = await fetch(
           `${API_URL_JOURNAL}/${id}`,
           {
@@ -251,6 +261,9 @@ export default function Journal() {
             credentials: "include",
           }
         );
+
+        const data = await response.json();
+          console.log("DELETE RESPONSE:", data);
 
         if (!response.ok) {
 
