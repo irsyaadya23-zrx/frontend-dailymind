@@ -95,6 +95,7 @@ const fetchHomeData = async () => {
     // ====================
     // HITUNG STREAK
     // ====================
+
     const sortedMoods =
       [...moods].sort(
         (a, b) =>
@@ -128,6 +129,8 @@ const fetchHomeData = async () => {
     // TANGGAL ACUAN
     const startDate =
       new Date(today);
+    
+    let streak = 0;
 
     // kalau belum isi hari ini
     // tapi kemarin isi
@@ -192,8 +195,7 @@ const fetchHomeData = async () => {
         }
       }
     }
-    
-    let streak = sortedMoods.length
+
     setMoodStreak(streak);
 
   } catch (error) {
