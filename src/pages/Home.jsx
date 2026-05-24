@@ -5,7 +5,7 @@ import { getBannedWords } from "../AdminService";
 const Home = () => {
   
   const API_URL_TODO = import.meta.env.VITE_API_URL_TODO;
-  const API_URL_JOURNAL = import.meta.env.VITE_API_URL_JOURNAL;
+  const API_URL_JOURNAL_TIMELINE = import.meta.env.VITE_API_URL_JOURNALTIMELINE;
   const API_URL_MOOD = import.meta.env.VITE_API_URL_MOOD;
 
   const [todos, setTodos] = useState([]);
@@ -90,7 +90,7 @@ const fetchHomeData = async () => {
         credentials: "include",
       }),
 
-      fetch(API_URL_JOURNAL, {
+      fetch(API_URL_JOURNAL_TIMELINE, {
         credentials: "include",
       }),
 
