@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+const [password, setPassword] = useState("");
+const [showPassword, setShowPassword] = useState(false);
+const [searchParams] = useSearchParams();
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
