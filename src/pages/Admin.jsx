@@ -537,7 +537,7 @@ export default function Admin() {
                     whitespace-normal
                     text-center
                   ">
-                    {u.username}
+                    {u.name}
                   </span>
 
                   <span className="
