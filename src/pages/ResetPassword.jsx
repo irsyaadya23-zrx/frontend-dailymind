@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
@@ -66,14 +67,24 @@ export default function ResetPassword() {
             Reset Password
           </h1>
 
-          <input
-            type="password"
-            placeholder="Password baru"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border p-2 rounded-full border-[#27374D]"
-            required
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password baru"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="border p-2 rounded-full border-[#27374D] w-full pr-10"
+              required
+            />
+
+           <button
+             type="button"
+             onClick={() => setShowPassword(!showPassword)}
+             className="absolute right-4 top-1/2 -translate-y-1/2 text-[#27374D]"
+           >
+             {showPassword ? <FaEyeSlash /> : <FaEye />}
+           </button>
+         </div>
 
           <button
             type="submit"
