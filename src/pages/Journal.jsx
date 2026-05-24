@@ -67,7 +67,14 @@ export default function Journal() {
             ? data.data
             : [];
 
-        setWords(wordsArray);
+        setWords(
+          wordsArray.length > 0
+            ? wordsArray
+            : [
+                { word: "bego" },
+                { word: "tolol" }
+              ] 
+        );
 
       } catch (error) {
 
