@@ -102,8 +102,6 @@ const fetchHomeData = async () => {
           new Date(a.createdAt)
       );
 
-    let streak = sortedMoods.length
-
     // kalau belum ada mood sama sekali
     if (sortedMoods.length === 0) {
       setMoodStreak(0);
@@ -194,7 +192,8 @@ const fetchHomeData = async () => {
         }
       }
     }
-
+    
+    let streak = sortedMoods.length
     setMoodStreak(streak);
 
   } catch (error) {
