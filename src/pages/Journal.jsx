@@ -76,6 +76,10 @@ export default function Journal() {
 
 }, []);
 
+    useEffect(() => {
+      console.log("WORDS:", words);
+    }, [words]);
+
   // GET JOURNALS
 
   useEffect(() => {
@@ -298,13 +302,22 @@ export default function Journal() {
   //FUNCTION SENSOR KATA
   const censorText = (text) => {
 
+  if (!words.length) return text;
+
   let result = text;
 
   words.forEach((w) => {
 
+    const badWord =
+      typeof w === "string"
+        ? w
+        : w.word;
+
+    if (!badWord) return;
+
     const regex =
       new RegExp(
-        w.word,
+        `\\b${badWord}\\b`,
         "gi"
       );
 
@@ -312,7 +325,7 @@ export default function Journal() {
       result.replace(
         regex,
         "*".repeat(
-          w.word.length
+          badWord.length
         )
       );
   });
