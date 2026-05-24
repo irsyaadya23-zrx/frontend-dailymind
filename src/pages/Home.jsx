@@ -179,8 +179,8 @@ for (let i = 0; i < sortedMoods.length; i++) {
   const moodDate = new Date(sortedMoods[i].createdAt);
   moodDate.setHours(0, 0, 0, 0);
 
-  const target = compareDate.toISOString().split("T")[0];
-  const current = moodDate.toISOString().split("T")[0];
+  const target = compareDate.toLocaleDateString("en-CA");
+  const current = moodDate.toLocaleDateString("en-CA");
 
   if (current === target) {
     streak++;
