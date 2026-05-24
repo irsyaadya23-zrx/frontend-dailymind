@@ -148,107 +148,52 @@ const fetchHomeData = async () => {
     // HITUNG STREAK
     // ====================
 
-    const sortedMoods =
-      [...moods].sort(
-        (a, b) =>
-          new Date(b.createdAt) -
-          new Date(a.createdAt)
-      );
+const sortedMoods = [...moods].sort(
+  (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+);
 
-    // kalau belum ada mood sama sekali
-    if (sortedMoods.length === 0) {
-      setMoodStreak(0);
-      return;
-    }
+if (sortedMoods.length === 0) {
+  setMoodStreak(0);
+  return;
+}
 
-    // HARI INI
-    const today = new Date();
+const today = new Date();
+today.setHours(0, 0, 0, 0);
 
-    today.setHours(0, 0, 0, 0);
+const lastMoodDate = new Date(sortedMoods[0].createdAt);
+lastMoodDate.setHours(0, 0, 0, 0);
 
-    // TANGGAL MOOD TERAKHIR
-    const lastMoodDate = new Date(
-      sortedMoods[0].createdAt
-    );
+const diffDays = (today - lastMoodDate) / (1000 * 60 * 60 * 24);
 
-    lastMoodDate.setHours(0, 0, 0, 0);
+// Kalau mood terakhir lebih dari 1 hari lalu → streak reset
+if (diffDays > 1) {
+  setMoodStreak(0);
+  return;
+}
 
-    // SELISIH HARI
-    const diffDays =
-      (today - lastMoodDate) /
-      (1000 * 60 * 60 * 24);
+// Hitung streak dari mood terbaru
+let streak = 0;
+let compareDate = new Date(lastMoodDate);
 
-    // TANGGAL ACUAN
-    const startDate =
-      new Date(today);
-    
-    let streak = 0;
+for (let i = 0; i < sortedMoods.length; i++) {
+  const moodDate = new Date(sortedMoods[i].createdAt);
+  moodDate.setHours(0, 0, 0, 0);
 
-    // kalau belum isi hari ini
-    // tapi kemarin isi
-    if (diffDays === 1) {
-      startDate.setDate(
-        startDate.getDate() - 1
-      );
-    }
+  const target = compareDate.toISOString().split("T")[0];
+  const current = moodDate.toISOString().split("T")[0];
 
-    // kalau bolong > 1 hari
-    if (diffDays > 1) {
+  if (current === target) {
+    streak++;
+    // Mundur 1 hari untuk cek mood berikutnya
+    compareDate.setDate(compareDate.getDate() - 1);
+  } else if (current < target) {
+    // Ada hari yang bolong → streak berhenti
+    break;
+  }
+  // Kalau ada duplikat mood di hari yang sama → skip
+}
 
-      streak = 0;
-
-    } else {
-
-      for (
-        let i = 0;
-        i < sortedMoods.length;
-        i++
-      ) {
-
-        const current =
-          new Date(
-            sortedMoods[i].createdAt
-          );
-
-        current.setHours(
-          0,
-          0,
-          0,
-          0
-        );
-
-        const compareDate =
-          new Date(startDate);
-
-        compareDate.setDate(
-          startDate.getDate() - i
-        );
-
-        const currentDate =
-          current
-            .toISOString()
-            .split("T")[0];
-
-        const targetDate =
-          compareDate
-            .toISOString()
-            .split("T")[0];
-
-        if (
-          currentDate === targetDate
-        ) {
-
-          streak++;
-
-        } else {
-
-          break;
-
-        }
-      }
-    }
-
-    setMoodStreak(streak);
+setMoodStreak(streak);
 
   } catch (error) {
 
