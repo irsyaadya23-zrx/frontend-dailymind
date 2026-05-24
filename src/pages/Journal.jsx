@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { getBannedWords } from "../AdminService";
 
 export default function Journal() {
 
@@ -22,6 +23,9 @@ export default function Journal() {
   const [loading, setLoading] =
     useState(true);
 
+  const [words, setWords] =
+    useState([]);
+
   // DRAFT DARI PAGE LAIN
 
   useEffect(() => {
@@ -34,6 +38,43 @@ export default function Journal() {
     }
 
   }, [location.state]);
+
+  // BANNED WORDS
+  useEffect(() => {
+
+  const fetchWords =
+    async () => {
+
+      try {
+
+        const data =
+          await getBannedWords();
+
+        console.log(
+          "BANNED WORDS:",
+          data
+        );
+
+        const wordsArray =
+          Array.isArray(data)
+            ? data
+            : Array.isArray(data?.words)
+            ? data.words
+            : Array.isArray(data?.data)
+            ? data.data
+            : [];
+
+        setWords(wordsArray);
+
+      } catch (error) {
+
+        console.error(error);
+      }
+    };
+
+  fetchWords();
+
+}, []);
 
   // GET JOURNALS
 
@@ -254,6 +295,31 @@ export default function Journal() {
     );
   }
 
+  //FUNCTION SENSOR KATA
+  const censorText = (text) => {
+
+  let result = text;
+
+  words.forEach((w) => {
+
+    const regex =
+      new RegExp(
+        w.word,
+        "gi"
+      );
+
+    result =
+      result.replace(
+        regex,
+        "*".repeat(
+          w.word.length
+        )
+      );
+  });
+
+  return result;
+};
+
   return (
 
     <div className="w-full px-4 py-2 sm:p-6 md:p-8 lg:p-10">
@@ -377,7 +443,7 @@ export default function Journal() {
 
                       <p className="text-gray-700 leading-relaxed">
                         {
-                          entry.content
+                          censorText(entry.content)
                         }
                       </p>
 
