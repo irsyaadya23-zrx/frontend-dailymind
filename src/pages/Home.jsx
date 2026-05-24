@@ -5,7 +5,7 @@ import { getBannedWords } from "../AdminService";
 const Home = () => {
   
   const API_URL_TODO = import.meta.env.VITE_API_URL_TODO;
-  const API_URL_JOURNAL = import.meta.env.VITE_API_URL_JOURNAL;
+  const API_URL_JOURNAL_TIMELINE = import.meta.env.VITE_API_URL_JOURNALTIMELINE;
   const API_URL_MOOD = import.meta.env.VITE_API_URL_MOOD;
 
   const [todos, setTodos] = useState([]);
@@ -90,7 +90,7 @@ const fetchHomeData = async () => {
         credentials: "include",
       }),
 
-      fetch(API_URL_JOURNAL, {
+      fetch(API_URL_JOURNAL_TIMELINE, {
         credentials: "include",
       }),
 
@@ -179,8 +179,8 @@ for (let i = 0; i < sortedMoods.length; i++) {
   const moodDate = new Date(sortedMoods[i].createdAt);
   moodDate.setHours(0, 0, 0, 0);
 
-  const target = compareDate.toISOString().split("T")[0];
-  const current = moodDate.toISOString().split("T")[0];
+  const target = compareDate.toLocaleDateString("en-CA");
+  const current = moodDate.toLocaleDateString("en-CA");
 
   if (current === target) {
     streak++;
