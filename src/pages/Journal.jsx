@@ -305,40 +305,10 @@ export default function Journal() {
   //FUNCTION SENSOR KATA
   const censorText = (text) => {
 
-  if (!text) return "";
-
-  let result = text;
-
-  console.log("TEXT:", text);
-  console.log("WORDS:", words);
-
-  words.forEach((w) => {
-
-    const badWord = w.word;
-
-    console.log("BADWORD:", badWord);
-
-    const regex =
-      new RegExp(
-        badWord,
-        "gi"
-      );
-
-    result =
-      result.replace(
-        regex,
-        "*".repeat(
-          badWord.length
-        )
-      );
-  });
-
-  console.log(
-    "RESULT:",
-    result
+  return text.replace(
+    /bego/gi,
+    "*****"
   );
-
-  return result;
 };
 
   return (
