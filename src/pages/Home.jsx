@@ -26,7 +26,7 @@ const Home = () => {
   };
 
   //FETCH DATA
-  const fetchHomeData = async () => {
+const fetchHomeData = async () => {
   try {
 
     const [
@@ -47,7 +47,10 @@ const Home = () => {
       }),
     ]);
 
+    // ====================
     // TODO
+    // ====================
+
     const todoData = await todoRes.json();
 
     const todos =
@@ -63,7 +66,10 @@ const Home = () => {
 
     setTodos(activeTodos);
 
+    // ====================
     // JOURNAL
+    // ====================
+
     const journalData =
       await journalRes.json();
 
@@ -74,7 +80,10 @@ const Home = () => {
 
     setJournals(journals);
 
+    // ====================
     // MOOD
+    // ====================
+
     const moodData =
       await moodRes.json();
 
@@ -83,9 +92,9 @@ const Home = () => {
       moodData.data ||
       [];
 
+    // ====================
     // HITUNG STREAK
-    let streak = 0;
-
+    // ====================
     const sortedMoods =
       [...moods].sort(
         (a, b) =>
@@ -93,46 +102,109 @@ const Home = () => {
           new Date(a.createdAt)
       );
 
-    for (let i = 0; i < sortedMoods.length; i++) {
+    let streak = sortedMoods.length
 
-      const current =
-        new Date(
-          sortedMoods[i].createdAt
+    // kalau belum ada mood sama sekali
+    if (sortedMoods.length === 0) {
+      setMoodStreak(0);
+      return;
+    }
+
+    // HARI INI
+    const today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+
+    // TANGGAL MOOD TERAKHIR
+    const lastMoodDate = new Date(
+      sortedMoods[0].createdAt
+    );
+
+    lastMoodDate.setHours(0, 0, 0, 0);
+
+    // SELISIH HARI
+    const diffDays =
+      (today - lastMoodDate) /
+      (1000 * 60 * 60 * 24);
+
+    // TANGGAL ACUAN
+    const startDate =
+      new Date(today);
+
+    // kalau belum isi hari ini
+    // tapi kemarin isi
+    if (diffDays === 1) {
+      startDate.setDate(
+        startDate.getDate() - 1
+      );
+    }
+
+    // kalau bolong > 1 hari
+    if (diffDays > 1) {
+
+      streak = 0;
+
+    } else {
+
+      for (
+        let i = 0;
+        i < sortedMoods.length;
+        i++
+      ) {
+
+        const current =
+          new Date(
+            sortedMoods[i].createdAt
+          );
+
+        current.setHours(
+          0,
+          0,
+          0,
+          0
         );
 
-      const prev =
-        new Date();
+        const compareDate =
+          new Date(startDate);
 
-      prev.setDate(
-        prev.getDate() - i
-      );
+        compareDate.setDate(
+          startDate.getDate() - i
+        );
 
-      const currentDate =
-        current
-          .toISOString()
-          .split("T")[0];
+        const currentDate =
+          current
+            .toISOString()
+            .split("T")[0];
 
-      const prevDate =
-        prev
-          .toISOString()
-          .split("T")[0];
+        const targetDate =
+          compareDate
+            .toISOString()
+            .split("T")[0];
 
-      if (currentDate === prevDate) {
-        streak++;
-      } else {
-        break;
+        if (
+          currentDate === targetDate
+        ) {
+
+          streak++;
+
+        } else {
+
+          break;
+
+        }
       }
     }
 
     setMoodStreak(streak);
 
-  } catch (err) {
+  } catch (error) {
 
-    console.error(err);
+    console.error(error);
 
   } finally {
 
     setLoading(false);
+
   }
 };
 
