@@ -276,7 +276,7 @@ export default function Journal() {
         setEntries((prev) =>
           prev.filter(
             (entry) =>
-              entry._id !== id
+              entry.id !== id
           )
         );
 
@@ -430,7 +430,7 @@ export default function Journal() {
 
                   <div
                     key={
-                      entry._id
+                      entry.id
                     }
                     className="flex flex-col overflow-hidden rounded-3xl border shadow-sm transition-all hover:scale-[1.01]"
                   >
@@ -475,7 +475,7 @@ export default function Journal() {
                         <button
                           onClick={() =>
                             handleDelete(
-                              entry._id
+                              entry.id
                             )
                           }
                           className="px-4 py-2 bg-red-400 hover:bg-red-500 text-white rounded-xl text-sm font-semibold transition"
