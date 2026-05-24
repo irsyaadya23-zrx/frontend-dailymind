@@ -31,15 +31,17 @@ export default function AppRoutes() {
         </Route>
 
         {/*  PRIVATE */}
-        {/* <Route element={<ProtectedRoute />}> */}
-        <Route element={<MainLayout />} >
-            <Route path="/home" element={<Home />} />
-            <Route path="/moodtrack" element={<MoodTrack />} />
-            <Route path="/pomodoro" element={<Pomodoro />} />
-            <Route path="/todolist" element={<ToDoList />} />
-            <Route path="/journal" element={<Journal />} />
-            <Route path="/feedback" element={<Feedback />} />
+        <Route element={<ProtectedRoute />}>
+            <Route element={<MainLayout />} >
+                <Route path="/home" element={<Home />} />
+                <Route path="/moodtrack" element={<MoodTrack />} />
+                <Route path="/pomodoro" element={<Pomodoro />} />
+                <Route path="/todolist" element={<ToDoList />} />
+                <Route path="/journal" element={<Journal />} />
+                <Route path="/feedback" element={<Feedback />} />
+            </Route>
         </Route>
+
         <Route element={<AdminLayout />} >
             <Route path="/Admin" element={<Admin />} />
         </Route>
